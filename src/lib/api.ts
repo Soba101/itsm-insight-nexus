@@ -13,6 +13,7 @@ import {
 import { mockKPI, mockTrendData, mockPriorityBreakdown, mockCategoryBreakdown, mockAssignmentBreakdown } from "./mocks/kpis";
 import { mockTickets } from "./mocks/tickets";
 import { mockTopics, mockDuplicateClusters, mockGraphData } from "./mocks/insights";
+import { supabase } from "@/integrations/supabase/client";
 
 const getSettings = () => {
   const stored = localStorage.getItem("itsm-settings");
@@ -76,30 +77,50 @@ export const api = {
   },
 
   async getTickets(filters: Filters, page = 1, pageSize = 20): Promise<TicketsResponse> {
-    const settings = getSettings();
-    if (settings.useMockData) {
-      const filtered = mockTickets.filter((t) => {
-        if (filters.query && !t.short_desc.toLowerCase().includes(filters.query.toLowerCase())) {
-          return false;
-        }
-        if (filters.priority && t.priority !== filters.priority) return false;
-        if (filters.ticketType && t.type !== filters.ticketType) return false;
-        if (filters.status && t.status !== filters.status) return false;
-        if (filters.service && t.service !== filters.service) return false;
-        if (filters.assignmentGroup && t.assignment_group !== filters.assignmentGroup) return false;
-        return true;
-      });
-      const start = (page - 1) * pageSize;
-      const items = filtered.slice(start, start + pageSize);
-      return new Promise((resolve) =>
-        setTimeout(() => resolve({ items, total: filtered.length }), 300)
-      );
+    // Build query
+    let query = supabase.from("tickets").select("*", { count: "exact" });
+
+    // Apply filters
+    if (filters.query) {
+      query = query.ilike("short_desc", `%${filters.query}%`);
     }
-    const instance = createAxiosInstance();
-    const response = await instance.get("/tickets", {
-      params: { ...filters, page, page_size: pageSize },
-    });
-    return response.data;
+    if (filters.priority) {
+      query = query.eq("priority", filters.priority);
+    }
+    if (filters.ticketType) {
+      query = query.eq("type", filters.ticketType);
+    }
+    if (filters.status) {
+      query = query.eq("status", filters.status);
+    }
+    if (filters.service) {
+      query = query.eq("service", filters.service);
+    }
+    if (filters.assignmentGroup) {
+      query = query.eq("assignment_group", filters.assignmentGroup);
+    }
+    if (filters.dateFrom) {
+      query = query.gte("opened_at", filters.dateFrom);
+    }
+    if (filters.dateTo) {
+      query = query.lte("opened_at", filters.dateTo);
+    }
+
+    // Apply pagination
+    const start = (page - 1) * pageSize;
+    query = query.range(start, start + pageSize - 1).order("opened_at", { ascending: false });
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      console.error("Error fetching tickets:", error);
+      throw error;
+    }
+
+    return {
+      items: (data || []) as any,
+      total: count || 0,
+    };
   },
 
   async getTopics(filters: Filters): Promise<NLPTopic[]> {
