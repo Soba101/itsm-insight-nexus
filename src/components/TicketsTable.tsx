@@ -3,15 +3,43 @@ import { Ticket } from "@/lib/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, ArrowUpDown } from "lucide-react";
 import { TicketDrawer } from "./TicketDrawer";
 
 interface TicketsTableProps {
   tickets: Ticket[];
 }
 
+type SortField = "ticket_id" | "priority" | "status" | "opened_at";
+type SortDirection = "asc" | "desc";
+
 export function TicketsTable({ tickets }: TicketsTableProps) {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [sortField, setSortField] = useState<SortField>("opened_at");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortedTickets = [...tickets].sort((a, b) => {
+    let aVal: any = a[sortField];
+    let bVal: any = b[sortField];
+
+    if (sortField === "opened_at") {
+      aVal = new Date(aVal).getTime();
+      bVal = new Date(bVal).getTime();
+    }
+
+    if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+    if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+    return 0;
+  });
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -71,17 +99,57 @@ export function TicketsTable({ tickets }: TicketsTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Ticket ID</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSort("ticket_id")}
+                  className="h-8 p-0 hover:bg-transparent"
+                >
+                  Ticket ID
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Priority</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSort("priority")}
+                  className="h-8 p-0 hover:bg-transparent"
+                >
+                  Priority
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSort("status")}
+                  className="h-8 p-0 hover:bg-transparent"
+                >
+                  Status
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
               <TableHead>Service</TableHead>
-              <TableHead>Opened</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleSort("opened_at")}
+                  className="h-8 p-0 hover:bg-transparent"
+                >
+                  Opened
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
               <TableHead>Description</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tickets.map((ticket) => (
+            {sortedTickets.map((ticket) => (
               <TableRow
                 key={ticket.ticket_id}
                 className="cursor-pointer hover:bg-muted/50"
