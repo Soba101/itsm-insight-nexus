@@ -71,12 +71,12 @@ export default function Dashboard() {
             />
             <KpiCard
               title="SLA Compliance"
-              value={`${(kpis.sla_compliance * 100).toFixed(1)}%`}
+              value={`${((kpis.sla_compliance ?? 0) * 100).toFixed(1)}%`}
               tooltip="Percentage of tickets meeting SLA"
             />
             <KpiCard
               title="MTTR"
-              value={`${kpis.mttr_hours.toFixed(1)}h`}
+              value={`${(kpis.mttr_hours ?? 0).toFixed(1)}h`}
               tooltip="Mean Time To Resolution"
             />
           </>
