@@ -2,8 +2,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Settings as SettingsType } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
 
@@ -12,8 +18,7 @@ export default function Settings() {
   const [settings, setSettings] = useState<SettingsType>({
     apiBaseUrl: "",
     authToken: "",
-    useMockData: true,
-    useSupabase: true,
+    dataSource: "supabase",
   });
 
   useEffect(() => {
@@ -42,40 +47,31 @@ export default function Settings() {
         <CardHeader>
           <CardTitle>Data Source</CardTitle>
           <CardDescription>
-            Configure your data source preferences
+            Select your data source
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="supabase-mode">Use Lovable Cloud Database</Label>
-              <p className="text-sm text-muted-foreground">
-                Connect to your Lovable Cloud backend database
-              </p>
-            </div>
-            <Switch
-              id="supabase-mode"
-              checked={settings.useSupabase}
-              onCheckedChange={(checked) =>
-                setSettings({ ...settings, useSupabase: checked })
+          <div className="space-y-2">
+            <Label htmlFor="data-source">Data Source</Label>
+            <Select
+              value={settings.dataSource}
+              onValueChange={(value: "local" | "supabase") =>
+                setSettings({ ...settings, dataSource: value })
               }
-            />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label htmlFor="mock-mode">Use Mock Data</Label>
-              <p className="text-sm text-muted-foreground">
-                Use simulated data for testing and demonstrations
-              </p>
-            </div>
-            <Switch
-              id="mock-mode"
-              checked={settings.useMockData}
-              onCheckedChange={(checked) =>
-                setSettings({ ...settings, useMockData: checked })
-              }
-            />
+            >
+              <SelectTrigger id="data-source" className="w-full">
+                <SelectValue placeholder="Select data source" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="supabase">Lovable Cloud Database</SelectItem>
+                <SelectItem value="local">Local API</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-muted-foreground">
+              {settings.dataSource === "supabase"
+                ? "Using Lovable Cloud backend database"
+                : "Using local API connection"}
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -97,7 +93,7 @@ export default function Settings() {
               onChange={(e) =>
                 setSettings({ ...settings, apiBaseUrl: e.target.value })
               }
-              disabled={settings.useMockData}
+              disabled={settings.dataSource === "supabase"}
             />
           </div>
 
@@ -111,7 +107,7 @@ export default function Settings() {
               onChange={(e) =>
                 setSettings({ ...settings, authToken: e.target.value })
               }
-              disabled={settings.useMockData}
+              disabled={settings.dataSource === "supabase"}
             />
           </div>
 

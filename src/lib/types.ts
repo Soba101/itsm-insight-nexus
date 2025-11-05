@@ -90,6 +90,5 @@ export interface Filters {
 export interface Settings {
   apiBaseUrl: string;
   authToken: string;
-  useMockData: boolean;
-  useSupabase: boolean;
+  dataSource: "local" | "supabase";
 }
