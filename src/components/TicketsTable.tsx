@@ -7,13 +7,13 @@ import { Download, ArrowUpDown } from "lucide-react";
 import { TicketDrawer } from "./TicketDrawer";
 
 interface TicketsTableProps {
-  tickets: Ticket[];
+  tickets?: Ticket[];
 }
 
 type SortField = "ticket_id" | "priority" | "status" | "opened_at";
 type SortDirection = "asc" | "desc";
 
-export function TicketsTable({ tickets }: TicketsTableProps) {
+export function TicketsTable({ tickets = [] }: TicketsTableProps) {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [sortField, setSortField] = useState<SortField>("opened_at");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");

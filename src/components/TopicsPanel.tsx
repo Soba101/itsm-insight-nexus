@@ -3,10 +3,23 @@ import { Badge } from "@/components/ui/badge";
 import { NLPTopic } from "@/lib/types";
 
 interface TopicsPanelProps {
-  topics: NLPTopic[];
+  topics?: NLPTopic[];
 }
 
 export function TopicsPanel({ topics }: TopicsPanelProps) {
+  if (!topics || topics.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Topics (NLP Analysis)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">No topics found</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>

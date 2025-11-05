@@ -36,6 +36,19 @@ export default function Settings() {
     });
   };
 
+  const getDataSourceDescription = () => {
+    switch (settings.dataSource) {
+      case "supabase":
+        return "Connected to Lovable Cloud Database (Supabase) - Production ready database with real-time sync";
+      case "docker":
+        return "Connected to Local Docker Postgres (localhost:15432) - For local development and testing";
+      default:
+        return "";
+    }
+  };
+
+  const isApiConfigDisabled = settings.dataSource === "supabase";
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
@@ -55,7 +68,7 @@ export default function Settings() {
             <Label htmlFor="data-source">Data Source</Label>
             <Select
               value={settings.dataSource}
-              onValueChange={(value: "local" | "supabase") =>
+              onValueChange={(value: "docker" | "supabase") =>
                 setSettings({ ...settings, dataSource: value })
               }
             >
@@ -63,14 +76,12 @@ export default function Settings() {
                 <SelectValue placeholder="Select data source" />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
-                <SelectItem value="supabase">Lovable Cloud Database</SelectItem>
-                <SelectItem value="local">Local API</SelectItem>
+                <SelectItem value="supabase">Lovable Cloud Database (Supabase)</SelectItem>
+                <SelectItem value="docker">Local API (Docker Postgres)</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-sm text-muted-foreground">
-              {settings.dataSource === "supabase"
-                ? "Using Lovable Cloud backend database"
-                : "Using local API connection"}
+              {getDataSourceDescription()}
             </p>
           </div>
         </CardContent>
@@ -93,8 +104,13 @@ export default function Settings() {
               onChange={(e) =>
                 setSettings({ ...settings, apiBaseUrl: e.target.value })
               }
-              disabled={settings.dataSource === "supabase"}
+              disabled={isApiConfigDisabled}
             />
+            {settings.dataSource === "docker" && (
+              <p className="text-xs text-muted-foreground">
+                For Docker Postgres, use: http://localhost:15432
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -107,8 +123,13 @@ export default function Settings() {
               onChange={(e) =>
                 setSettings({ ...settings, authToken: e.target.value })
               }
-              disabled={settings.dataSource === "supabase"}
+              disabled={isApiConfigDisabled}
             />
+            {settings.dataSource === "docker" && (
+              <p className="text-xs text-muted-foreground">
+                Docker Postgres doesn't require authentication by default
+              </p>
+            )}
           </div>
 
           <Button onClick={handleSave}>Save Settings</Button>

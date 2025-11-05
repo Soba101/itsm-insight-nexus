@@ -4,7 +4,7 @@ import { GraphData } from "@/lib/types";
 import cytoscape from "cytoscape";
 
 interface GraphViewerProps {
-  data: GraphData;
+  data?: GraphData;
 }
 
 export function GraphViewer({ data }: GraphViewerProps) {
@@ -12,7 +12,7 @@ export function GraphViewer({ data }: GraphViewerProps) {
   const cyRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!containerRef.current || !data.nodes.length) return;
+    if (!containerRef.current || !data || !data.nodes || !data.nodes.length) return;
 
     const elements = [
       ...data.nodes.map((node) => ({

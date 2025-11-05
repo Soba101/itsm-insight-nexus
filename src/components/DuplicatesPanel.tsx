@@ -3,10 +3,23 @@ import { Badge } from "@/components/ui/badge";
 import { DuplicateCluster } from "@/lib/types";
 
 interface DuplicatesPanelProps {
-  clusters: DuplicateCluster[];
+  clusters?: DuplicateCluster[];
 }
 
 export function DuplicatesPanel({ clusters }: DuplicatesPanelProps) {
+  if (!clusters || clusters.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Duplicate Clusters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">No duplicate clusters found</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>

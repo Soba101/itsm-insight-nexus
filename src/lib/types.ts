@@ -90,5 +90,5 @@ export interface Filters {
 export interface Settings {
   apiBaseUrl: string;
   authToken: string;
-  dataSource: "local" | "supabase";
+  dataSource: "docker" | "supabase";
 }
