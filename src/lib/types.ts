@@ -91,4 +91,5 @@ export interface Settings {
   apiBaseUrl: string;
   authToken: string;
   useMockData: boolean;
+  useSupabase: boolean;
 }

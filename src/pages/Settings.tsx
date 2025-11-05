@@ -13,6 +13,7 @@ export default function Settings() {
     apiBaseUrl: "",
     authToken: "",
     useMockData: true,
+    useSupabase: true,
   });
 
   useEffect(() => {
@@ -41,10 +42,26 @@ export default function Settings() {
         <CardHeader>
           <CardTitle>Data Source</CardTitle>
           <CardDescription>
-            Toggle between mock data and live API connections
+            Configure your data source preferences
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="supabase-mode">Use Lovable Cloud Database</Label>
+              <p className="text-sm text-muted-foreground">
+                Connect to your Lovable Cloud backend database
+              </p>
+            </div>
+            <Switch
+              id="supabase-mode"
+              checked={settings.useSupabase}
+              onCheckedChange={(checked) =>
+                setSettings({ ...settings, useSupabase: checked })
+              }
+            />
+          </div>
+          
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="mock-mode">Use Mock Data</Label>
