@@ -87,16 +87,16 @@ export default function Dashboard() {
         <div className="md:col-span-2">
           {trendLoading ? (
             <Skeleton className="h-96" />
-          ) : trend ? (
+          ) : trend && Array.isArray(trend) ? (
             <TrendCard data={trend} title="Tickets Over Time" />
           ) : null}
         </div>
         <div>
           {priorityBreakdown && categoryBreakdown && assignmentBreakdown ? (
             <BreakdownCard
-              priorityData={priorityBreakdown}
-              categoryData={categoryBreakdown}
-              assignmentData={assignmentBreakdown}
+              priorityData={Array.isArray(priorityBreakdown) ? priorityBreakdown : []}
+              categoryData={Array.isArray(categoryBreakdown) ? categoryBreakdown : []}
+              assignmentData={Array.isArray(assignmentBreakdown) ? assignmentBreakdown : []}
             />
           ) : (
             <Skeleton className="h-96" />
