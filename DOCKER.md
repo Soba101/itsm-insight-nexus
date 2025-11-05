@@ -34,6 +34,12 @@ This guide explains how to run a local Postgres database using Docker as an alte
   - Contains the same schema and sample data as Supabase
   - **Note:** Using port 15432 to avoid conflicts with local Postgres on 5432
 
+- **PostgREST API** (port 3000)
+  - Provides a RESTful API directly from the Postgres database
+  - Accessible at <http://localhost:3000>
+  - Automatically generates endpoints based on database schema
+  - Example: <http://localhost:3000/tickets> to query tickets
+
 - **pgAdmin 4** (optional, port 5050)
   - Web interface: <http://localhost:5050>
   - Email: `admin@localhost.com`
@@ -60,17 +66,20 @@ This guide explains how to run a local Postgres database using Docker as an alte
 
 ### From your application
 
-The React app currently uses the Supabase client (`src/integrations/supabase/client.ts`), which won't work with raw Postgres. You have two options:
+**The app now supports Docker Postgres via PostgREST!**
 
-**Option 1: Use Mock Data (simplest)**
-- Go to Settings in the app
-- Enable "Use Mock Data"
-- This bypasses the database entirely
+1. Open the app at <http://localhost:8080>
+2. Navigate to **Settings**
+3. Change **Data Source** to "Local API (Docker Postgres)"
+4. Set **API Base URL** to `http://localhost:3000`
+5. Click **Save Settings**
 
-**Option 2: Add a REST API layer**
-- You could add PostgREST to `docker-compose.yml` to provide a REST API
-- Or build a custom backend API (Node.js/Express, Python/FastAPI, etc.)
-- Update `src/lib/api.ts` to point to your API
+The app will now use PostgREST to query the Docker Postgres database. You can view tickets at <http://localhost:8080/tickets>.
+
+**How it works:**
+- PostgREST automatically creates a REST API from your Postgres schema
+- The app queries `http://localhost:3000/tickets` which maps to the `public.tickets` table
+- Filters and pagination are handled via PostgREST's query parameters
 
 ## Useful Commands
 

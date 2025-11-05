@@ -9,10 +9,8 @@ import {
   Summary,
   GraphData,
   Filters,
+  Ticket,
 } from "./types";
-import { mockKPI, mockTrendData, mockPriorityBreakdown, mockCategoryBreakdown, mockAssignmentBreakdown } from "./mocks/kpis";
-import { mockTickets } from "./mocks/tickets";
-import { mockTopics, mockDuplicateClusters, mockGraphData } from "./mocks/insights";
 import { supabase } from "@/integrations/supabase/client";
 
 const getSettings = () => {
@@ -21,9 +19,9 @@ const getSettings = () => {
     return JSON.parse(stored);
   }
   return {
-    apiBaseUrl: "",
+    apiBaseUrl: "http://localhost:3000",
     authToken: "",
-    dataSource: "supabase" as "docker" | "supabase",
+    dataSource: "docker" as "docker" | "supabase",
   };
 };
 
@@ -38,45 +36,139 @@ const createAxiosInstance = () => {
 };
 
 export const api = {
+  // Helper function to fetch all tickets for calculation
+  async getAllTicketsForCalculation(filters: Filters): Promise<Ticket[]> {
+    const settings = getSettings();
+    
+    if (settings.dataSource === "supabase") {
+      let query = supabase.from("tickets").select("*");
+      
+      if (filters.query) query = query.ilike("short_desc", `%${filters.query}%`);
+      if (filters.priority) query = query.eq("priority", filters.priority);
+      if (filters.ticketType) query = query.eq("type", filters.ticketType);
+      if (filters.status) query = query.eq("status", filters.status);
+      if (filters.service) query = query.eq("service", filters.service);
+      if (filters.assignmentGroup) query = query.eq("assignment_group", filters.assignmentGroup);
+      if (filters.dateFrom) query = query.gte("opened_at", filters.dateFrom);
+      if (filters.dateTo) query = query.lte("opened_at", filters.dateTo);
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data || []) as Ticket[];
+    }
+    
+    // Docker/PostgREST mode - fetch all tickets
+    const instance = createAxiosInstance();
+    const params: any = { limit: 1000 }; // Get up to 1000 tickets for calculation
+    
+    if (filters.query) params.short_desc = `ilike.*${filters.query}*`;
+    if (filters.priority) params.priority = `eq.${filters.priority}`;
+    if (filters.ticketType) params.type = `eq.${filters.ticketType}`;
+    if (filters.status) params.status = `eq.${filters.status}`;
+    if (filters.service) params.service = `eq.${filters.service}`;
+    if (filters.assignmentGroup) params.assignment_group = `eq.${filters.assignmentGroup}`;
+    if (filters.dateFrom && filters.dateTo) {
+      params.opened_at = `gte.${filters.dateFrom},lte.${filters.dateTo}`;
+    } else if (filters.dateFrom) {
+      params.opened_at = `gte.${filters.dateFrom}`;
+    } else if (filters.dateTo) {
+      params.opened_at = `lte.${filters.dateTo}`;
+    }
+    
+    const response = await instance.get("/tickets", { params });
+    return response.data as Ticket[];
+  },
+
   async getKPIs(filters: Filters): Promise<KPI> {
     const settings = getSettings();
-    if (settings.dataSource === "docker") {
-      const instance = createAxiosInstance();
-      const response = await instance.get("/kpis", { params: filters });
-      return response.data;
+    
+    // Fetch all tickets to calculate KPIs
+    const allTickets = await this.getAllTicketsForCalculation(filters);
+    
+    const total = allTickets.length;
+    const open = allTickets.filter(t => t.status === 'Open').length;
+    const resolved = allTickets.filter(t => t.status === 'Resolved' || t.status === 'Closed').length;
+    const slaCompliant = allTickets.filter(t => t.sla_met === true).length;
+    const sla_compliance = total > 0 ? slaCompliant / total : 0;
+    
+    // Calculate MTTR (Mean Time To Resolution) in hours
+    const resolvedTickets = allTickets.filter(t => t.resolved_at);
+    let mttr_hours = 0;
+    if (resolvedTickets.length > 0) {
+      const totalHours = resolvedTickets.reduce((sum, ticket) => {
+        const opened = new Date(ticket.opened_at).getTime();
+        const resolved = new Date(ticket.resolved_at!).getTime();
+        return sum + (resolved - opened) / (1000 * 60 * 60);
+      }, 0);
+      mttr_hours = totalHours / resolvedTickets.length;
     }
-    // Default to mock data for now since KPIs aren't in Supabase yet
-    return new Promise((resolve) => setTimeout(() => resolve(mockKPI), 300));
+    
+    // Calculate backlog trend (last 7 days)
+    const backlog: number[] = [];
+    const backlog_dates: string[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      date.setHours(0, 0, 0, 0);
+      const dateStr = date.toISOString().split('T')[0];
+      backlog_dates.push(dateStr);
+      
+      const count = allTickets.filter(t => {
+        const openedAt = new Date(t.opened_at);
+        return openedAt <= date && (t.status === 'Open' || t.status === 'In Progress');
+      }).length;
+      backlog.push(count);
+    }
+    
+    return {
+      total,
+      open,
+      resolved,
+      sla_compliance,
+      mttr_hours,
+      backlog,
+      backlog_dates,
+    };
   },
 
   async getTicketsTrend(filters: Filters): Promise<SeriesPoint[]> {
-    const settings = getSettings();
-    if (settings.dataSource === "docker") {
-      const instance = createAxiosInstance();
-      const response = await instance.get("/tickets/trend", {
-        params: { interval: "day", ...filters },
-      });
-      return response.data;
-    }
-    // Default to mock data for now since trends aren't in Supabase yet
-    return new Promise((resolve) => setTimeout(() => resolve(mockTrendData), 300));
+    // Fetch all tickets and group by date
+    const allTickets = await this.getAllTicketsForCalculation(filters);
+    
+    // Group tickets by day
+    const ticketsByDate = new Map<string, number>();
+    allTickets.forEach(ticket => {
+      const date = new Date(ticket.opened_at).toISOString().split('T')[0];
+      ticketsByDate.set(date, (ticketsByDate.get(date) || 0) + 1);
+    });
+    
+    // Convert to array and sort
+    const trend: SeriesPoint[] = Array.from(ticketsByDate.entries())
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+    
+    return trend;
   },
 
   async getBreakdown(groupBy: string, filters: Filters): Promise<Breakdown[]> {
-    const settings = getSettings();
-    if (settings.dataSource === "docker") {
-      const instance = createAxiosInstance();
-      const response = await instance.get("/tickets/breakdown", {
-        params: { group_by: groupBy, ...filters },
-      });
-      return response.data;
-    }
-    // Default to mock data for now since breakdowns aren't in Supabase yet
-    let data: Breakdown[] = [];
-    if (groupBy === "priority") data = mockPriorityBreakdown;
-    else if (groupBy === "category") data = mockCategoryBreakdown;
-    else if (groupBy === "assignment_group") data = mockAssignmentBreakdown;
-    return new Promise((resolve) => setTimeout(() => resolve(data), 300));
+    // Fetch all tickets and group by the specified field
+    const allTickets = await this.getAllTicketsForCalculation(filters);
+    
+    const countMap = new Map<string, number>();
+    allTickets.forEach(ticket => {
+      let key = '';
+      if (groupBy === 'priority') key = ticket.priority;
+      else if (groupBy === 'category') key = ticket.category || 'Unknown';
+      else if (groupBy === 'assignment_group') key = ticket.assignment_group || 'Unassigned';
+      
+      countMap.set(key, (countMap.get(key) || 0) + 1);
+    });
+    
+    const breakdown: Breakdown[] = Array.from(countMap.entries())
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => b.count - a.count);
+    
+    return breakdown;
   },
 
   async getTickets(filters: Filters, page = 1, pageSize = 20): Promise<TicketsResponse> {
@@ -130,36 +222,71 @@ export const api = {
       };
     }
 
-    // Docker/Custom API mode
+    // Docker/PostgREST mode
     const instance = createAxiosInstance();
+    
+    // Build PostgREST query parameters
+    const params: any = {};
+    if (filters.query) {
+      params.short_desc = `ilike.*${filters.query}*`;
+    }
+    if (filters.priority) {
+      params.priority = `eq.${filters.priority}`;
+    }
+    if (filters.ticketType) {
+      params.type = `eq.${filters.ticketType}`;
+    }
+    if (filters.status) {
+      params.status = `eq.${filters.status}`;
+    }
+    if (filters.service) {
+      params.service = `eq.${filters.service}`;
+    }
+    if (filters.assignmentGroup) {
+      params.assignment_group = `eq.${filters.assignmentGroup}`;
+    }
+    if (filters.dateFrom) {
+      params.opened_at = `gte.${filters.dateFrom}`;
+    }
+    if (filters.dateTo && filters.dateFrom) {
+      params.opened_at = `gte.${filters.dateFrom},lte.${filters.dateTo}`;
+    } else if (filters.dateTo) {
+      params.opened_at = `lte.${filters.dateTo}`;
+    }
+
+    // Apply pagination and ordering
+    const start = (page - 1) * pageSize;
+    params.order = "opened_at.desc";
+    params.limit = pageSize;
+    params.offset = start;
+
     const response = await instance.get("/tickets", {
-      params: { ...filters, page, pageSize },
+      params,
+      headers: {
+        'Prefer': 'count=exact',
+      },
     });
-    return response.data;
+
+    // PostgREST returns count in Content-Range header
+    const contentRange = response.headers['content-range'];
+    const total = contentRange ? parseInt(contentRange.split('/')[1]) : response.data.length;
+
+    return {
+      items: response.data,
+      total,
+    };
   },
 
   async getTopics(filters: Filters): Promise<NLPTopic[]> {
-    const settings = getSettings();
-    if (settings.dataSource === "docker") {
-      const instance = createAxiosInstance();
-      const response = await instance.get("/nlp/topics", { params: filters });
-      return response.data;
-    }
-    // Default to mock data for now since topics aren't in Supabase yet
-    return new Promise((resolve) => setTimeout(() => resolve(mockTopics), 300));
+    // Topics require NLP analysis - return empty array for now
+    // In production, this would call an ML service or use pre-computed topics
+    return [];
   },
 
   async getDuplicates(filters: Filters): Promise<DuplicateCluster[]> {
-    const settings = getSettings();
-    if (settings.dataSource === "docker") {
-      const instance = createAxiosInstance();
-      const response = await instance.get("/nlp/duplicates", { params: filters });
-      return response.data;
-    }
-    // Default to mock data for now since duplicates aren't in Supabase yet
-    return new Promise((resolve) =>
-      setTimeout(() => resolve(mockDuplicateClusters), 300)
-    );
+    // Duplicates require similarity analysis - return empty array for now
+    // In production, this would call an ML service or use pre-computed clusters
+    return [];
   },
 
   async getSummary(ticketIds: string[]): Promise<Summary> {
@@ -177,13 +304,11 @@ export const api = {
   },
 
   async getGraphLinks(ticketId: string): Promise<GraphData> {
-    const settings = getSettings();
-    if (settings.dataSource === "docker") {
-      const instance = createAxiosInstance();
-      const response = await instance.get("/graph/links", { params: { ticket_id: ticketId } });
-      return response.data;
-    }
-    // Default to mock data for now since graph links aren't in Supabase yet
-    return new Promise((resolve) => setTimeout(() => resolve(mockGraphData), 300));
+    // Graph links require relationship analysis
+    // For now, return empty graph
+    return {
+      nodes: [],
+      edges: [],
+    };
   },
 };

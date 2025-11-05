@@ -16,24 +16,41 @@ import { useToast } from "@/hooks/use-toast";
 export default function Settings() {
   const { toast } = useToast();
   const [settings, setSettings] = useState<SettingsType>({
-    apiBaseUrl: "",
+    apiBaseUrl: "http://localhost:3000",
     authToken: "",
-    dataSource: "supabase",
+    dataSource: "docker",
   });
+  const [previousDataSource, setPreviousDataSource] = useState<"docker" | "supabase">("docker");
 
   useEffect(() => {
     const stored = localStorage.getItem("itsm-settings");
     if (stored) {
-      setSettings(JSON.parse(stored));
+      const parsedSettings = JSON.parse(stored);
+      setSettings(parsedSettings);
+      setPreviousDataSource(parsedSettings.dataSource);
     }
   }, []);
 
   const handleSave = () => {
+    const dataSourceChanged = previousDataSource !== settings.dataSource;
+    
     localStorage.setItem("itsm-settings", JSON.stringify(settings));
-    toast({
-      title: "Settings saved",
-      description: "Your configuration has been updated successfully.",
-    });
+    
+    if (dataSourceChanged) {
+      toast({
+        title: "Settings saved",
+        description: "Data source changed. Reloading application...",
+      });
+      // Reload after a short delay to show the toast
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } else {
+      toast({
+        title: "Settings saved",
+        description: "Your configuration has been updated successfully.",
+      });
+    }
   };
 
   const getDataSourceDescription = () => {
@@ -108,7 +125,7 @@ export default function Settings() {
             />
             {settings.dataSource === "docker" && (
               <p className="text-xs text-muted-foreground">
-                For Docker Postgres, use: http://localhost:15432
+                For Docker PostgREST API, use: http://localhost:3000
               </p>
             )}
           </div>

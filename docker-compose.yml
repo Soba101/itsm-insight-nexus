@@ -17,6 +17,20 @@ services:
       timeout: 5s
       retries: 5
 
+  postgrest:
+    image: postgrest/postgrest:latest
+    container_name: itsm-postgrest
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://postgres:postgres@postgres:5432/itsm_db
+      PGRST_DB_SCHEMAS: public
+      PGRST_DB_ANON_ROLE: postgres
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: itsm-pgadmin
