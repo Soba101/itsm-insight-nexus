@@ -4,12 +4,20 @@ import { KpiCard } from "@/components/KpiCard";
 import { FilterBar } from "@/components/FilterBar";
 import { TrendCard } from "@/components/TrendCard";
 import { BreakdownCard } from "@/components/BreakdownCard";
+import { TopicsPanel } from "@/components/TopicsPanel";
+import { DuplicatesPanel } from "@/components/DuplicatesPanel";
+import { GraphViewer } from "@/components/GraphViewer";
 import { Filters } from "@/lib/types";
 import { api } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 export default function Dashboard() {
   const [filters, setFilters] = useState<Filters>({});
+  const [ticketId, setTicketId] = useState("INC0001234");
+  const [searchId, setSearchId] = useState("INC0001234");
 
   const { data: kpis, isLoading: kpisLoading } = useQuery({
     queryKey: ["kpis", filters],
@@ -35,6 +43,26 @@ export default function Dashboard() {
     queryKey: ["breakdown", "assignment_group", filters],
     queryFn: () => api.getBreakdown("assignment_group", filters),
   });
+
+  const { data: topics, isLoading: topicsLoading } = useQuery({
+    queryKey: ["topics", filters],
+    queryFn: () => api.getTopics(filters),
+  });
+
+  const { data: duplicates, isLoading: duplicatesLoading } = useQuery({
+    queryKey: ["duplicates", filters],
+    queryFn: () => api.getDuplicates(filters),
+  });
+
+  const { data: graphData, isLoading: graphLoading } = useQuery({
+    queryKey: ["graph", searchId],
+    queryFn: () => api.getGraphLinks(searchId),
+    enabled: !!searchId,
+  });
+
+  const handleSearch = () => {
+    setSearchId(ticketId);
+  };
 
   return (
     <div className="space-y-6">
@@ -102,6 +130,45 @@ export default function Dashboard() {
             <Skeleton className="h-96" />
           )}
         </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
+          {topicsLoading ? (
+            <Skeleton className="h-96" />
+          ) : topics ? (
+            <TopicsPanel topics={topics} />
+          ) : null}
+        </div>
+        <div>
+          {duplicatesLoading ? (
+            <Skeleton className="h-96" />
+          ) : duplicates ? (
+            <DuplicatesPanel clusters={duplicates} />
+          ) : null}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          <Input
+            placeholder="Enter ticket ID..."
+            value={ticketId}
+            onChange={(e) => setTicketId(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            className="max-w-xs"
+          />
+          <Button onClick={handleSearch}>
+            <Search className="h-4 w-4 mr-2" />
+            Load Graph
+          </Button>
+        </div>
+
+        {graphLoading ? (
+          <Skeleton className="h-[600px]" />
+        ) : graphData ? (
+          <GraphViewer data={graphData} />
+        ) : null}
       </div>
     </div>
   );
