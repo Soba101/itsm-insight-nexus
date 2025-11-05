@@ -3,8 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Ticket,
-  Lightbulb,
-  Network,
   Settings as SettingsIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,8 +22,6 @@ import {
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Tickets", url: "/tickets", icon: Ticket },
-  { title: "Insights", url: "/insights", icon: Lightbulb },
-  { title: "Graph", url: "/graph", icon: Network },
   { title: "Settings", url: "/settings", icon: SettingsIcon },
 ];
 
