@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Database, Cloud, Server, CheckCircle2, XCircle } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,6 +23,7 @@ export default function Settings() {
     dataSource: "docker",
   });
   const [previousDataSource, setPreviousDataSource] = useState<"docker" | "supabase">("docker");
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("itsm-settings");
@@ -29,6 +32,8 @@ export default function Settings() {
       setSettings(parsedSettings);
       setPreviousDataSource(parsedSettings.dataSource);
     }
+    // Simulate connection check
+    setIsConnected(true);
   }, []);
 
   const handleSave = () => {
@@ -66,35 +71,72 @@ export default function Settings() {
 
   const isApiConfigDisabled = settings.dataSource === "supabase";
 
+  const getDataSourceIcon = () => {
+    switch (settings.dataSource) {
+      case "supabase":
+        return <Cloud className="h-5 w-5 text-primary" />;
+      case "docker":
+        return <Server className="h-5 w-5 text-accent" />;
+      default:
+        return <Database className="h-5 w-5" />;
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-2xl">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Configure API connections and features</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+          <p className="text-muted-foreground">Configure API connections and features</p>
+        </div>
+        <Badge variant={isConnected ? "default" : "destructive"} className="gap-2">
+          {isConnected ? (
+            <CheckCircle2 className="h-3 w-3" />
+          ) : (
+            <XCircle className="h-3 w-3" />
+          )}
+          {isConnected ? "Connected" : "Disconnected"}
+        </Badge>
       </div>
 
-      <Card>
+      <Card className="transition-all duration-300 hover:shadow-lg border-border">
         <CardHeader>
-          <CardTitle>Data Source</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            {getDataSourceIcon()}
+            Data Source
+          </CardTitle>
           <CardDescription>
-            Select your data source
+            Select your data source for ticket management
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="data-source">Data Source</Label>
+            <Label htmlFor="data-source" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Data Source
+            </Label>
             <Select
               value={settings.dataSource}
               onValueChange={(value: "docker" | "supabase") =>
                 setSettings({ ...settings, dataSource: value })
               }
             >
-              <SelectTrigger id="data-source" className="w-full">
+              <SelectTrigger id="data-source" className="w-full bg-background">
                 <SelectValue placeholder="Select data source" />
               </SelectTrigger>
               <SelectContent className="bg-background z-50">
-                <SelectItem value="supabase">Lovable Cloud Database (Supabase)</SelectItem>
-                <SelectItem value="docker">Local API (Docker Postgres)</SelectItem>
+                <SelectItem value="supabase" className="cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <Cloud className="h-4 w-4" />
+                    Lovable Cloud Database (Supabase)
+                  </div>
+                </SelectItem>
+                <SelectItem value="docker" className="cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <Server className="h-4 w-4" />
+                    Local API (Docker Postgres)
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
             <p className="text-sm text-muted-foreground">
@@ -104,9 +146,12 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="transition-all duration-300 hover:shadow-lg border-border">
         <CardHeader>
-          <CardTitle>API Configuration</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Server className="h-5 w-5" />
+            API Configuration
+          </CardTitle>
           <CardDescription>
             Configure connection to your live ITSM API backend
           </CardDescription>
