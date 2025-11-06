@@ -3,7 +3,28 @@
 This document describes the incident ticket schema exposed by the ServiceNow Model Context Protocol (MCP) server.
 
 **Generated on:** 6 November 2025  
-**Source:** ServiceNow MCP Tools
+**Source:** ServiceNow MCP Tools  
+**Updated:** 6 November 2025 - Added REST API comparison
+
+---
+
+## ⚠️ Important Note: MCP Limitations
+
+**The ServiceNow MCP server returns LIMITED fields.** For complete incident data including `caller_id`, `assignment_group`, `impact`, and `urgency`, use the **ServiceNow REST API** instead.
+
+### MCP vs REST API Comparison
+
+| Field | MCP | REST API | Notes |
+|-------|-----|----------|-------|
+| caller_id | ❌ Not returned | ✅ Available | Who reported the incident |
+| assignment_group | ❌ Not returned | ✅ Available | Group assigned to work |
+| impact | ❌ Not returned | ✅ Available | 1-3 scale (High/Medium/Low) |
+| urgency | ❌ Not returned | ✅ Available | 1-3 scale (High/Medium/Low) |
+| priority | ✅ Combined format | ✅ Detailed | MCP: "1 - Critical", API: separate field |
+| assigned_to | ✅ Available | ✅ Available | Individual assignee |
+| All other fields | ✅ Basic fields | ✅ All fields | REST API provides complete data |
+
+**Recommendation:** Use `scripts/fetch_servicenow_incidents.py` to fetch complete incident data via REST API.
 
 ---
 
@@ -292,7 +313,33 @@ This schema can be used to:
 - Create forms and UI components that match ServiceNow's data structure
 - Validate data before sending to ServiceNow
 
+### Current Implementation
+
+**✅ Using ServiceNow REST API (Recommended)**
+
+We have implemented complete data fetching using ServiceNow REST API instead of MCP:
+
+**Scripts:**
+- `scripts/fetch_servicenow_incidents.py` - Fetches incidents via REST API with ALL fields
+- `scripts/insert_servicenow_incidents.py` - Inserts complete data into PostgreSQL
+- `scripts/test_servicenow_api.sh` - Test REST API connectivity
+
+**Database:**
+- Table: `servicenow_incidents` (Docker Postgres)
+- **76 incidents** loaded with complete fields:
+  - ✅ caller_id (76/76)
+  - ✅ assignment_group (47/76)
+  - ✅ impact (76/76)
+  - ✅ urgency (76/76)
+  - ✅ All other ServiceNow fields
+
+**Data Source:**
+- ServiceNow Instance: `https://dev355928.service-now.com`
+- API: Table API (`/api/now/table/incident`)
+- Authentication: Basic Auth
+
 See also:
 - `docs/SCHEMA_COMPARISON.md` - Comparison of different ITSM schemas
 - `src/lib/types.ts` - Application data types
 - `src/lib/api.ts` - API integration layer
+- `scripts/README.md` - Script documentation
