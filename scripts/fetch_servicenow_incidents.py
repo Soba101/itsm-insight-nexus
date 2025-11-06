@@ -11,9 +11,9 @@ import sys
 from typing import Dict, List, Any
 
 # ServiceNow Configuration
-INSTANCE_URL = "https://dev355928.service-now.com"
+INSTANCE_URL = "https://dev305874.service-now.com/"
 USERNAME = "admin"
-PASSWORD = "mMc!ZK+8x9Un"
+PASSWORD = "Sbg2A+Rp8By*"
 API_ENDPOINT = f"{INSTANCE_URL}/api/now/table/incident"
 
 # Fields to retrieve
