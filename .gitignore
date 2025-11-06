@@ -27,3 +27,11 @@ dist-ssr
 
 #AI Agents files
 .github
+.playwright-mcp
+.copilot-instructions.md
+
+# Environment variables
+.env.local
+.env.*.local
+.env.testing
+.env.production
