@@ -8,12 +8,25 @@ caller_id, assignment_group, impact, urgency, etc.
 import requests
 import json
 import sys
+import os
 from typing import Dict, List, Any
+from pathlib import Path
+from dotenv import load_dotenv
 
-# ServiceNow Configuration
-INSTANCE_URL = "https://dev305874.service-now.com/"
-USERNAME = "admin"
-PASSWORD = "Sbg2A+Rp8By*"
+# Load environment variables from .env file
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
+# ServiceNow Configuration from environment variables
+INSTANCE_URL = os.getenv('SERVICENOW_INSTANCE_URL')
+USERNAME = os.getenv('SERVICENOW_USERNAME')
+PASSWORD = os.getenv('SERVICENOW_PASSWORD')
+
+if not all([INSTANCE_URL, USERNAME, PASSWORD]):
+    print("Error: Missing ServiceNow configuration in .env file", file=sys.stderr)
+    print("Required: SERVICENOW_INSTANCE_URL, SERVICENOW_USERNAME, SERVICENOW_PASSWORD", file=sys.stderr)
+    sys.exit(1)
+
 API_ENDPOINT = f"{INSTANCE_URL}/api/now/table/incident"
 
 # Fields to retrieve

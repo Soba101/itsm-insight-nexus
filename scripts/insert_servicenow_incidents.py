@@ -6,16 +6,36 @@ Reads servicenow_incidents_full.json and inserts into Docker Postgres
 
 import json
 import sys
+import os
 import psycopg2
 from psycopg2 import sql
+from pathlib import Path
+from dotenv import load_dotenv
 
-# Database configuration
+# Load environment variables from .env file
+env_path = Path(__file__).parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
+# Read database configuration from environment
+db_host = os.getenv('DB_HOST')
+db_port = os.getenv('DB_PORT')
+db_name = os.getenv('DB_NAME')
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PASSWORD')
+
+# Validate database configuration
+if not all([db_host, db_port, db_name, db_user, db_password]):
+    print("Error: Missing database configuration in .env file", file=sys.stderr)
+    print("Required: DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD", file=sys.stderr)
+    sys.exit(1)
+
+# Database configuration (validated above, safe to use)
 DB_CONFIG = {
-    "host": "localhost",
-    "port": 15432,
-    "database": "itsm_db",
-    "user": "postgres",
-    "password": "postgres"
+    "host": db_host,
+    "port": int(db_port),  # type: ignore
+    "database": db_name,
+    "user": db_user,
+    "password": db_password
 }
 
 def extract_priority_number(priority_str: str) -> str:
