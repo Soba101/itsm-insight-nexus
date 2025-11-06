@@ -13,7 +13,12 @@ import {
   ServiceNowIncident,
   mapServiceNowIncidentToTicket,
 } from "./types";
-import { supabase } from "@/integrations/supabase/client";
+
+// Lazy import Supabase client only when needed
+const getSupabase = async () => {
+  const { supabase } = await import("@/integrations/supabase/client");
+  return supabase;
+};
 
 const getSettings = () => {
   const stored = localStorage.getItem("itsm-settings");
@@ -43,6 +48,7 @@ export const api = {
     const settings = getSettings();
     
     if (settings.dataSource === "supabase") {
+      const supabase = await getSupabase();
       let query = supabase.from("servicenow_incidents").select("*");
       
       // Apply filters - map from Ticket fields to ServiceNow fields
@@ -222,6 +228,7 @@ export const api = {
 
     // Supabase mode
     if (settings.dataSource === "supabase") {
+      const supabase = await getSupabase();
       // Build query for servicenow_incidents
       let query = supabase.from("servicenow_incidents").select("*", { count: "exact" });
 
