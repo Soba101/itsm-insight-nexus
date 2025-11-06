@@ -85,27 +85,27 @@ export default function Dashboard() {
             <KpiCard
               title="Total Tickets"
               value={kpis.total}
-              tooltip="Total number of tickets in the system"
+              tooltip={`Total number of tickets in the selected period\n• All statuses included (open, in progress, resolved)\n• Updated continuously from your ITSM system\n• Use filters above to narrow by date, priority, or status`}
             />
             <KpiCard
               title="Open Tickets"
               value={kpis.open}
-              tooltip="Currently open tickets"
+              tooltip={`Currently open tickets requiring attention\n• Includes: New, Assigned, In Progress\n• Open rate: ${kpis.total > 0 ? ((kpis.open / kpis.total) * 100).toFixed(1) : 0}% of total tickets\n• Monitor for aging tickets that need escalation`}
             />
             <KpiCard
               title="Resolved"
               value={kpis.resolved}
-              tooltip="Tickets that have been resolved"
+              tooltip={`Tickets successfully resolved in the period\n• Resolution rate: ${kpis.total > 0 ? ((kpis.resolved / kpis.total) * 100).toFixed(1) : 0}%\n• Target: Maintain >60% resolution rate\n• Closed and verified tickets`}
             />
             <KpiCard
               title="SLA Compliance"
               value={`${((kpis.sla_compliance ?? 0) * 100).toFixed(1)}%`}
-              tooltip="Percentage of tickets meeting SLA"
+              tooltip={`Percentage of tickets meeting SLA targets\n• Industry benchmark: 85-95%\n• Current: ${((kpis.sla_compliance ?? 0) * 100).toFixed(1)}%\n• At-risk tickets require immediate attention\n• Based on response and resolution time targets`}
             />
             <KpiCard
               title="MTTR"
               value={`${(kpis.mttr_hours ?? 0).toFixed(1)}h`}
-              tooltip="Mean Time To Resolution"
+              tooltip={`Mean Time To Resolution (average resolution time)\n• Industry benchmark: 24-48 hours\n• Current: ${(kpis.mttr_hours ?? 0).toFixed(1)} hours\n• Lower is better - indicates faster problem resolution\n• Varies by priority: P1 faster, P3-P4 slower`}
             />
           </>
         ) : null}

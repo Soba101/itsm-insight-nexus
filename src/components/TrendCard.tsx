@@ -1,4 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip as InfoTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { InfoIcon } from "lucide-react";
 import { SeriesPoint } from "@/lib/types";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -11,7 +13,28 @@ export function TrendCard({ data, title = "Ticket Trend" }: TrendCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>{title}</CardTitle>
+          <TooltipProvider delayDuration={200}>
+            <InfoTooltip>
+              <TooltipTrigger asChild>
+                <button type="button" className="inline-flex items-center">
+                  <InfoIcon className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm" side="top">
+                <p className="font-semibold mb-1">Historical Ticket Volume</p>
+                <p className="text-xs">
+                  • Track ticket creation patterns over time{"\n"}
+                  • Look for spikes indicating incidents or outages{"\n"}
+                  • Identify seasonal trends and recurring problems{"\n"}
+                  • Compare periods to measure workload changes{"\n"}
+                  • Helps predict future resource needs
+                </p>
+              </TooltipContent>
+            </InfoTooltip>
+          </TooltipProvider>
+        </div>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>

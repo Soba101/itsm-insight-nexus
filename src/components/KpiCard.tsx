@@ -39,13 +39,15 @@ export function KpiCard({ title, value, delta, tooltip, variant = "default" }: K
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {tooltip && (
-          <TooltipProvider>
+          <TooltipProvider delayDuration={200}>
             <Tooltip>
-              <TooltipTrigger>
-                <InfoIcon className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+              <TooltipTrigger asChild>
+                <button type="button" className="inline-flex items-center">
+                  <InfoIcon className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+                </button>
               </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs">{tooltip}</p>
+              <TooltipContent className="max-w-sm" side="top">
+                <p className="text-xs whitespace-pre-line">{tooltip}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
