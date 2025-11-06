@@ -19,6 +19,109 @@ export interface Ticket {
   description?: string;
 }
 
+// ServiceNow Incident interface (from servicenow_incidents table)
+export interface ServiceNowIncident {
+  id: string;
+  incident_number: string | null;
+  sys_id: string | null;
+  short_description: string;
+  description: string | null;
+  caller_id: string | null;
+  assigned_to: string | null;
+  assignment_group: string | null;
+  category: string | null;
+  subcategory: string | null;
+  impact: string | null;
+  urgency: string | null;
+  priority: string | null;
+  state: string | null;
+  work_notes: string | null;
+  comments_and_work_notes: string | null;
+  close_code: string | null;
+  close_notes: string | null;
+  resolution_code: string | null;
+  resolution_notes: string | null;
+  opened_at: string | null;
+  resolved_at: string | null;
+  closed_at: string | null;
+  sys_created_on: string;
+  sys_updated_on: string;
+  sys_created_by: string | null;
+  sys_updated_by: string | null;
+  sys_mod_count: number | null;
+  business_service: string | null;
+  cmdb_ci: string | null;
+  legacy_ticket_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Mapper function to convert ServiceNow incident to Ticket format
+export function mapServiceNowIncidentToTicket(incident: ServiceNowIncident): Ticket {
+  // Map ServiceNow state to Ticket status
+  const mapState = (state: string | null): TicketStatus => {
+    switch (state) {
+      case "New":
+        return "Open";
+      case "In Progress":
+        return "In Progress";
+      case "On Hold":
+        return "In Progress";
+      case "Resolved":
+        return "Resolved";
+      case "Closed":
+        return "Closed";
+      case "Cancelled":
+        return "Closed";
+      default:
+        return "Open";
+    }
+  };
+
+  // Map ServiceNow priority (1-5) to Ticket priority (P1-P4)
+  const mapPriority = (priority: string | null): Priority => {
+    switch (priority) {
+      case "1": // Critical
+        return "P1";
+      case "2": // High
+        return "P2";
+      case "3": // Moderate
+        return "P3";
+      case "4": // Low
+      case "5": // Planning
+        return "P4";
+      default:
+        return "P3";
+    }
+  };
+
+  // Calculate SLA met based on resolved/closed state
+  const calculateSLAMet = (incident: ServiceNowIncident): boolean | undefined => {
+    if (!incident.resolved_at && !incident.closed_at) {
+      return undefined; // Not yet resolved
+    }
+    // Simple heuristic: if resolved/closed, assume SLA met (you can add more logic)
+    return true;
+  };
+
+  return {
+    ticket_id: incident.incident_number || incident.id,
+    type: "incident", // All ServiceNow incidents are type "incident"
+    category: incident.category || undefined,
+    priority: mapPriority(incident.priority),
+    status: mapState(incident.state),
+    assignment_group: incident.assignment_group || undefined,
+    service: incident.business_service || undefined,
+    opened_at: incident.opened_at || incident.created_at,
+    resolved_at: incident.resolved_at || undefined,
+    sla_met: calculateSLAMet(incident),
+    parent_id: null,
+    related_ticket_id: null,
+    short_desc: incident.short_description,
+    description: incident.description || undefined,
+  };
+}
+
 export interface KPI {
   total: number;
   open: number;

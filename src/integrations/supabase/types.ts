@@ -14,6 +14,114 @@ export type Database = {
   }
   public: {
     Tables: {
+      servicenow_incidents: {
+        Row: {
+          id: string
+          incident_number: string | null
+          sys_id: string | null
+          short_description: string
+          description: string | null
+          caller_id: string | null
+          assigned_to: string | null
+          assignment_group: string | null
+          category: string | null
+          subcategory: string | null
+          impact: string | null
+          urgency: string | null
+          priority: string | null
+          state: string | null
+          work_notes: string | null
+          comments_and_work_notes: string | null
+          close_code: string | null
+          close_notes: string | null
+          resolution_code: string | null
+          resolution_notes: string | null
+          opened_at: string | null
+          resolved_at: string | null
+          closed_at: string | null
+          sys_created_on: string
+          sys_updated_on: string
+          sys_created_by: string | null
+          sys_updated_by: string | null
+          sys_mod_count: number | null
+          business_service: string | null
+          cmdb_ci: string | null
+          legacy_ticket_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          incident_number?: string | null
+          sys_id?: string | null
+          short_description: string
+          description?: string | null
+          caller_id?: string | null
+          assigned_to?: string | null
+          assignment_group?: string | null
+          category?: string | null
+          subcategory?: string | null
+          impact?: string | null
+          urgency?: string | null
+          priority?: string | null
+          state?: string | null
+          work_notes?: string | null
+          comments_and_work_notes?: string | null
+          close_code?: string | null
+          close_notes?: string | null
+          resolution_code?: string | null
+          resolution_notes?: string | null
+          opened_at?: string | null
+          resolved_at?: string | null
+          closed_at?: string | null
+          sys_created_on?: string
+          sys_updated_on?: string
+          sys_created_by?: string | null
+          sys_updated_by?: string | null
+          sys_mod_count?: number | null
+          business_service?: string | null
+          cmdb_ci?: string | null
+          legacy_ticket_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          incident_number?: string | null
+          sys_id?: string | null
+          short_description?: string
+          description?: string | null
+          caller_id?: string | null
+          assigned_to?: string | null
+          assignment_group?: string | null
+          category?: string | null
+          subcategory?: string | null
+          impact?: string | null
+          urgency?: string | null
+          priority?: string | null
+          state?: string | null
+          work_notes?: string | null
+          comments_and_work_notes?: string | null
+          close_code?: string | null
+          close_notes?: string | null
+          resolution_code?: string | null
+          resolution_notes?: string | null
+          opened_at?: string | null
+          resolved_at?: string | null
+          closed_at?: string | null
+          sys_created_on?: string
+          sys_updated_on?: string
+          sys_created_by?: string | null
+          sys_updated_by?: string | null
+          sys_mod_count?: number | null
+          business_service?: string | null
+          cmdb_ci?: string | null
+          legacy_ticket_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tickets: {
         Row: {
           assignment_group: string | null

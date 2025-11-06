@@ -10,6 +10,8 @@ import {
   GraphData,
   Filters,
   Ticket,
+  ServiceNowIncident,
+  mapServiceNowIncidentToTicket,
 } from "./types";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -41,31 +43,75 @@ export const api = {
     const settings = getSettings();
     
     if (settings.dataSource === "supabase") {
-      let query = supabase.from("tickets").select("*");
+      let query = supabase.from("servicenow_incidents").select("*");
       
-      if (filters.query) query = query.ilike("short_desc", `%${filters.query}%`);
-      if (filters.priority) query = query.eq("priority", filters.priority);
-      if (filters.ticketType) query = query.eq("type", filters.ticketType);
-      if (filters.status) query = query.eq("status", filters.status);
-      if (filters.service) query = query.eq("service", filters.service);
+      // Apply filters - map from Ticket fields to ServiceNow fields
+      if (filters.query) query = query.ilike("short_description", `%${filters.query}%`);
+      if (filters.priority) {
+        // Map P1-P4 to ServiceNow priority 1-5
+        const priorityMap: Record<string, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
+        const snPriority = priorityMap[filters.priority];
+        if (snPriority) query = query.eq("priority", snPriority);
+      }
+      if (filters.ticketType && filters.ticketType !== "incident") {
+        // ServiceNow incidents table only contains incidents, filter out non-incidents
+        return [];
+      }
+      if (filters.status) {
+        // Map Ticket status to ServiceNow state
+        const statusMap: Record<string, string[]> = {
+          "Open": ["New"],
+          "In Progress": ["In Progress", "On Hold"],
+          "Resolved": ["Resolved"],
+          "Closed": ["Closed", "Cancelled"]
+        };
+        const states = statusMap[filters.status];
+        if (states && states.length === 1) {
+          query = query.eq("state", states[0]);
+        } else if (states && states.length > 1) {
+          query = query.in("state", states);
+        }
+      }
+      if (filters.service) query = query.eq("business_service", filters.service);
       if (filters.assignmentGroup) query = query.eq("assignment_group", filters.assignmentGroup);
       if (filters.dateFrom) query = query.gte("opened_at", filters.dateFrom);
       if (filters.dateTo) query = query.lte("opened_at", filters.dateTo);
       
       const { data, error } = await query;
       if (error) throw error;
-      return (data || []) as Ticket[];
+      
+      // Map ServiceNow incidents to Ticket format
+      return (data || []).map((incident: any) => mapServiceNowIncidentToTicket(incident as ServiceNowIncident));
     }
     
-    // Docker/PostgREST mode - fetch all tickets
+    // Docker/PostgREST mode - fetch all tickets from servicenow_incidents
     const instance = createAxiosInstance();
     const params: any = { limit: 1000 }; // Get up to 1000 tickets for calculation
     
-    if (filters.query) params.short_desc = `ilike.*${filters.query}*`;
-    if (filters.priority) params.priority = `eq.${filters.priority}`;
-    if (filters.ticketType) params.type = `eq.${filters.ticketType}`;
-    if (filters.status) params.status = `eq.${filters.status}`;
-    if (filters.service) params.service = `eq.${filters.service}`;
+    if (filters.query) params.short_description = `ilike.*${filters.query}*`;
+    if (filters.priority) {
+      const priorityMap: Record<string, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
+      const snPriority = priorityMap[filters.priority];
+      if (snPriority) params.priority = `eq.${snPriority}`;
+    }
+    if (filters.ticketType && filters.ticketType !== "incident") {
+      return []; // Only incidents in servicenow_incidents table
+    }
+    if (filters.status) {
+      const statusMap: Record<string, string[]> = {
+        "Open": ["New"],
+        "In Progress": ["In Progress", "On Hold"],
+        "Resolved": ["Resolved"],
+        "Closed": ["Closed", "Cancelled"]
+      };
+      const states = statusMap[filters.status];
+      if (states && states.length === 1) {
+        params.state = `eq.${states[0]}`;
+      } else if (states && states.length > 1) {
+        params.state = `in.(${states.join(',')})`;
+      }
+    }
+    if (filters.service) params.business_service = `eq.${filters.service}`;
     if (filters.assignmentGroup) params.assignment_group = `eq.${filters.assignmentGroup}`;
     if (filters.dateFrom && filters.dateTo) {
       params.opened_at = `gte.${filters.dateFrom},lte.${filters.dateTo}`;
@@ -75,8 +121,8 @@ export const api = {
       params.opened_at = `lte.${filters.dateTo}`;
     }
     
-    const response = await instance.get("/tickets", { params });
-    return response.data as Ticket[];
+    const response = await instance.get("/servicenow_incidents", { params });
+    return (response.data as ServiceNowIncident[]).map(mapServiceNowIncidentToTicket);
   },
 
   async getKPIs(filters: Filters): Promise<KPI> {
@@ -176,24 +222,38 @@ export const api = {
 
     // Supabase mode
     if (settings.dataSource === "supabase") {
-      // Build query
-      let query = supabase.from("tickets").select("*", { count: "exact" });
+      // Build query for servicenow_incidents
+      let query = supabase.from("servicenow_incidents").select("*", { count: "exact" });
 
-      // Apply filters
+      // Apply filters - map from Ticket fields to ServiceNow fields
       if (filters.query) {
-        query = query.ilike("short_desc", `%${filters.query}%`);
+        query = query.ilike("short_description", `%${filters.query}%`);
       }
       if (filters.priority) {
-        query = query.eq("priority", filters.priority);
+        const priorityMap: Record<string, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
+        const snPriority = priorityMap[filters.priority];
+        if (snPriority) query = query.eq("priority", snPriority);
       }
-      if (filters.ticketType) {
-        query = query.eq("type", filters.ticketType);
+      if (filters.ticketType && filters.ticketType !== "incident") {
+        // Only incidents in this table, return empty if filtering for other types
+        return { items: [], total: 0 };
       }
       if (filters.status) {
-        query = query.eq("status", filters.status);
+        const statusMap: Record<string, string[]> = {
+          "Open": ["New"],
+          "In Progress": ["In Progress", "On Hold"],
+          "Resolved": ["Resolved"],
+          "Closed": ["Closed", "Cancelled"]
+        };
+        const states = statusMap[filters.status];
+        if (states && states.length === 1) {
+          query = query.eq("state", states[0]);
+        } else if (states && states.length > 1) {
+          query = query.in("state", states);
+        }
       }
       if (filters.service) {
-        query = query.eq("service", filters.service);
+        query = query.eq("business_service", filters.service);
       }
       if (filters.assignmentGroup) {
         query = query.eq("assignment_group", filters.assignmentGroup);
@@ -216,8 +276,13 @@ export const api = {
         throw error;
       }
 
+      // Map ServiceNow incidents to Ticket format
+      const tickets = (data || []).map((incident: any) => 
+        mapServiceNowIncidentToTicket(incident as ServiceNowIncident)
+      );
+
       return {
-        items: (data || []) as any,
+        items: tickets,
         total: count || 0,
       };
     }
@@ -225,22 +290,35 @@ export const api = {
     // Docker/PostgREST mode
     const instance = createAxiosInstance();
     
-    // Build PostgREST query parameters
+    // Build PostgREST query parameters for servicenow_incidents
     const params: any = {};
     if (filters.query) {
-      params.short_desc = `ilike.*${filters.query}*`;
+      params.short_description = `ilike.*${filters.query}*`;
     }
     if (filters.priority) {
-      params.priority = `eq.${filters.priority}`;
+      const priorityMap: Record<string, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
+      const snPriority = priorityMap[filters.priority];
+      if (snPriority) params.priority = `eq.${snPriority}`;
     }
-    if (filters.ticketType) {
-      params.type = `eq.${filters.ticketType}`;
+    if (filters.ticketType && filters.ticketType !== "incident") {
+      return { items: [], total: 0 };
     }
     if (filters.status) {
-      params.status = `eq.${filters.status}`;
+      const statusMap: Record<string, string[]> = {
+        "Open": ["New"],
+        "In Progress": ["In Progress", "On Hold"],
+        "Resolved": ["Resolved"],
+        "Closed": ["Closed", "Cancelled"]
+      };
+      const states = statusMap[filters.status];
+      if (states && states.length === 1) {
+        params.state = `eq.${states[0]}`;
+      } else if (states && states.length > 1) {
+        params.state = `in.(${states.join(',')})`;
+      }
     }
     if (filters.service) {
-      params.service = `eq.${filters.service}`;
+      params.business_service = `eq.${filters.service}`;
     }
     if (filters.assignmentGroup) {
       params.assignment_group = `eq.${filters.assignmentGroup}`;
@@ -260,7 +338,7 @@ export const api = {
     params.limit = pageSize;
     params.offset = start;
 
-    const response = await instance.get("/tickets", {
+    const response = await instance.get("/servicenow_incidents", {
       params,
       headers: {
         'Prefer': 'count=exact',
@@ -271,8 +349,11 @@ export const api = {
     const contentRange = response.headers['content-range'];
     const total = contentRange ? parseInt(contentRange.split('/')[1]) : response.data.length;
 
+    // Map ServiceNow incidents to Ticket format
+    const tickets = (response.data as ServiceNowIncident[]).map(mapServiceNowIncidentToTicket);
+
     return {
-      items: response.data,
+      items: tickets,
       total,
     };
   },
