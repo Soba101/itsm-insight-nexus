@@ -10,6 +10,27 @@ interface TrendCardProps {
 }
 
 export function TrendCard({ data, title = "Ticket Trend" }: TrendCardProps) {
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-popover p-3 rounded-lg border border-border shadow-lg">
+          <p className="font-semibold text-sm">
+            {new Date(payload[0].payload.date).toLocaleDateString('en-US', { 
+              month: 'short', 
+              day: 'numeric',
+              year: 'numeric' 
+            })}
+          </p>
+          <p className="text-sm mt-1">
+            <span className="text-muted-foreground">Tickets: </span>
+            <span className="font-semibold text-chart-1">{payload[0].value}</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -50,20 +71,14 @@ export function TrendCard({ data, title = "Ticket Trend" }: TrendCardProps) {
               stroke="hsl(var(--muted-foreground))"
               tick={{ fill: "hsl(var(--muted-foreground))" }}
             />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "hsl(var(--popover))",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "6px",
-              }}
-              labelFormatter={(value) => new Date(value).toLocaleDateString()}
-            />
+            <Tooltip content={<CustomTooltip />} />
             <Line
               type="monotone"
               dataKey="count"
               stroke="hsl(var(--chart-1))"
               strokeWidth={2}
-              dot={{ fill: "hsl(var(--chart-1))" }}
+              dot={{ fill: "hsl(var(--chart-1))", r: 4 }}
+              activeDot={{ r: 6 }}
             />
           </LineChart>
         </ResponsiveContainer>

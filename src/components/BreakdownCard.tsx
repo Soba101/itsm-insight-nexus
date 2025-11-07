@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip as InfoTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { InfoIcon } from "lucide-react";
 import { Breakdown } from "@/lib/types";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from "recharts";
 
 interface BreakdownCardProps {
   priorityData: Breakdown[];
@@ -83,7 +83,9 @@ export function BreakdownCard({ priorityData, categoryData, assignmentData }: Br
             borderRadius: "6px",
           }}
         />
-        <Bar dataKey="count" fill="hsl(var(--chart-2))" radius={[0, 4, 4, 0]} />
+        <Bar dataKey="count" fill="hsl(var(--chart-2))" radius={[0, 4, 4, 0]}>
+          <LabelList dataKey="count" position="right" fill="hsl(var(--foreground))" />
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );

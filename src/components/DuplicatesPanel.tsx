@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, Copy, SearchCheck } from "lucide-react";
 import { DuplicateCluster } from "@/lib/types";
 
 interface DuplicatesPanelProps {
@@ -16,7 +17,26 @@ export function DuplicatesPanel({ clusters }: DuplicatesPanelProps) {
           <CardTitle>Duplicate Clusters</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No duplicate clusters found</p>
+          <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
+            <div className="rounded-full bg-muted p-4">
+              <Copy className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <div>
+              <p className="font-medium text-sm">No duplicate clusters found</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Duplicate detection uses similarity analysis to find related tickets
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 w-full max-w-xs">
+              <Button variant="outline" size="sm" disabled>
+                <SearchCheck className="h-4 w-4 mr-2" />
+                Detect Duplicates
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Coming soon: ML-based duplicate detection
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     );

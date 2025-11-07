@@ -9,6 +9,7 @@ import { DuplicatesPanel } from "@/components/DuplicatesPanel";
 import { GraphViewer } from "@/components/GraphViewer";
 import { Filters } from "@/lib/types";
 import { api } from "@/lib/api";
+import { formatMTTR, getSLAVariant } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -100,12 +101,13 @@ export default function Dashboard() {
             <KpiCard
               title="SLA Compliance"
               value={`${((kpis.sla_compliance ?? 0) * 100).toFixed(1)}%`}
+              variant={getSLAVariant((kpis.sla_compliance ?? 0) * 100)}
               tooltip={`Percentage of tickets meeting SLA targets\n• Industry benchmark: 85-95%\n• Current: ${((kpis.sla_compliance ?? 0) * 100).toFixed(1)}%\n• At-risk tickets require immediate attention\n• Based on response and resolution time targets`}
             />
             <KpiCard
               title="MTTR"
-              value={`${(kpis.mttr_hours ?? 0).toFixed(1)}h`}
-              tooltip={`Mean Time To Resolution (average resolution time)\n• Industry benchmark: 24-48 hours\n• Current: ${(kpis.mttr_hours ?? 0).toFixed(1)} hours\n• Lower is better - indicates faster problem resolution\n• Varies by priority: P1 faster, P3-P4 slower`}
+              value={formatMTTR(kpis.mttr_hours ?? 0)}
+              tooltip={`Mean Time To Resolution (average resolution time)\n• Industry benchmark: 24-48 hours\n• Current: ${formatMTTR(kpis.mttr_hours ?? 0)} (${(kpis.mttr_hours ?? 0).toFixed(1)} hours)\n• Lower is better - indicates faster problem resolution\n• Varies by priority: P1 faster, P3-P4 slower`}
             />
           </>
         ) : null}

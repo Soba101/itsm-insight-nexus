@@ -4,7 +4,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Sparkles } from "lucide-react";
+import { User, ArrowUp, CheckCircle, X } from "lucide-react";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,23 +15,63 @@ interface TicketDrawerProps {
 }
 
 export function TicketDrawer({ ticket, open, onClose }: TicketDrawerProps) {
-  const [summary, setSummary] = useState<string>("");
-  const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const generateSummary = async () => {
-    setLoading(true);
+  const handleAssign = async () => {
+    setActionLoading("assign");
     try {
-      const result = await api.getSummary([ticket.ticket_id]);
-      setSummary(result.text);
+      // TODO: Implement assign API call
+      toast({
+        title: "Assigned",
+        description: `Ticket ${ticket.ticket_id} assigned to you`,
+      });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to generate summary",
+        description: "Failed to assign ticket",
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setActionLoading(null);
+    }
+  };
+
+  const handleEscalate = async () => {
+    setActionLoading("escalate");
+    try {
+      // TODO: Implement escalate API call
+      toast({
+        title: "Escalated",
+        description: `Ticket ${ticket.ticket_id} has been escalated`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to escalate ticket",
+        variant: "destructive",
+      });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleClose = async () => {
+    setActionLoading("close");
+    try {
+      // TODO: Implement close ticket API call
+      toast({
+        title: "Closed",
+        description: `Ticket ${ticket.ticket_id} has been closed`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to close ticket",
+        variant: "destructive",
+      });
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -103,6 +143,40 @@ export function TicketDrawer({ ticket, open, onClose }: TicketDrawerProps) {
             </div>
           )}
 
+          <Separator />
+
+          {/* Action buttons */}
+          <div className="flex flex-col gap-2 pt-2">
+            <Button
+              onClick={handleAssign}
+              disabled={actionLoading !== null}
+              variant="default"
+              className="w-full"
+            >
+              <User className="h-4 w-4 mr-2" />
+              {actionLoading === "assign" ? "Assigning..." : "Assign to Me"}
+            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                onClick={handleEscalate}
+                disabled={actionLoading !== null}
+                variant="outline"
+              >
+                <ArrowUp className="h-4 w-4 mr-2" />
+                {actionLoading === "escalate" ? "..." : "Escalate"}
+              </Button>
+              <Button
+                onClick={handleClose}
+                disabled={actionLoading !== null || ticket.status === "Closed"}
+                variant="outline"
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                {actionLoading === "close" ? "..." : "Close"}
+              </Button>
+            </div>
+          </div>
+
+          {/* AI Summary feature - coming soon
           <Button
             onClick={generateSummary}
             disabled={loading}
@@ -118,6 +192,7 @@ export function TicketDrawer({ ticket, open, onClose }: TicketDrawerProps) {
               <p className="text-sm">{summary}</p>
             </div>
           )}
+          */}
         </div>
       </SheetContent>
     </Sheet>

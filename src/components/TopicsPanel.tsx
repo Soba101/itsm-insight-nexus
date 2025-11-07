@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, Lightbulb, FileText } from "lucide-react";
 import { NLPTopic } from "@/lib/types";
 
 interface TopicsPanelProps {
@@ -16,7 +17,26 @@ export function TopicsPanel({ topics }: TopicsPanelProps) {
           <CardTitle>Top Topics (NLP Analysis)</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No topics found</p>
+          <div className="flex flex-col items-center justify-center text-center p-6 space-y-4">
+            <div className="rounded-full bg-muted p-4">
+              <Lightbulb className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <div>
+              <p className="font-medium text-sm">No topics detected yet</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Topics will appear once ticket descriptions are analyzed using Natural Language Processing
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 w-full max-w-xs">
+              <Button variant="outline" size="sm" disabled>
+                <FileText className="h-4 w-4 mr-2" />
+                Run NLP Analysis
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Coming soon: AI-powered topic extraction
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     );
