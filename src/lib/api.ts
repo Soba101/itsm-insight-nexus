@@ -449,4 +449,62 @@ export const api = {
       edges: [],
     };
   },
+
+  // ========== AI Backend Methods (Python FastAPI) ==========
+  
+  /**
+   * Health check for AI backend
+   * Tests connection and authentication with Python FastAPI service
+   */
+  async healthCheckAI(): Promise<{ 
+    status: string; 
+    service: string; 
+    version: string; 
+    authenticated: boolean;
+    user?: { id: number; email: string; role: string };
+  }> {
+    const settings = getSettings();
+    const aiBackendUrl = settings.aiBackendUrl || "http://localhost:8000";
+    const token = localStorage.getItem("auth-token");
+    
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    
+    const response = await axios.get(`${aiBackendUrl}/api/ai/health`, { headers });
+    return response.data;
+  },
+
+  /**
+   * Get detailed status from AI backend (requires authentication)
+   */
+  async getAIStatus(): Promise<{
+    status: string;
+    service: string;
+    version: string;
+    features: Record<string, string>;
+    user: { id: number; email: string; role: string };
+  }> {
+    const settings = getSettings();
+    const aiBackendUrl = settings.aiBackendUrl || "http://localhost:8000";
+    const token = localStorage.getItem("auth-token");
+    
+    if (!token) {
+      throw new Error("Authentication required");
+    }
+    
+    const response = await axios.get(`${aiBackendUrl}/api/ai/status`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  },
+
+  // Future AI methods (Phase 2+):
+  // async classifyTicket(text: string): Promise<ClassificationResult>
+  // async analyzeSentiment(text: string): Promise<SentimentResult>
+  // async findDuplicates(ticketId: string): Promise<DuplicateCluster[]>
+  // async searchKnowledgeBase(query: string): Promise<KBResult[]>
+  // async askRAG(question: string): Promise<RAGAnswer>
 };
+

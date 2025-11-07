@@ -194,4 +194,6 @@ export interface Settings {
   apiBaseUrl: string;
   authToken: string;
   dataSource: "docker" | "supabase";
+  aiBackendUrl?: string;
+  aiEnabled?: boolean;
 }

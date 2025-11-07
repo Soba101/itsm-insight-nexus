@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Database, Cloud, Server, CheckCircle2, XCircle } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Database, Cloud, Server, CheckCircle2, XCircle, Brain } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -21,15 +22,22 @@ export default function Settings() {
     apiBaseUrl: "http://localhost:3000",
     authToken: "",
     dataSource: "docker",
+    aiBackendUrl: "http://localhost:8000",
+    aiEnabled: false,
   });
   const [previousDataSource, setPreviousDataSource] = useState<"docker" | "supabase">("docker");
   const [isConnected, setIsConnected] = useState(false);
+  const [aiConnected, setAiConnected] = useState<boolean | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("itsm-settings");
     if (stored) {
       const parsedSettings = JSON.parse(stored);
-      setSettings(parsedSettings);
+      setSettings({
+        ...parsedSettings,
+        aiBackendUrl: parsedSettings.aiBackendUrl || "http://localhost:8000",
+        aiEnabled: parsedSettings.aiEnabled || false,
+      });
       setPreviousDataSource(parsedSettings.dataSource);
     }
     // Simulate connection check
@@ -54,6 +62,52 @@ export default function Settings() {
       toast({
         title: "Settings saved",
         description: "Your configuration has been updated successfully.",
+      });
+    }
+  };
+
+  const testAiConnection = async () => {
+    if (!settings.aiBackendUrl) {
+      toast({
+        title: "Error",
+        description: "AI Backend URL is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("auth-token");
+      const headers: HeadersInit = {};
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${settings.aiBackendUrl}/api/ai/health`, {
+        headers,
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setAiConnected(true);
+        toast({
+          title: "AI Backend Connected",
+          description: `Successfully connected to ${data.service} v${data.version}`,
+        });
+      } else {
+        setAiConnected(false);
+        toast({
+          title: "Connection Failed",
+          description: `Status: ${response.status} ${response.statusText}`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setAiConnected(false);
+      toast({
+        title: "Connection Failed",
+        description: "Could not reach AI backend. Make sure it's running.",
+        variant: "destructive",
       });
     }
   };
@@ -195,6 +249,87 @@ export default function Settings() {
           </div>
 
           <Button onClick={handleSave}>Save Settings</Button>
+        </CardContent>
+      </Card>
+
+      <Card className="transition-all duration-300 hover:shadow-lg border-border">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="h-5 w-5" />
+            AI Backend (Python FastAPI)
+          </CardTitle>
+          <CardDescription>
+            Configure AI features: ticket classification, sentiment analysis, and RAG
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between space-x-2">
+            <div className="space-y-0.5">
+              <Label htmlFor="ai-enabled">Enable AI Features</Label>
+              <p className="text-xs text-muted-foreground">
+                Activate AI-powered ticket analysis and insights
+              </p>
+            </div>
+            <Switch
+              id="ai-enabled"
+              checked={settings.aiEnabled || false}
+              onCheckedChange={(checked) =>
+                setSettings({ ...settings, aiEnabled: checked })
+              }
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="ai-backend-url">AI Backend URL</Label>
+            <Input
+              id="ai-backend-url"
+              placeholder="http://localhost:8000"
+              value={settings.aiBackendUrl || ""}
+              onChange={(e) =>
+                setSettings({ ...settings, aiBackendUrl: e.target.value })
+              }
+              disabled={!settings.aiEnabled}
+            />
+            <p className="text-xs text-muted-foreground">
+              Python FastAPI service for NLP and RAG features (default: http://localhost:8000)
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={testAiConnection} 
+              variant="outline"
+              disabled={!settings.aiEnabled}
+            >
+              Test Connection
+            </Button>
+            {aiConnected !== null && (
+              <Badge variant={aiConnected ? "default" : "destructive"} className="gap-2">
+                {aiConnected ? (
+                  <CheckCircle2 className="h-3 w-3" />
+                ) : (
+                  <XCircle className="h-3 w-3" />
+                )}
+                {aiConnected ? "Connected" : "Failed"}
+              </Badge>
+            )}
+          </div>
+
+          <div className="rounded-lg bg-muted p-3 text-sm">
+            <p className="font-medium mb-1">Phase 1: Foundation ✅</p>
+            <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
+              <li>Health check endpoint</li>
+              <li>JWT authentication</li>
+              <li>CORS enabled</li>
+            </ul>
+            <p className="font-medium mt-2 mb-1">Coming Soon:</p>
+            <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
+              <li>Ticket classification</li>
+              <li>Sentiment analysis</li>
+              <li>Duplicate detection</li>
+              <li>RAG knowledge base</li>
+            </ul>
+          </div>
         </CardContent>
       </Card>
     </div>
