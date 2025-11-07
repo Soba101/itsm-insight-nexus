@@ -20,10 +20,13 @@ export default function Dashboard() {
   const [ticketId, setTicketId] = useState("INC0001234");
   const [searchId, setSearchId] = useState("INC0001234");
 
-  const { data: kpis, isLoading: kpisLoading } = useQuery({
-    queryKey: ["kpis", filters],
-    queryFn: () => api.getKPIs(filters),
+  const { data: kpiData, isLoading: kpisLoading } = useQuery({
+    queryKey: ["kpi-trends", filters],
+    queryFn: () => api.getKPITrends(filters),
   });
+
+  const kpis = kpiData?.current;
+  const deltas = kpiData?.delta;
 
   const { data: trend, isLoading: trendLoading } = useQuery({
     queryKey: ["trend", filters],
@@ -86,27 +89,32 @@ export default function Dashboard() {
             <KpiCard
               title="Total Tickets"
               value={kpis.total}
+              delta={deltas?.total}
               tooltip={`Total number of tickets in the selected period\n• All statuses included (open, in progress, resolved)\n• Updated continuously from your ITSM system\n• Use filters above to narrow by date, priority, or status`}
             />
             <KpiCard
               title="Open Tickets"
               value={kpis.open}
+              delta={deltas?.open}
               tooltip={`Currently open tickets requiring attention\n• Includes: New, Assigned, In Progress\n• Open rate: ${kpis.total > 0 ? ((kpis.open / kpis.total) * 100).toFixed(1) : 0}% of total tickets\n• Monitor for aging tickets that need escalation`}
             />
             <KpiCard
               title="Resolved"
               value={kpis.resolved}
+              delta={deltas?.resolved}
               tooltip={`Tickets successfully resolved in the period\n• Resolution rate: ${kpis.total > 0 ? ((kpis.resolved / kpis.total) * 100).toFixed(1) : 0}%\n• Target: Maintain >60% resolution rate\n• Closed and verified tickets`}
             />
             <KpiCard
               title="SLA Compliance"
               value={`${((kpis.sla_compliance ?? 0) * 100).toFixed(1)}%`}
+              delta={deltas?.sla_compliance}
               variant={getSLAVariant((kpis.sla_compliance ?? 0) * 100)}
               tooltip={`Percentage of tickets meeting SLA targets\n• Industry benchmark: 85-95%\n• Current: ${((kpis.sla_compliance ?? 0) * 100).toFixed(1)}%\n• At-risk tickets require immediate attention\n• Based on response and resolution time targets`}
             />
             <KpiCard
               title="MTTR"
               value={formatMTTR(kpis.mttr_hours ?? 0)}
+              delta={deltas?.mttr_hours ? -deltas.mttr_hours : undefined}
               tooltip={`Mean Time To Resolution (average resolution time)\n• Industry benchmark: 24-48 hours\n• Current: ${formatMTTR(kpis.mttr_hours ?? 0)} (${(kpis.mttr_hours ?? 0).toFixed(1)} hours)\n• Lower is better - indicates faster problem resolution\n• Varies by priority: P1 faster, P3-P4 slower`}
             />
           </>

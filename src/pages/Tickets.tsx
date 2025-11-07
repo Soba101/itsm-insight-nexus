@@ -3,9 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { FilterBar } from "@/components/FilterBar";
 import { TicketsTable } from "@/components/TicketsTable";
 import { TicketsStats } from "@/components/TicketsStats";
-import { Filters } from "@/lib/types";
+import { Filters, Ticket } from "@/lib/types";
 import { api } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { User, CheckCircle, Download, Trash, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Pagination,
   PaginationContent,
@@ -18,6 +24,8 @@ import {
 export default function Tickets() {
   const [filters, setFilters] = useState<Filters>({});
   const [page, setPage] = useState(1);
+  const [selectedTickets, setSelectedTickets] = useState<Set<string>>(new Set());
+  const { toast } = useToast();
 
   const { data, isLoading } = useQuery({
     queryKey: ["tickets", filters, page],
@@ -25,6 +33,91 @@ export default function Tickets() {
   });
 
   const totalPages = data ? Math.ceil(data.total / 20) : 0;
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked && data?.items) {
+      setSelectedTickets(new Set(data.items.map(t => t.ticket_id)));
+    } else {
+      setSelectedTickets(new Set());
+    }
+  };
+
+  const handleSelectOne = (ticketId: string, checked: boolean) => {
+    const newSelected = new Set(selectedTickets);
+    if (checked) {
+      newSelected.add(ticketId);
+    } else {
+      newSelected.delete(ticketId);
+    }
+    setSelectedTickets(newSelected);
+  };
+
+  const handleBulkAction = async (action: 'assign' | 'close' | 'export' | 'delete') => {
+    const ticketIds = Array.from(selectedTickets);
+    
+    try {
+      switch (action) {
+        case 'assign':
+          toast({
+            title: "Assign Tickets",
+            description: `${ticketIds.length} ticket(s) will be assigned (feature in development)`,
+          });
+          break;
+        case 'close':
+          toast({
+            title: "Close Tickets",
+            description: `${ticketIds.length} ticket(s) will be closed (feature in development)`,
+          });
+          break;
+        case 'export':
+          // Simple CSV export
+          const csvContent = generateCSV(data?.items.filter(t => selectedTickets.has(t.ticket_id)) || []);
+          downloadCSV(csvContent, `tickets-export-${new Date().toISOString().split('T')[0]}.csv`);
+          toast({
+            title: "Export Complete",
+            description: `Exported ${ticketIds.length} ticket(s) to CSV`,
+          });
+          setSelectedTickets(new Set());
+          break;
+        case 'delete':
+          toast({
+            title: "Delete Tickets",
+            description: `${ticketIds.length} ticket(s) will be deleted (feature in development)`,
+            variant: "destructive",
+          });
+          break;
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to perform bulk action",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const generateCSV = (tickets: Ticket[]): string => {
+    const headers = ['Ticket ID', 'Type', 'Priority', 'Status', 'Category', 'Assignment Group', 'Opened At', 'Description'];
+    const rows = tickets.map(t => [
+      t.ticket_id,
+      t.type,
+      t.priority,
+      t.status,
+      t.category || '',
+      t.assignment_group || '',
+      t.opened_at,
+      `"${(t.description || t.short_desc).replace(/"/g, '""')}"`,
+    ]);
+    return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  };
+
+  const downloadCSV = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  };
 
   return (
     <div className="space-y-6">
@@ -41,7 +134,12 @@ export default function Tickets() {
         <Skeleton className="h-96" />
       ) : data && data.items.length > 0 ? (
         <>
-          <TicketsTable tickets={data.items} />
+          <TicketsTable 
+            tickets={data.items} 
+            selectedTickets={selectedTickets}
+            onSelectAll={handleSelectAll}
+            onSelectOne={handleSelectOne}
+          />
           
           {totalPages > 1 && (
             <Pagination>

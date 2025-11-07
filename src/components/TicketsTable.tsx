@@ -3,20 +3,32 @@ import { Ticket } from "@/lib/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Download, ArrowUpDown } from "lucide-react";
 import { TicketDrawer } from "./TicketDrawer";
 
 interface TicketsTableProps {
   tickets?: Ticket[];
+  selectedTickets?: Set<string>;
+  onSelectAll?: (checked: boolean) => void;
+  onSelectOne?: (ticketId: string, checked: boolean) => void;
 }
 
 type SortField = "ticket_id" | "priority" | "status" | "opened_at";
 type SortDirection = "asc" | "desc";
 
-export function TicketsTable({ tickets = [] }: TicketsTableProps) {
+export function TicketsTable({ 
+  tickets = [], 
+  selectedTickets = new Set(),
+  onSelectAll,
+  onSelectOne 
+}: TicketsTableProps) {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [sortField, setSortField] = useState<SortField>("opened_at");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  const allSelected = tickets.length > 0 && selectedTickets.size === tickets.length;
+  const someSelected = selectedTickets.size > 0 && selectedTickets.size < tickets.length;
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -99,6 +111,15 @@ export function TicketsTable({ tickets = [] }: TicketsTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
+              {onSelectAll && (
+                <TableHead className="w-12">
+                  <Checkbox
+                    checked={allSelected || someSelected}
+                    onCheckedChange={onSelectAll}
+                    aria-label="Select all tickets"
+                  />
+                </TableHead>
+              )}
               <TableHead>
                 <Button
                   variant="ghost"
@@ -153,27 +174,50 @@ export function TicketsTable({ tickets = [] }: TicketsTableProps) {
               <TableRow
                 key={ticket.ticket_id}
                 className="cursor-pointer hover:bg-muted/50"
-                onClick={() => setSelectedTicket(ticket)}
               >
-                <TableCell className="font-medium">{ticket.ticket_id}</TableCell>
-                <TableCell>
+                {onSelectOne && selectedTickets && (
+                  <TableCell 
+                    className="w-12"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <Checkbox
+                      checked={selectedTickets.has(ticket.ticket_id)}
+                      onCheckedChange={(checked) => onSelectOne(ticket.ticket_id, checked as boolean)}
+                      aria-label={`Select ticket ${ticket.ticket_id}`}
+                    />
+                  </TableCell>
+                )}
+                <TableCell 
+                  className="font-medium"
+                  onClick={() => setSelectedTicket(ticket)}
+                >
+                  {ticket.ticket_id}
+                </TableCell>
+                <TableCell onClick={() => setSelectedTicket(ticket)}>
                   <Badge variant="outline">{ticket.type}</Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={() => setSelectedTicket(ticket)}>
                   <Badge variant={getPriorityColor(ticket.priority) as any}>
                     {ticket.priority}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={() => setSelectedTicket(ticket)}>
                   <Badge variant={getStatusColor(ticket.status) as any}>
                     {ticket.status}
                   </Badge>
                 </TableCell>
-                <TableCell>{ticket.service || "-"}</TableCell>
-                <TableCell>
+                <TableCell onClick={() => setSelectedTicket(ticket)}>
+                  {ticket.service || "-"}
+                </TableCell>
+                <TableCell onClick={() => setSelectedTicket(ticket)}>
                   {new Date(ticket.opened_at).toLocaleDateString()}
                 </TableCell>
-                <TableCell className="max-w-xs truncate">
+                <TableCell 
+                  className="max-w-xs truncate"
+                  onClick={() => setSelectedTicket(ticket)}
+                >
                   {ticket.short_desc}
                 </TableCell>
               </TableRow>

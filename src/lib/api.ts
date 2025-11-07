@@ -183,6 +183,56 @@ export const api = {
     };
   },
 
+  async getKPITrends(filters: Filters): Promise<{ 
+    current: KPI; 
+    previous: KPI; 
+    delta: Record<string, number> 
+  }> {
+    // Calculate date ranges for current and previous periods
+    const currentPeriodDays = 30; // Default to last 30 days
+    const now = new Date();
+    
+    // Current period
+    const currentStart = new Date(now);
+    currentStart.setDate(currentStart.getDate() - currentPeriodDays);
+    
+    // Previous period (same duration, before current period)
+    const previousStart = new Date(currentStart);
+    previousStart.setDate(previousStart.getDate() - currentPeriodDays);
+    
+    const currentFilters = { 
+      ...filters, 
+      dateFrom: currentStart.toISOString(), 
+      dateTo: now.toISOString() 
+    };
+    const previousFilters = { 
+      ...filters, 
+      dateFrom: previousStart.toISOString(), 
+      dateTo: currentStart.toISOString() 
+    };
+    
+    const [current, previous] = await Promise.all([
+      this.getKPIs(currentFilters),
+      this.getKPIs(previousFilters)
+    ]);
+    
+    // Calculate deltas (percentage change)
+    const calculateDelta = (current: number, previous: number): number => {
+      if (previous === 0) return current > 0 ? 100 : 0;
+      return ((current - previous) / previous) * 100;
+    };
+    
+    const delta = {
+      total: calculateDelta(current.total, previous.total),
+      open: calculateDelta(current.open, previous.open),
+      resolved: calculateDelta(current.resolved, previous.resolved),
+      sla_compliance: calculateDelta(current.sla_compliance * 100, previous.sla_compliance * 100),
+      mttr_hours: calculateDelta(current.mttr_hours, previous.mttr_hours),
+    };
+    
+    return { current, previous, delta };
+  },
+
   async getTicketsTrend(filters: Filters): Promise<SeriesPoint[]> {
     // Fetch all tickets and group by date
     const allTickets = await this.getAllTicketsForCalculation(filters);
