@@ -2,14 +2,11 @@
 JWT authentication middleware for ITSM AI Backend.
 Validates JWT tokens issued by the Node.js backend.
 """
-from jose import jwt, JWTError
-import logging
+import jwt
 from fastapi import HTTPException, Security, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Dict, Optional
 from app.core.config import get_settings
-
-logger = logging.getLogger(__name__)
 
 security = HTTPBearer()
 
@@ -59,40 +56,23 @@ class JWTValidator:
 jwt_validator = JWTValidator()
 
 
-async def validate_token(credentials: HTTPAuthorizationCredentials = Security(security)) -> Dict:
+async def validate_token(
+    credentials: HTTPAuthorizationCredentials = Security(security)
+) -> Dict:
     """
-    Validate JWT token and return decoded data.
-    Raises HTTPException if token is invalid.
-    """
-    if not credentials:
-        logger.warning("No credentials provided")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-        )
+    FastAPI dependency for JWT validation.
     
-    try:
-        token = credentials.credentials
-        settings = get_settings()
-        logger.info(f"Attempting to decode token. First 20 chars: {token[:20]}...")
-        logger.info(f"Using JWT_SECRET: {settings.jwt_secret[:20]}...")
+    Args:
+        credentials: HTTP Bearer credentials from request
         
-        payload = jwt.decode(token, settings.jwt_secret, algorithms=["HS256"])
-        logger.info(f"Token validated successfully! Payload: {payload}")
-        return payload
-    except JWTError as e:
-        logger.error(f"JWT error: {type(e).__name__} - {str(e)}")
-        logger.error(f"Token that failed: {token[:50]}...")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
-        )
-    except Exception as e:
-        logger.error(f"Unexpected token validation error: {type(e).__name__} - {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication failed",
-        )
+    Returns:
+        Decoded token payload with user information
+        
+    Raises:
+        HTTPException: If token is invalid
+    """
+    token = credentials.credentials
+    return jwt_validator.decode_token(token)
 
 
 async def get_current_user(token_data: Dict = Security(validate_token)) -> Dict:
@@ -105,9 +85,8 @@ async def get_current_user(token_data: Dict = Security(validate_token)) -> Dict:
     Returns:
         User information dictionary
     """
-    # Node backend uses UUID strings for id, keep as-is
     return {
-        "id": token_data.get("id"),  # Can be UUID string or int
+        "id": token_data.get("id"),
         "email": token_data.get("email"),
         "role": token_data.get("role", "user"),
     }
