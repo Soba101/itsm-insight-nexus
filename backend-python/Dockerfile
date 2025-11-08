@@ -11,8 +11,8 @@ RUN apt-get update && apt-get install -y \
 # Copy requirements first (for Docker layer caching)
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies (increase timeout for large ML models)
+RUN pip install --no-cache-dir --timeout=1000 -r requirements.txt
 
 # Copy application code
 COPY . .

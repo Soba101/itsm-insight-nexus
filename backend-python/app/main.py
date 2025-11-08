@@ -10,6 +10,8 @@ import logging
 
 from app.core.config import get_settings
 from app.core.auth import get_current_user, validate_token_optional
+from app.core.database import close_connection_pool, init_connection_pool, test_connection
+from app.api.similarity import router as similarity_router
 
 # Configure logging
 logging.basicConfig(
@@ -53,11 +55,22 @@ async def startup_event():
     logger.info(f"🔐 JWT authentication enabled")
     logger.info(f"📊 API docs available at /docs")
 
+    try:
+        init_connection_pool()
+        if test_connection():
+            logger.info("🗄️ Database connection established and pgvector available")
+        else:
+            logger.warning("Database connection test failed")
+    except Exception as exc:
+        logger.error(f"Database startup check failed: {exc}")
+        raise
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """Log shutdown information."""
     logger.info(f"🛑 Shutting down {settings.service_name}")
+    close_connection_pool()
 
 
 @app.get("/", tags=["Root"])
@@ -131,6 +144,9 @@ async def status_check(user: Dict = Depends(get_current_user)):
         },
         "user": user,
     }
+
+
+app.include_router(similarity_router)
 
 
 @app.exception_handler(Exception)

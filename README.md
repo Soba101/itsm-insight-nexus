@@ -1,8 +1,28 @@
-# Welcome to your Lovable project
+# ITSM Insight Nexus
+
+AI-powered IT Service Management analytics platform with semantic ticket similarity search and automated parent-child linking.
+
+## 🚀 Features
+
+### Core Functionality
+
+- 📊 **Real-time Dashboard** - KPIs, trends, and ticket distribution
+- 🎫 **Ticket Management** - Advanced filtering and search
+- 📈 **Analytics & Insights** - Priority breakdown, state analysis
+- 🔐 **JWT Authentication** - Secure user management
+- 🌓 **Dark/Light Mode** - System preference aware
+
+### AI-Powered Features (NEW)
+
+- 🤖 **Semantic Similarity Search** - Find related tickets using 768-dim embeddings
+- 🔗 **Automatic Parent-Child Linking** - Duplicate detection with 0.8+ similarity threshold
+- ⚡ **Background Embedding Worker** - Automatic queue-based processing
+- 📦 **Batch Processing** - Efficient bulk embedding generation
+- 🎯 **LM Studio Integration** - Local embeddings (no external API costs)
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/a7dbc2fd-31d6-402a-873b-95b57c9d75b0
+**URL**: <https://lovable.dev/projects/a7dbc2fd-31d6-402a-873b-95b57c9d75b0>
 
 ## How can I edit this code?
 
@@ -54,11 +74,44 @@ npm run dev
 
 This project is built with:
 
+### Frontend
+
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
+
+### Backend
+
+- **Authentication**: Node.js + Express (port 3001)
+- **AI/ML**: Python + FastAPI (port 8000)
+- **Database**: PostgreSQL 15 + pgvector (port 15432)
+- **API Layer**: PostgREST (port 3000)
+
+### AI/ML Stack
+
+- **Embeddings**: LM Studio + EmbeddingGemma-300m-qat (768 dimensions)
+- **Vector Search**: pgvector with HNSW indexing
+- **Similarity**: Cosine distance with 0.8 threshold
+- **Queue System**: PostgreSQL triggers + Python worker
+
+## 🏗️ Architecture
+
+```text
+Frontend (Vite + React)
+         ↓
+    ┌─────────┬──────────┬─────────────┐
+    ↓         ↓          ↓             ↓
+Auth API   PostgREST   AI Backend   LM Studio
+(Node.js)  (REST)      (FastAPI)    (Embeddings)
+    ↓         ↓          ↓             ↓
+    └─────────┴──────────┴─────────────┘
+              ↓
+        PostgreSQL + pgvector
+              ↓
+    Embedding Worker (Background)
+```
 
 ## How can I deploy this project?
 
@@ -71,3 +124,171 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Docker Desktop
+- [LM Studio](https://lmstudio.ai) (for embeddings)
+- Conda environment (recommended)
+
+### 1. Setup Environment
+
+```bash
+# Clone repository
+git clone <YOUR_GIT_URL>
+cd itsm-insight-nexus
+
+# Activate conda environment
+conda activate itsm
+
+# Install frontend dependencies
+npm install
+```
+
+### 2. Start Database & Services
+
+```bash
+# Start PostgreSQL, PostgREST, pgAdmin
+docker compose up -d postgres postgrest pgadmin
+
+# Start authentication backend
+cd backend-auth
+npm install
+node run-migration.js  # Setup users table
+npm run dev            # Runs on port 3001
+```
+
+### 3. Setup LM Studio
+
+1. Download and install [LM Studio](https://lmstudio.ai)
+2. Load embedding model: `text-embedding-embeddinggemma-300m-qat`
+3. Start local server (default: port 1234)
+4. Verify: `curl http://localhost:1234/v1/models`
+
+### 4. Start AI Backend & Worker
+
+```bash
+# Build and start Python services
+docker compose up -d python-backend embedding-worker
+
+# Verify services
+docker ps  # Check all containers running
+docker logs itsm-python-backend  # Check AI backend logs
+docker logs itsm-embedding-worker  # Check worker logs
+```
+
+### 5. Populate Embeddings (First Time)
+
+```bash
+# Generate embeddings for all existing tickets
+docker exec itsm-python-backend python scripts/populate_embeddings.py
+
+# This will:
+# - Fetch all tickets without embeddings
+# - Process in batches of 16
+# - Generate 768-dim vectors via LM Studio
+# - Store in PostgreSQL with pgvector
+```
+
+### 6. Start Frontend
+
+```bash
+# From project root
+npm run dev
+
+# Access at http://localhost:8080
+# Default login: admin@itsm.local / admin123
+```
+
+### Services Overview
+
+| Service | Port | Purpose |
+|---------|------|---------|
+| Frontend | 8080 | Vite dev server |
+| Auth API | 3001 | JWT authentication |
+| PostgREST | 3000 | Database REST API |
+| AI Backend | 8000 | Similarity search |
+| LM Studio | 1234 | Embedding generation |
+| PostgreSQL | 15432 | Main database |
+| pgAdmin | 5050 | Database management |
+
+## 📚 Documentation
+
+- **Setup Guide**: `docs/SETUP_GUIDE.md`
+- **Docker Guide**: `docs/DOCKER.md`
+- **Backend Implementation**: `docs/BACKEND_implementation.md`
+- **Auth Phase 1**: `docs/AUTH_PHASE1_COMPLETE.md`
+- **Python Backend**: `backend-python/README.md`
+- **Scripts**: `scripts/README.md`
+
+## 🧪 Testing Similarity Search
+
+```bash
+# Get JWT token (login to frontend first, check localStorage)
+TOKEN="your_jwt_token_here"
+
+# Search for similar tickets
+curl -X POST http://localhost:8000/api/ai/similarity/search \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "incident_number": "INC0010048",
+    "top_k": 5,
+    "min_similarity": 0.7
+  }'
+
+# Get ticket family (parent + children)
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8000/api/ai/similarity/tickets/INC0010048/family
+```
+
+## 🔧 Troubleshooting
+
+### Container Issues
+
+```bash
+# Restart all services
+docker compose restart
+
+# Rebuild specific service
+docker compose up -d --build python-backend
+
+# Check logs
+docker logs itsm-postgres
+docker logs itsm-python-backend
+docker logs itsm-embedding-worker
+```
+
+### Embedding Worker Not Processing
+
+```bash
+# Check queue status
+docker exec itsm-postgres psql -U postgres -d itsm_db \
+  -c "SELECT status, COUNT(*) FROM embedding_queue GROUP BY status;"
+
+# Manually trigger worker
+docker exec itsm-python-backend python scripts/populate_embeddings.py
+```
+
+### LM Studio Connection Issues
+
+```bash
+# Test LM Studio API
+curl http://localhost:1234/v1/models
+
+# Check if model is loaded
+curl -X POST http://localhost:1234/v1/embeddings \
+  -H "Content-Type: application/json" \
+  -d '{"model": "text-embedding-embeddinggemma-300m-qat", "input": "test"}'
+```
+
+## 🤝 Contributing
+
+This project uses Lovable for rapid development. Changes can be made via:
+
+1. **Lovable Platform** - Commits automatically
+2. **Local IDE** - Push changes to sync
+3. **GitHub Directly** - Edit files in browser

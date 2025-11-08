@@ -2,18 +2,25 @@
 
 Python FastAPI backend service providing AI-powered features for the ITSM Insight Nexus application.
 
-## Features (Phase 1)
+## Features (Phase 1 - Complete)
 
 - ✅ **JWT Authentication** - Validates tokens from Node.js backend
 - ✅ **Health Check** - `/api/ai/health` endpoint
 - ✅ **CORS Enabled** - Works with Vite dev server
 - ✅ **Docker Support** - Containerized deployment
 
+## Features (Phase 2 - Complete)
+
+- ✅ **Semantic Embeddings** - 768-dimensional vectors via LM Studio
+- ✅ **Similarity Search** - pgvector-powered ticket matching
+- ✅ **Parent-Child Linking** - Automatic duplicate detection
+- ✅ **Automatic Embeddings** - Background worker with queue system
+- ✅ **Batch Processing** - Efficient bulk embedding generation
+
 ## Features (Planned)
 
 - 🔄 **Ticket Classification** - Auto-categorize incidents
 - 🔄 **Sentiment Analysis** - Understand caller tone
-- 🔄 **Duplicate Detection** - Find similar tickets
 - 🔄 **RAG Knowledge Base** - Q&A with citations
 
 ## Quick Start
@@ -60,6 +67,7 @@ curl http://localhost:8000/api/ai/health
 ```
 
 Response:
+
 ```json
 {
   "status": "ok",
@@ -77,6 +85,7 @@ curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
 ```
 
 Response:
+
 ```json
 {
   "status": "ok",
@@ -89,6 +98,69 @@ Response:
     "role": "admin"
   }
 }
+```
+
+### Similarity Search
+
+**POST** `/api/ai/similarity/search`
+
+Find similar tickets using semantic embeddings.
+
+```bash
+curl -X POST http://localhost:8000/api/ai/similarity/search \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "incident_number": "INC0010048",
+    "top_k": 5,
+    "min_similarity": 0.7
+  }'
+```
+
+Response:
+
+```json
+{
+  "model_name": "text-embedding-embeddinggemma-300m-qat",
+  "embedding_dimension": 768,
+  "query_incident": "INC0010048",
+  "generated_embedding": true,
+  "results": [
+    {
+      "incident_number": "INC0010050",
+      "short_description": "Similar issue...",
+      "similarity_score": 0.92,
+      "already_has_parent": false
+    }
+  ]
+}
+```
+
+### Ticket Family (Parent-Child)
+
+**GET** `/api/ai/similarity/tickets/{incident_number}/family`
+
+Get parent ticket and all related children.
+
+```bash
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  http://localhost:8000/api/ai/similarity/tickets/INC0010048/family
+```
+
+### Generate Embedding
+
+**POST** `/api/ai/similarity/embed`
+
+Generate embedding for custom text.
+
+```bash
+curl -X POST http://localhost:8000/api/ai/similarity/embed \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "short_description": "Network connectivity issue",
+    "description": "Unable to access internal servers"
+  }'
 ```
 
 ### Status (Protected)
@@ -105,15 +177,15 @@ curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
 ### API Documentation
 
 Interactive API documentation available at:
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+
+- **Swagger UI**: <http://localhost:8000/docs>
+- **ReDoc**: <http://localhost:8000/redoc>
 
 ## Configuration
 
 Environment variables are configured in `.env`:
 
 ```env
-```bash
 # Example .env for backend-python
 JWT_SECRET=<same as backend-auth/.env>
 DB_HOST=postgres
@@ -122,8 +194,90 @@ DB_NAME=itsm_db
 DB_USER=postgres
 DB_PASSWORD=postgres
 SERVICE_VERSION=1.0.0
+
+# LM Studio Configuration
+LM_STUDIO_BASE_URL=http://host.docker.internal:1234/v1
+LM_STUDIO_MODEL=text-embedding-embeddinggemma-300m-qat
 ```
+
+## Embedding System
+
+### Architecture
+
+The system uses a **queue-based architecture** for automatic embedding generation:
+
+1. **Database Trigger** - New tickets are automatically queued
+2. **Background Worker** - Processes queue every 10 seconds
+3. **LM Studio Integration** - Generates 768-dim embeddings locally
+4. **pgvector Storage** - Stores embeddings for fast similarity search
+
+### Components
+
+#### Embedding Worker
+
+Runs as a separate container (`itsm-embedding-worker`) that:
+
+- Polls `embedding_queue` table every 10 seconds
+- Processes up to 16 tickets per batch
+- Generates embeddings via LM Studio API
+- Updates tickets with embedding vectors
+- Marks queue entries as completed
+
+#### Batch Population Script
+
+For bulk processing existing tickets:
+
+```bash
+# Populate all tickets without embeddings
+docker exec itsm-python-backend python scripts/populate_embeddings.py
+
+# Limit to first 100 tickets
+docker exec itsm-python-backend python scripts/populate_embeddings.py --limit 100
+
+# Use smaller batch size
+docker exec itsm-python-backend python scripts/populate_embeddings.py --batch-size 8
+
+# Dry run (check what would be processed)
+docker exec itsm-python-backend python scripts/populate_embeddings.py --dry-run
 ```
+
+#### Database Schema
+
+```sql
+-- Embedding columns in servicenow_incidents
+embedding vector(768)          -- 768-dimensional embedding
+embedding_model TEXT            -- Model identifier
+embedded_at TIMESTAMP          -- When embedded
+parent_incident TEXT           -- Parent ticket reference
+child_incidents TEXT[]         -- Array of child ticket IDs
+similarity_score NUMERIC(3,2)  -- Similarity to parent (0.00-1.00)
+
+-- Queue table
+embedding_queue
+  id SERIAL PRIMARY KEY
+  incident_number TEXT UNIQUE
+  status TEXT                  -- pending, processing, completed, failed
+  created_at TIMESTAMP
+  retries INT
+  last_error TEXT
+```
+
+### LM Studio Setup
+
+The backend connects to a local LM Studio instance running the **EmbeddingGemma-300m-qat** model:
+
+1. Install [LM Studio](https://lmstudio.ai)
+2. Download embedding model: `text-embedding-embeddinggemma-300m-qat`
+3. Start local server (default: `http://127.0.0.1:1234`)
+4. Model is accessed via OpenAI-compatible API
+
+**Benefits:**
+
+- ✅ No external API costs
+- ✅ No data leaves your machine
+- ✅ Fast inference (~200ms per ticket)
+- ✅ 768-dimensional embeddings
+- ✅ Better quality than traditional similarity methods
 
 ## Testing
 
@@ -157,17 +311,26 @@ fetch('http://localhost:8000/api/ai/health', {
 
 ## Architecture
 
-```
+### Backend Structure
+
+```text
 backend-python/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py              # FastAPI application
 │   ├── core/
 │   │   ├── auth.py          # JWT validation
-│   │   └── config.py        # Settings management
-│   └── api/                 # Future: API routes
+│   │   ├── config.py        # Settings management
+│   │   └── database.py      # PostgreSQL connection pool
+│   ├── api/
+│   │   └── similarity.py    # Similarity search endpoints
+│   └── services/
+│       ├── embedding.py     # LM Studio integration
+│       └── similarity.py    # pgvector queries
+├── scripts/
+│   ├── populate_embeddings.py   # Batch embedding script
+│   └── embedding_worker.py      # Background queue worker
 ├── .env                     # Environment variables
-├── .gitignore
 ├── Dockerfile
 ├── requirements.txt
 └── README.md
@@ -245,16 +408,19 @@ pip install pytest httpx
 pytest
 ```
 
-## Next Steps (Phase 2)
+## Next Steps (Phase 3)
 
-1. Implement ticket classification endpoint
-2. Add sentiment analysis
-3. Integrate with ServiceNow data
-4. Add batch processing for existing tickets
+1. **Frontend Integration** - Add similarity search UI
+2. **Parent-Child Suggestions** - Show duplicate warnings on ticket creation
+3. **Ticket Classification** - Auto-categorize based on embeddings
+4. **Sentiment Analysis** - Understand caller urgency/tone
+5. **RAG Knowledge Base** - Searchable solution database
 
 ## Support
 
 For issues or questions:
+
 - Check logs: `docker logs itsm-python-backend`
-- Review API docs: http://localhost:8000/docs
+- Review API docs: <http://localhost:8000/docs>
 - See main project README
+- Check embedding worker: `docker logs itsm-embedding-worker`
