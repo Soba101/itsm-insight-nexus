@@ -192,6 +192,7 @@ export interface TicketSummary {
 }
 
 export interface TicketFamilyResponse {
+  ticket: TicketSummary;
   parent: TicketSummary | null;
   children: TicketSummary[];
   total_children: number;
@@ -224,6 +225,16 @@ export interface GraphEdge {
 export interface GraphData {
   nodes: GraphNode[];
   edges: GraphEdge[];
+}
+
+export interface GraphCandidate {
+  incident_number: string;
+  short_description: string | null;
+  state: string | null;
+  priority: string | null;
+  parent_incident: string | null;
+  child_incidents: string[] | null;
+  child_count: number;
 }
 
 export interface TicketsResponse {

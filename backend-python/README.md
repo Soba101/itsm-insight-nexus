@@ -241,6 +241,39 @@ docker exec itsm-python-backend python scripts/populate_embeddings.py --batch-si
 docker exec itsm-python-backend python scripts/populate_embeddings.py --dry-run
 ```
 
+#### Relationship Establishment Script
+
+After embeddings are generated, establish parent-child relationships:
+
+```bash
+# Establish relationships for all tickets (similarity >= 0.75)
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
+
+# Use custom similarity threshold
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --min-similarity 0.80
+
+# Limit to first 100 tickets
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --limit 100
+
+# Dry run (preview what would be done)
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --dry-run
+```
+
+**How it works:**
+
+- Finds tickets without parents that have embeddings
+- For each ticket, searches for older similar tickets
+- Assigns the most similar ticket as parent (if above threshold)
+- Database triggers automatically update child_incidents arrays
+- Creates parent-child hierarchies for visualization
+
+**Recommended workflow:**
+
+1. Run `populate_embeddings.py` to generate embeddings
+2. Run `establish_ticket_relationships.py --dry-run` to preview
+3. Run `establish_ticket_relationships.py` to apply relationships
+4. View relationships in the Graph page
+
 #### Database Schema
 
 ```sql

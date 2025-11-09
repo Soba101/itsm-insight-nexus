@@ -8,6 +8,7 @@ import {
   DuplicateCluster,
   Summary,
   GraphData,
+  GraphCandidate,
   Filters,
   Ticket,
   ServiceNowIncident,
@@ -510,13 +511,274 @@ export const api = {
     return new Promise((resolve) => setTimeout(() => resolve(summary), 800));
   },
 
-  async getGraphLinks(ticketId: string): Promise<GraphData> {
-    // Graph links require relationship analysis
-    // For now, return empty graph
-    return {
-      nodes: [],
-      edges: [],
+  async getGraphCandidates(options: {
+    search?: string;
+    relation?: "all" | "roots" | "children";
+    priority?: Priority;
+    status?: TicketStatus;
+    limit?: number;
+  } = {}): Promise<GraphCandidate[]> {
+    const {
+      search = "",
+      relation = "all",
+      priority,
+      status,
+      limit = 60,
+    } = options;
+
+    type RawChildIncidents = string[] | { value?: string[] | null } | null | undefined;
+    type GraphCandidateSource = {
+      incident_number: string;
+      short_description?: string | null;
+      state?: string | null;
+      priority?: string | null;
+      parent_incident?: string | null;
+      child_incidents?: RawChildIncidents;
     };
+
+    const extractChildIncidents = (input: RawChildIncidents): string[] => {
+      if (Array.isArray(input)) return input;
+      if (input && typeof input === "object" && "value" in input) {
+        const value = (input as { value?: unknown }).value;
+        return Array.isArray(value) ? value : [];
+      }
+      return [];
+    };
+
+    const normalize = (ticket: GraphCandidateSource): GraphCandidate => {
+      const childArray = extractChildIncidents(ticket.child_incidents);
+
+      return {
+        incident_number: ticket.incident_number,
+        short_description: ticket.short_description ?? null,
+        state: ticket.state ?? null,
+        priority: ticket.priority ?? null,
+        parent_incident: ticket.parent_incident ?? null,
+        child_incidents: childArray,
+        child_count: childArray.length,
+      };
+    };
+
+    const matchesSearch = (ticket: GraphCandidate) => {
+      if (!search.trim()) return true;
+      const query = search.trim().toLowerCase();
+      return (
+        ticket.incident_number?.toLowerCase().includes(query) ||
+        ticket.short_description?.toLowerCase().includes(query)
+      );
+    };
+
+    const priorityMap: Record<Priority, string> = {
+      P1: "1",
+      P2: "2",
+      P3: "3",
+      P4: "4",
+    };
+
+    const stateMap: Record<TicketStatus, string[]> = {
+      Open: ["New"],
+      "In Progress": ["In Progress", "On Hold"],
+      Resolved: ["Resolved"],
+      Closed: ["Closed", "Cancelled"],
+    };
+
+    const matchesPriority = (ticket: GraphCandidate) => {
+      if (!priority) return true;
+      const snPriority = priorityMap[priority];
+      return !snPriority || ticket.priority === snPriority;
+    };
+
+    const matchesStatus = (ticket: GraphCandidate) => {
+      if (!status) return true;
+      const states = stateMap[status];
+      if (!states) return true;
+      return states.includes(ticket.state ?? "");
+    };
+
+    const relationFilter = (ticket: GraphCandidate) => {
+      const hasChildren = (ticket.child_count ?? 0) > 0;
+      const hasParent = Boolean(ticket.parent_incident);
+      if (relation === "roots") {
+        return hasChildren && !hasParent;
+      }
+      if (relation === "children") {
+        return hasParent;
+      }
+      return hasChildren || hasParent;
+    };
+
+    const applyClientFilters = (tickets: GraphCandidate[]) =>
+      tickets
+        .filter(relationFilter)
+        .filter(matchesPriority)
+        .filter(matchesStatus)
+        .filter(matchesSearch)
+        .sort((a, b) => b.child_count - a.child_count);
+
+    const settings = getSettings();
+
+    if (settings.dataSource === "supabase") {
+      const supabase = await getSupabase();
+      let query = supabase
+        .from("servicenow_incidents")
+        .select("incident_number,short_description,state,priority,parent_incident,child_incidents")
+        .order("opened_at", { ascending: false })
+        .limit(limit);
+
+      if (relation === "roots") {
+        query = query
+          .not("child_incidents", "eq", "{}")
+          .is("parent_incident", null);
+      } else if (relation === "children") {
+        query = query.not("parent_incident", "is", null);
+      } else {
+        query = query.or("child_incidents.neq.{},parent_incident.not.is.null");
+      }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  const normalized = ((data ?? []) as unknown as GraphCandidateSource[]).map(normalize);
+      return applyClientFilters(normalized);
+    }
+
+    const instance = createAxiosInstance();
+    const queryParams: Record<string, string> = {
+      select: "incident_number,short_description,state,priority,parent_incident,child_incidents",
+      order: "opened_at.desc",
+      limit: String(limit),
+    };
+
+    if (relation === "roots") {
+      queryParams.and = "(child_incidents.not.eq.{},parent_incident.is.null)";
+    } else if (relation === "children") {
+      queryParams.parent_incident = "not.is.null";
+    } else {
+      queryParams.or = "(child_incidents.not.eq.{},parent_incident.not.is.null)";
+    }
+
+    const response = await instance.get("/servicenow_incidents", { params: queryParams });
+  const rawTickets = Array.isArray(response.data) ? response.data : [];
+  const normalized = (rawTickets as unknown as GraphCandidateSource[]).map(normalize);
+    return applyClientFilters(normalized);
+  },
+
+  async getGraphLinks(ticketId: string): Promise<GraphData> {
+    try {
+      const family = await this.getTicketFamily(ticketId);
+      if (!family?.ticket) {
+        return { nodes: [], edges: [] };
+      }
+
+      const nodePriority: Record<string, number> = {
+        root: 0,
+        parent: 1,
+        ancestor: 2,
+        sibling: 3,
+        child: 4,
+        grandchild: 5,
+      };
+
+      const nodesMap = new Map<string, GraphData["nodes"][number]>();
+      const edges: GraphData["edges"] = [];
+      const edgeSet = new Set<string>();
+
+      const setNode = (id: string, label: string, type: string) => {
+        if (!id) return;
+        const existing = nodesMap.get(id);
+        if (!existing) {
+          nodesMap.set(id, { id, label, type });
+          return;
+        }
+
+        const existingPriority = nodePriority[existing.type] ?? Number.MAX_SAFE_INTEGER;
+        const nextPriority = nodePriority[type] ?? Number.MAX_SAFE_INTEGER;
+        if (nextPriority < existingPriority) {
+          nodesMap.set(id, { id, label, type });
+        }
+      };
+
+      const addEdge = (source?: string | null, target?: string | null, score?: number | null) => {
+        if (!source || !target) return;
+        const key = `${source}->${target}`;
+        if (edgeSet.has(key)) return;
+        edgeSet.add(key);
+        edges.push({ source, target, score: typeof score === "number" ? score : undefined });
+      };
+
+      // Root ticket
+      const root = family.ticket;
+      setNode(root.incident_number, root.incident_number, "root");
+
+      // Helper to safely fetch ticket family, swallowing errors but logging for visibility
+      const safeFetchFamily = async (incidentNumber: string) => {
+        try {
+          return await this.getTicketFamily(incidentNumber);
+        } catch (err) {
+          console.warn("[Graph] Failed to load extended family for", incidentNumber, err);
+          return null;
+        }
+      };
+
+      // Parent + siblings + ancestor
+      if (family.parent) {
+        const parent = family.parent;
+        setNode(parent.incident_number, parent.incident_number, "parent");
+        addEdge(parent.incident_number, root.incident_number, root.similarity_score ?? parent.similarity_score ?? undefined);
+
+        const parentFamily = await safeFetchFamily(parent.incident_number);
+        if (parentFamily) {
+          if (parentFamily.parent) {
+            const ancestor = parentFamily.parent;
+            setNode(ancestor.incident_number, ancestor.incident_number, "ancestor");
+            addEdge(ancestor.incident_number, parent.incident_number, ancestor.similarity_score ?? undefined);
+          }
+
+          parentFamily.children?.forEach((sibling) => {
+            if (!sibling.incident_number) return;
+            const type = sibling.incident_number === root.incident_number ? "root" : "sibling";
+            setNode(sibling.incident_number, sibling.incident_number, type);
+            if (sibling.incident_number !== root.incident_number) {
+              addEdge(parent.incident_number, sibling.incident_number, sibling.similarity_score ?? undefined);
+            }
+          });
+        }
+      }
+
+      // Children + grandchildren (limited to avoid explosion)
+      const MAX_CHILDREN = 25;
+      const children = family.children?.slice(0, MAX_CHILDREN) ?? [];
+
+      const childFamilies = await Promise.all(
+        children.map(async (child) => {
+          if (!child.incident_number) return null;
+          setNode(child.incident_number, child.incident_number, "child");
+          addEdge(root.incident_number, child.incident_number, child.similarity_score ?? undefined);
+          return safeFetchFamily(child.incident_number);
+        })
+      );
+
+      childFamilies.forEach((childFamily, index) => {
+        if (!childFamily) return;
+        const parentChild = children[index];
+        const grandChildren = childFamily.children ?? [];
+        grandChildren.forEach((grandChild) => {
+          if (!grandChild.incident_number) return;
+          setNode(grandChild.incident_number, grandChild.incident_number, "grandchild");
+          addEdge(parentChild.incident_number, grandChild.incident_number, grandChild.similarity_score ?? undefined);
+        });
+      });
+
+      return {
+        nodes: Array.from(nodesMap.values()),
+        edges,
+      };
+    } catch (error) {
+      console.error('Error fetching graph links:', error);
+      return {
+        nodes: [],
+        edges: [],
+      };
+    }
   },
 
   // ========== AI Backend Methods (Python FastAPI) ==========
