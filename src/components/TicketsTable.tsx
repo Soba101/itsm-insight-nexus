@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Ticket } from "@/lib/types";
+import { Ticket, type Priority, type TicketStatus } from "@/lib/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Download, ArrowUpDown, Search, MoreHorizontal } from "lucide-react";
@@ -48,37 +48,70 @@ export function TicketsTable({
     }
   };
 
-  const sortedTickets = [...tickets].sort((a, b) => {
-    let aVal: any = a[sortField];
-    let bVal: any = b[sortField];
+  const prioritySortOrder: Record<Priority, number> = {
+    P1: 1,
+    P2: 2,
+    P3: 3,
+    P4: 4,
+  };
 
-    if (sortField === "opened_at") {
-      aVal = new Date(aVal).getTime();
-      bVal = new Date(bVal).getTime();
+  const statusSortOrder: Record<TicketStatus, number> = {
+    Open: 1,
+    "In Progress": 2,
+    Resolved: 3,
+    Closed: 4,
+  };
+
+  const sortedTickets = [...tickets].sort((a, b) => {
+    let comparison = 0;
+
+    switch (sortField) {
+      case "ticket_id":
+        comparison = a.ticket_id.localeCompare(b.ticket_id);
+        break;
+      case "priority":
+        comparison = prioritySortOrder[a.priority] - prioritySortOrder[b.priority];
+        break;
+      case "status":
+        comparison = statusSortOrder[a.status] - statusSortOrder[b.status];
+        break;
+      case "opened_at":
+      default: {
+        const aTime = new Date(a.opened_at).getTime();
+        const bTime = new Date(b.opened_at).getTime();
+        comparison = aTime - bTime;
+        break;
+      }
     }
 
-    if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
-    if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
-    return 0;
+    if (comparison === 0) return 0;
+    return sortDirection === "asc" ? comparison : -comparison;
   });
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityVariant = (priority: Priority): BadgeProps["variant"] => {
     switch (priority) {
-      case "P1": return "destructive";
-      case "P2": return "warning";
-      case "P3": return "default";
-      case "P4": return "secondary";
-      default: return "default";
+      case "P1":
+        return "destructive";
+      case "P2":
+        return "warning";
+      case "P3":
+        return "default";
+      case "P4":
+      default:
+        return "secondary";
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: TicketStatus): BadgeProps["variant"] => {
     switch (status) {
-      case "Open": return "default";
-      case "In Progress": return "default";
-      case "Resolved": return "success";
-      case "Closed": return "secondary";
-      default: return "default";
+      case "Resolved":
+        return "success";
+      case "Closed":
+        return "secondary";
+      case "Open":
+      case "In Progress":
+      default:
+        return "default";
     }
   };
 
@@ -199,7 +232,11 @@ export function TicketsTable({
                   >
                     <Checkbox
                       checked={selectedTickets.has(ticket.ticket_id)}
-                      onCheckedChange={(checked) => onSelectOne(ticket.ticket_id, checked as boolean)}
+                      onCheckedChange={(checked) => {
+                        if (typeof checked === "boolean") {
+                          onSelectOne(ticket.ticket_id, checked);
+                        }
+                      }}
                       aria-label={`Select ticket ${ticket.ticket_id}`}
                     />
                   </TableCell>
@@ -214,12 +251,12 @@ export function TicketsTable({
                   <Badge variant="outline">{ticket.type}</Badge>
                 </TableCell>
                 <TableCell onClick={() => setSelectedTicket(ticket)}>
-                  <Badge variant={getPriorityColor(ticket.priority) as any}>
+                  <Badge variant={getPriorityVariant(ticket.priority)}>
                     {ticket.priority}
                   </Badge>
                 </TableCell>
                 <TableCell onClick={() => setSelectedTicket(ticket)}>
-                  <Badge variant={getStatusColor(ticket.status) as any}>
+                  <Badge variant={getStatusVariant(ticket.status)}>
                     {ticket.status}
                   </Badge>
                 </TableCell>

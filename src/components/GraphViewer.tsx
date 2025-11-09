@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraphData } from "@/lib/types";
-import cytoscape from "cytoscape";
+import cytoscape, { Core, NodeSingular } from "cytoscape";
 
 interface GraphViewerProps {
   data?: GraphData;
@@ -9,7 +9,7 @@ interface GraphViewerProps {
 
 export function GraphViewer({ data }: GraphViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const cyRef = useRef<any>(null);
+  const cyRef = useRef<Core | null>(null);
 
   useEffect(() => {
     if (!containerRef.current || !data || !data.nodes || !data.nodes.length) return;
@@ -23,7 +23,7 @@ export function GraphViewer({ data }: GraphViewerProps) {
       })),
     ];
 
-    const getNodeColor = (type: string) => {
+    const getNodeColor = (type: GraphData["nodes"][number]["type"]) => {
       switch (type) {
         case "incident": return "hsl(var(--chart-1))";
         case "problem": return "hsl(var(--chart-2))";
@@ -39,7 +39,7 @@ export function GraphViewer({ data }: GraphViewerProps) {
         {
           selector: "node",
           style: {
-            "background-color": (ele: any) => getNodeColor(ele.data("type")),
+            "background-color": (ele: NodeSingular) => getNodeColor(ele.data("type") as GraphData["nodes"][number]["type"]),
             label: "data(label)",
             color: "hsl(var(--foreground))",
             "text-valign": "center",

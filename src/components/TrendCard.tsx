@@ -9,26 +9,42 @@ interface TrendCardProps {
   title?: string;
 }
 
+type TrendTooltipProps = {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    payload: SeriesPoint;
+  }>;
+};
+
 export function TrendCard({ data, title = "Ticket Trend" }: TrendCardProps) {
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-popover p-3 rounded-lg border border-border shadow-lg">
-          <p className="font-semibold text-sm">
-            {new Date(payload[0].payload.date).toLocaleDateString('en-US', { 
-              month: 'short', 
-              day: 'numeric',
-              year: 'numeric' 
-            })}
-          </p>
-          <p className="text-sm mt-1">
-            <span className="text-muted-foreground">Tickets: </span>
-            <span className="font-semibold text-chart-1">{payload[0].value}</span>
-          </p>
-        </div>
-      );
+  const CustomTooltip = ({ active, payload }: TrendTooltipProps) => {
+    if (!active || !payload || payload.length === 0) {
+      return null;
     }
-    return null;
+
+    const firstPoint = payload[0];
+    const dataPoint = firstPoint?.payload as SeriesPoint | undefined;
+
+    if (!dataPoint) {
+      return null;
+    }
+
+    return (
+      <div className="bg-popover p-3 rounded-lg border border-border shadow-lg">
+        <p className="font-semibold text-sm">
+          {new Date(dataPoint.date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
+        </p>
+        <p className="text-sm mt-1">
+          <span className="text-muted-foreground">Tickets: </span>
+          <span className="font-semibold text-chart-1">{dataPoint.count}</span>
+        </p>
+      </div>
+    );
   };
 
   return (

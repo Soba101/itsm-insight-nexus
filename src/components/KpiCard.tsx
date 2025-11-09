@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { InfoIcon, TrendingUp, TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,8 +13,10 @@ interface KpiCardProps {
 }
 
 export function KpiCard({ title, value, delta, tooltip, variant = "default" }: KpiCardProps) {
-  const getDeltaColor = () => {
-    if (!delta) return "";
+  const getDeltaVariant = (): BadgeProps["variant"] => {
+    if (delta === undefined || delta === 0) {
+      return "secondary";
+    }
     return delta > 0 ? "success" : "destructive";
   };
 
@@ -64,7 +66,7 @@ export function KpiCard({ title, value, delta, tooltip, variant = "default" }: K
             ) : (
               <TrendingDown className="h-3 w-3 text-destructive" />
             )}
-            <Badge variant={getDeltaColor() as any} className="font-semibold">
+            <Badge variant={getDeltaVariant()} className="font-semibold">
               {delta > 0 ? "+" : ""}
               {delta}%
             </Badge>

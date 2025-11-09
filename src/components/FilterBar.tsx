@@ -13,8 +13,17 @@ interface FilterBarProps {
 }
 
 export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
-  const updateFilter = (key: keyof Filters, value: any) => {
-    onFiltersChange({ ...filters, [key]: value || undefined });
+  const updateFilter = <K extends keyof Filters>(key: K, value: Filters[K] | undefined) => {
+    const nextFilters: Filters = { ...filters };
+    const normalizedValue = typeof value === "string" && value.trim() === "" ? undefined : value;
+
+    if (normalizedValue === undefined || normalizedValue === null) {
+      delete nextFilters[key];
+    } else {
+      nextFilters[key] = normalizedValue;
+    }
+
+    onFiltersChange(nextFilters);
   };
 
   const clearFilters = () => {
@@ -28,7 +37,7 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
       <Input
         placeholder="Search tickets..."
         value={filters.query || ""}
-        onChange={(e) => updateFilter("query", e.target.value)}
+  onChange={(e) => updateFilter("query", e.target.value)}
         className="w-64"
       />
 
@@ -64,7 +73,7 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
         </PopoverContent>
       </Popover>
       
-      <Select value={filters.priority || ""} onValueChange={(v) => updateFilter("priority", v)}>
+  <Select value={filters.priority || ""} onValueChange={(value) => updateFilter("priority", value as Priority)}>
         <SelectTrigger className="w-32">
           <SelectValue placeholder="Priority" />
         </SelectTrigger>
@@ -76,7 +85,7 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
         </SelectContent>
       </Select>
 
-      <Select value={filters.ticketType || ""} onValueChange={(v) => updateFilter("ticketType", v)}>
+  <Select value={filters.ticketType || ""} onValueChange={(value) => updateFilter("ticketType", value as TicketType)}>
         <SelectTrigger className="w-32">
           <SelectValue placeholder="Type" />
         </SelectTrigger>
@@ -87,7 +96,7 @@ export function FilterBar({ filters, onFiltersChange }: FilterBarProps) {
         </SelectContent>
       </Select>
 
-      <Select value={filters.status || ""} onValueChange={(v) => updateFilter("status", v)}>
+  <Select value={filters.status || ""} onValueChange={(value) => updateFilter("status", value as TicketStatus)}>
         <SelectTrigger className="w-40">
           <SelectValue placeholder="Status" />
         </SelectTrigger>
