@@ -131,8 +131,8 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/c
 
 - Node.js 18+ and npm
 - Docker Desktop
-- [LM Studio](https://lmstudio.ai) (for embeddings)
-- Conda environment (recommended)
+- [LM Studio](https://lmstudio.ai) (for AI embeddings)
+- Conda environment (recommended: `conda activate itsm`)
 
 ### 1. Setup Environment
 
@@ -148,59 +148,67 @@ conda activate itsm
 npm install
 ```
 
-### 2. Start Database & Services
-
-```bash
-# Start PostgreSQL, PostgREST, pgAdmin
-docker compose up -d postgres postgrest pgadmin
-
-# Start authentication backend
-cd backend-auth
-npm install
-node run-migration.js  # Setup users table
-npm run dev            # Runs on port 3001
-```
-
-### 3. Setup LM Studio
+### 2. Setup LM Studio (for AI features)
 
 1. Download and install [LM Studio](https://lmstudio.ai)
-2. Load embedding model: `text-embedding-embeddinggemma-300m-qat`
-3. Start local server (default: port 1234)
+2. Download model: `text-embedding-embeddinggemma-300m-qat` (768-dim)
+3. Start local server on port 1234
 4. Verify: `curl http://localhost:1234/v1/models`
 
-### 4. Start AI Backend & Worker
+### 3. Start All Services
 
 ```bash
-# Build and start Python services
-docker compose up -d python-backend embedding-worker
+# Start database, API layer, and AI backend
+docker compose up -d postgres postgrest pgadmin python-backend embedding-worker
 
-# Verify services
-docker ps  # Check all containers running
-docker logs itsm-python-backend  # Check AI backend logs
-docker logs itsm-embedding-worker  # Check worker logs
+# Verify all containers are running
+docker ps
+
+# Check service health
+docker logs itsm-postgres
+docker logs itsm-python-backend
+docker logs itsm-embedding-worker
 ```
 
-### 5. Populate Embeddings (First Time)
+### 4. Setup Authentication Backend
 
 ```bash
-# Generate embeddings for all existing tickets
-docker exec itsm-python-backend python scripts/populate_embeddings.py
+# Navigate to auth backend
+cd backend-auth
 
-# This will:
-# - Fetch all tickets without embeddings
-# - Process in batches of 16
-# - Generate 768-dim vectors via LM Studio
-# - Store in PostgreSQL with pgvector
+# Install dependencies
+npm install
+
+# Run database migration (creates users table)
+node run-migration.js
+
+# Start auth API server (port 3001)
+npm run dev
 ```
 
-### 6. Start Frontend
+Keep this terminal running or use a process manager.
+
+### 5. Start Frontend
 
 ```bash
-# From project root
+# From project root (new terminal)
 npm run dev
 
 # Access at http://localhost:8080
 # Default login: admin@itsm.local / admin123
+```
+
+### 6. Initialize AI Features (First Time)
+
+```bash
+# Generate embeddings for existing tickets
+docker exec itsm-python-backend python scripts/populate_embeddings.py
+
+# Establish parent-child relationships
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --dry-run
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
+
+# The embedding worker will automatically process new tickets going forward
 ```
 
 ### Services Overview

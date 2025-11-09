@@ -2,46 +2,77 @@
 
 Python FastAPI backend service providing AI-powered features for the ITSM Insight Nexus application.
 
-## Features (Phase 1 - Complete)
+## Features
 
-- ✅ **JWT Authentication** - Validates tokens from Node.js backend
-- ✅ **Health Check** - `/api/ai/health` endpoint
-- ✅ **CORS Enabled** - Works with Vite dev server
-- ✅ **Docker Support** - Containerized deployment
+### ✅ Implemented (Production)
 
-## Features (Phase 2 - Complete)
+- **JWT Authentication** - Validates tokens from Node.js auth backend
+- **Semantic Embeddings** - 768-dimensional vectors via LM Studio (EmbeddingGemma-300m-qat)
+- **Similarity Search** - pgvector-powered ticket matching with cosine distance
+- **Parent-Child Linking** - Automatic duplicate detection (similarity threshold: 0.75-0.85)
+- **Automatic Embeddings** - Background worker with PostgreSQL queue system
+- **Batch Processing** - Efficient bulk embedding generation
+- **Health Checks** - Monitoring endpoints for service status
+- **CORS Enabled** - Works with Vite dev server and production builds
 
-- ✅ **Semantic Embeddings** - 768-dimensional vectors via LM Studio
-- ✅ **Similarity Search** - pgvector-powered ticket matching
-- ✅ **Parent-Child Linking** - Automatic duplicate detection
-- ✅ **Automatic Embeddings** - Background worker with queue system
-- ✅ **Batch Processing** - Efficient bulk embedding generation
+### 🔄 Planned Features
 
-## Features (Planned)
+- **Ticket Classification** - Auto-categorize incidents by type
+- **Sentiment Analysis** - Understand caller tone from descriptions
+- **RAG Knowledge Base** - Q&A with citations from historical tickets
+- **Priority Prediction** - ML model to suggest priority levels
+- **SLA Prediction** - Forecast resolution times
 
-- 🔄 **Ticket Classification** - Auto-categorize incidents
-- 🔄 **Sentiment Analysis** - Understand caller tone
-- 🔄 **RAG Knowledge Base** - Q&A with citations
+## Architecture
+
+```
+Frontend (port 8080)
+        ↓
+   [JWT Token]
+        ↓
+AI Backend (port 8000) ←→ LM Studio (port 1234)
+        ↓                      ↓
+    PostgreSQL 15         Embeddings API
+    + pgvector
+        ↑
+        ↓
+Embedding Worker (background)
+```
+
+**Key Components:**
+
+- **FastAPI Application** (`app/main.py`) - REST API with JWT middleware
+- **Similarity Service** (`app/services/similarity.py`) - pgvector queries
+- **Embedding Service** (`app/services/embedding.py`) - LM Studio integration
+- **Database Pool** (`app/core/database.py`) - Shared psycopg2 connection pool
+- **Queue Worker** (`scripts/embedding_worker.py`) - Background processing
+- **Batch Scripts** (`scripts/populate_embeddings.py`, `scripts/establish_ticket_relationships.py`)
 
 ## Quick Start
 
 ### Prerequisites
 
 - Docker Desktop running
-- Node.js backend running (port 3001)
-- Postgres database running (via docker-compose)
+- Node.js auth backend running (port 3001)
+- PostgreSQL with pgvector running (via docker-compose)
+- **LM Studio** running on host with embedding model loaded
 
 ### Running with Docker (Recommended)
 
 ```bash
 # From project root
-docker compose up python-backend
+docker compose up -d python-backend embedding-worker
 
 # Or start all services
-docker compose up
+docker compose up -d
+
+# Verify services
+docker ps
+docker logs itsm-python-backend
+docker logs itsm-embedding-worker
 ```
 
-The service will be available at http://localhost:8000
+The AI backend will be available at **http://localhost:8000**
 
 ### Running Locally (Development)
 
@@ -50,8 +81,15 @@ The service will be available at http://localhost:8000
 cd backend-python
 pip install -r requirements.txt
 
+# Configure environment (see Configuration section)
+cp .env.example .env
+# Edit .env with correct values
+
 # Run the server
 uvicorn app.main:app --reload --port 8000
+
+# In separate terminal, run worker
+python scripts/embedding_worker.py --interval 10 --batch-size 16
 ```
 
 ## API Endpoints
@@ -183,22 +221,38 @@ Interactive API documentation available at:
 
 ## Configuration
 
-Environment variables are configured in `.env`:
+Environment variables are configured in `backend-python/.env`:
 
 ```env
-# Example .env for backend-python
-JWT_SECRET=<same as backend-auth/.env>
+# JWT Secret (MUST match backend-auth/.env)
+JWT_SECRET=921ded1a3143d5745e14587d2a1877ce52179acda540d13d8d63ceefad62ef4b15049201ade10f636f6e95d85ed813fa8086e89c7c5c71d4d14c218fb14d4fd4
+
+# Database Connection (Docker internal network)
 DB_HOST=postgres
 DB_PORT=5432
 DB_NAME=itsm_db
 DB_USER=postgres
 DB_PASSWORD=postgres
-SERVICE_VERSION=1.0.0
 
-# LM Studio Configuration
-LM_STUDIO_BASE_URL=http://host.docker.internal:1234/v1
-LM_STUDIO_MODEL=text-embedding-embeddinggemma-300m-qat
+# Service Configuration
+SERVICE_NAME=itsm-ai-backend
+SERVICE_VERSION=1.0.0
+LOG_LEVEL=INFO
+
+# Performance Tuning
+OMP_NUM_THREADS=2
+MKL_NUM_THREADS=2
+OPENBLAS_NUM_THREADS=2
 ```
+
+**Important Notes:**
+
+- **JWT_SECRET** must be identical to `backend-auth/.env` for token validation
+- **DB_HOST=postgres** when running in Docker (uses container name)
+- **DB_HOST=localhost** and **DB_PORT=15432** when running locally
+- LM Studio connection is automatic via `http://host.docker.internal:1234/v1` (configured in code)
+
+**docker-compose.yml automatically passes these variables** to the containers, so you typically don't need to modify `.env` unless changing defaults.
 
 ## Embedding System
 

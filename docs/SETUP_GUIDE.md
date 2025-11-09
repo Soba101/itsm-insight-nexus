@@ -1,96 +1,214 @@
 # Complete Setup Guide - ITSM Insight Nexus
 
+This guide covers the full setup process for the ITSM Insight Nexus platform with AI-powered features.
+
 ## Prerequisites
 
-- Docker and Docker Compose installed
-- Node.js 18+ installed
-- Conda environment (itsm)
+- **Docker Desktop** - For running PostgreSQL, PostgREST, and AI services
+- **Node.js 18+** - For frontend and auth backend
+- **Conda environment** - Recommended for dependency isolation (`itsm`)
+- **LM Studio** - For local AI embeddings (download from [lmstudio.ai](https://lmstudio.ai))
+
+## Architecture Overview
+
+```
+Frontend (Vite:8080)
+        ↓
+    ┌───────────┬──────────────┬─────────────┐
+    ↓           ↓              ↓             ↓
+Auth API    PostgREST      AI Backend    LM Studio
+(Node:3001) (REST:3000)    (FastAPI:8000) (Embed:1234)
+    ↓           ↓              ↓             ↓
+    └───────────┴──────────────┴─────────────┘
+                ↓
+        PostgreSQL 15 + pgvector
+                ↓
+        Embedding Worker (Background)
+```
 
 ## Step-by-Step Setup
 
-### 1. Start Docker Postgres
+### 1. Clone and Install
 
 ```bash
-docker-compose up -d
+# Clone repository
+git clone <YOUR_GIT_URL>
+cd itsm-insight-nexus
+
+# Activate conda environment (prevents dependency conflicts)
+conda activate itsm
+
+# Install frontend dependencies
+npm install
 ```
 
-This starts:
-- PostgreSQL on port 15432
-- PostgREST on port 3000
-- pgAdmin on port 5050
+### 2. Setup LM Studio (AI Embeddings)
 
-### 2. Setup Backend (Authentication API)
+This is required for semantic similarity search:
+
+1. Download and install [LM Studio](https://lmstudio.ai)
+2. In LM Studio, download the model: **text-embedding-embeddinggemma-300m-qat**
+3. Start the local server:
+   - Click "Local Server" tab
+   - Port: **1234** (default)
+   - Load the embedding model
+   - Click "Start Server"
+4. Verify it's running:
+   ```bash
+   curl http://localhost:1234/v1/models
+   ```
+
+### 3. Start Docker Services
 
 ```bash
-# Navigate to backend directory
-cd backend
+# Start all backend services
+docker compose up -d postgres postgrest pgadmin python-backend embedding-worker
+
+# Verify all containers are running
+docker ps
+
+# You should see:
+# - itsm-postgres          (port 15432)
+# - itsm-postgrest         (port 3000)
+# - itsm-pgadmin          (port 5050)
+# - itsm-python-backend   (port 8000)
+# - itsm-embedding-worker (background)
+```
+
+### 4. Setup Authentication Backend
+
+```bash
+# Navigate to auth backend directory
+cd backend-auth
 
 # Install dependencies
 npm install
 
-# Run database migration (creates users table)
+# Run database migration (creates users and password_reset_tokens tables)
 node run-migration.js
 
-# Start the backend server
+# Start the auth API server
 npm run dev
 ```
 
-Backend will run on **http://localhost:3001**
+This starts the JWT authentication service on **http://localhost:3001**
 
-### 3. Setup Frontend
+**Keep this terminal running**, or use a process manager like PM2.
+
+### 5. Start Frontend Development Server
 
 ```bash
-# Navigate back to root
-cd ..
+# Open a new terminal
+# Navigate back to project root
+cd /path/to/itsm-insight-nexus
 
-# Activate conda environment
+# Activate conda if not already active
 conda activate itsm
 
-# Install dependencies (if not already done)
-npm install
-
-# Start frontend dev server
+# Start Vite dev server
 npm run dev
 ```
 
-Frontend will run on **http://localhost:8080**
+Frontend will be available at **http://localhost:8080**
 
-### 4. Login
+### 6. Login to Application
 
-Open http://localhost:8080 and log in with:
+Open http://localhost:8080 in your browser and log in with:
+
 - **Email:** `admin@itsm.local`
 - **Password:** `admin123`
+
+### 7. Initialize AI Features (First Time Only)
+
+After first login, populate embeddings for existing tickets:
+
+```bash
+# Generate embeddings for all tickets (may take a few minutes)
+docker exec itsm-python-backend python scripts/populate_embeddings.py
+
+# Optional: limit to first 100 tickets for testing
+docker exec itsm-python-backend python scripts/populate_embeddings.py --limit 100
+
+# Establish parent-child relationships based on similarity
+# First, preview what will be done
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --dry-run
+
+# Then apply the relationships
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
+
+# The embedding worker will automatically process new tickets going forward
+```
 
 ---
 
 ## Environment Configuration
 
-### Frontend (`.env`)
+All services are now configured via environment variables and Docker Compose. The main configuration files are:
+
+### Frontend Root `.env`
+
 ```bash
-# Backend API
+# Supabase (LEGACY - not currently used)
+VITE_SUPABASE_PROJECT_ID="..."
+VITE_SUPABASE_PUBLISHABLE_KEY="..."
+VITE_SUPABASE_URL="..."
+
+# Backend API (ACTIVE)
 VITE_API_BASE_URL=http://localhost:3001
 
-# Database (for scripts/admin tools)
-DB_HOST=localhost
-DB_PORT=15432
-DB_NAME=itsm_db
-DB_USER=postgres
-DB_PASSWORD=postgres
+# ServiceNow Integration (for scripts)
+SERVICENOW_INSTANCE_URL="https://your-instance.service-now.com"
+SERVICENOW_USERNAME="admin"
+SERVICENOW_PASSWORD="your_password"
+SERVICENOW_AUTH_TYPE="basic"
+
+# Docker Postgres Connection (for scripts)
+DB_HOST="localhost"
+DB_PORT="15432"
+DB_NAME="itsm_db"
+DB_USER="postgres"
+DB_PASSWORD="postgres"
 ```
 
-### Backend (`backend/.env`)
+### Backend Auth `backend-auth/.env`
+
 ```bash
-# Server
+# Server Configuration
 PORT=3001
-JWT_SECRET=change-this-to-a-secure-random-string-in-production
+JWT_SECRET=921ded1a3143d5745e14587d2a1877ce52179acda540d13d8d63ceefad62ef4b15049201ade10f636f6e95d85ed813fa8086e89c7c5c71d4d14c218fb14d4fd4
 
-# Database
+# Database (connects to Docker Postgres from host)
 DB_HOST=localhost
 DB_PORT=15432
 DB_NAME=itsm_db
 DB_USER=postgres
 DB_PASSWORD=postgres
 ```
+
+### Python Backend `backend-python/.env`
+
+```bash
+# JWT Secret (MUST match backend-auth/.env)
+JWT_SECRET=921ded1a3143d5745e14587d2a1877ce52179acda540d13d8d63ceefad62ef4b15049201ade10f636f6e95d85ed813fa8086e89c7c5c71d4d14c218fb14d4fd4
+
+# Database (connects to Postgres container via Docker network)
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=itsm_db
+DB_USER=postgres
+DB_PASSWORD=postgres
+
+# Service Info
+SERVICE_NAME=itsm-ai-backend
+SERVICE_VERSION=1.0.0
+LOG_LEVEL=INFO
+```
+
+**Important Notes:**
+- `JWT_SECRET` must be identical in both backend-auth and backend-python
+- Backend-auth uses `DB_HOST=localhost` and `DB_PORT=15432` (external)
+- Python backend uses `DB_HOST=postgres` and `DB_PORT=5432` (Docker network)
+- LM Studio connection is automatic via `http://host.docker.internal:1234/v1`
 
 ---
 

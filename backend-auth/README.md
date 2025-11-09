@@ -1,48 +1,81 @@
 # ITSM Backend Authentication API
 
-Backend API server for ITSM Insight Nexus authentication using Docker Postgres.
+JWT-based authentication API for ITSM Insight Nexus using Docker PostgreSQL.
+
+## Overview
+
+This Express.js backend provides:
+- User registration and login with JWT tokens
+- Password reset functionality
+- Token validation middleware
+- PostgreSQL-based user management
+
+**Port:** 3001  
+**Database:** Docker Postgres (itsm_db) on port 15432
 
 ## Setup
 
-### 1. Install Dependencies
+### 1. Prerequisites
+
+- Docker Postgres running (`docker compose up -d postgres`)
+- Node.js 18+ installed
+
+### 2. Install Dependencies
 
 ```bash
-cd backend
+cd backend-auth
 npm install
 ```
 
-### 2. Configure Environment
+### 3. Configure Environment
 
-The `.env` file is already configured with default Docker Postgres credentials.
+Create or verify `backend-auth/.env`:
 
-If needed, you can modify:
-- `PORT` - API server port (default: 3001)
-- `JWT_SECRET` - Secret key for JWT tokens (change in production!)
-- `DB_*` - Database connection settings
+```bash
+# Server Configuration
+PORT=3001
+JWT_SECRET=921ded1a3143d5745e14587d2a1877ce52179acda540d13d8d63ceefad62ef4b15049201ade10f636f6e95d85ed813fa8086e89c7c5c71d4d14c218fb14d4fd4
 
-### 3. Run Database Migration
+# Database Connection (from host to Docker)
+DB_HOST=localhost
+DB_PORT=15432
+DB_NAME=itsm_db
+DB_USER=postgres
+DB_PASSWORD=postgres
+```
 
-Make sure Docker Postgres is running (`docker-compose up -d`), then:
+**Important:** 
+- `JWT_SECRET` must match the one in `backend-python/.env` for AI backend authentication
+- Use `DB_HOST=localhost` and `DB_PORT=15432` (external Docker port)
+
+### 4. Run Database Migration
+
+Ensure Docker Postgres is running, then:
 
 ```bash
 node run-migration.js
 ```
 
 This will:
-- Create the `users` and `password_reset_tokens` tables
-- Create a test admin user
+- Create `users` table with columns: id, email, password_hash, full_name, role, is_active, created_at, updated_at
+- Create `password_reset_tokens` table
+- Seed test admin user
 
-### 4. Start the Server
+### 5. Start the Server
 
 ```bash
+# Development mode (with auto-reload)
 npm run dev
+
+# Production mode
+npm start
 ```
 
-Server will run on `http://localhost:3001`
+Server will run on **http://localhost:3001**
 
 ## Test Credentials
 
-After running the migration:
+After running the migration, you can log in with:
 
 ```
 Email: admin@itsm.local

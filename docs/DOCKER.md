@@ -1,103 +1,300 @@
 # Docker Setup for ITSM Insight Nexus
 
-This guide explains how to run a local Postgres database using Docker as an alternative to Supabase.
+This guide explains the Docker-based architecture for running PostgreSQL with pgvector, PostgREST API, Python AI backend, and supporting services.
 
 ## Prerequisites
 
 - Docker Desktop installed and running
 - Docker Compose (included with Docker Desktop)
+- LM Studio running on host (for AI embeddings)
 
 ## Quick Start
 
-1. **Start the database:**
-   ```bash
-   docker-compose up -d
-   ```
+### 1. Start All Services
 
-2. **Verify containers are running:**
-   ```bash
-   docker ps
-   ```
-   You should see `itsm-postgres` and `itsm-pgadmin` containers.
+```bash
+# Start all backend services
+docker compose up -d
 
-3. **Check database logs:**
-   ```bash
-   docker logs itsm-postgres
-   ```
+# Or start specific services
+docker compose up -d postgres postgrest pgadmin python-backend embedding-worker
+```
 
-## What's Included
+### 2. Verify Services
 
-- **PostgreSQL 15** (port 15432)
-  - Database: `itsm_db`
-  - User: `postgres`
-  - Password: `postgres`
-  - Contains the same schema and sample data as Supabase
-  - **Note:** Using port 15432 to avoid conflicts with local Postgres on 5432
+```bash
+# Check all containers are running
+docker ps
 
-- **PostgREST API** (port 3000)
-  - Provides a RESTful API directly from the Postgres database
-  - Accessible at <http://localhost:3000>
-  - Automatically generates endpoints based on database schema
-  - Example: <http://localhost:3000/tickets> to query tickets
+# You should see:
+# - itsm-postgres          (port 15432)
+# - itsm-postgrest         (port 3000)
+# - itsm-pgadmin          (port 5050)
+# - itsm-python-backend   (port 8000)
+# - itsm-embedding-worker (background)
 
-- **pgAdmin 4** (optional, port 5050)
-  - Web interface: <http://localhost:5050>
-  - Email: `admin@localhost.com`
-  - Password: `admin`
+# Check service logs
+docker logs itsm-postgres
+docker logs itsm-python-backend
+docker logs itsm-embedding-worker
+```
 
-## Connecting to the Database
+## Services Overview
+
+### PostgreSQL 15 with pgvector (port 15432)
+
+- **Image:** `pgvector/pgvector:pg15`
+- **Container:** `itsm-postgres`
+- **Database:** `itsm_db`
+- **User:** `postgres`
+- **Password:** `postgres`
+- **External Port:** 15432 (to avoid conflicts with local Postgres on 5432)
+- **Internal Port:** 5432
+- **Features:**
+  - Full ServiceNow incidents schema
+  - pgvector extension for semantic search (768-dim embeddings)
+  - HNSW indexes for fast similarity search
+  - Automatic embedding queue triggers
+
+**Initial Data:**
+- Sample tickets loaded from `docker/init.sql`
+- Migrations auto-applied from `docker/migrations/`
+
+### PostgREST API (port 3000)
+
+- **Image:** `postgrest/postgrest:latest`
+- **Container:** `itsm-postgrest`
+- **Purpose:** Auto-generated REST API from Postgres schema
+- **Access:** <http://localhost:3000>
+- **Endpoints:**
+  - `GET /servicenow_incidents` - List all tickets
+  - `GET /servicenow_incidents?incident_number=eq.INC0010001` - Filter tickets
+  - `GET /embedding_queue` - View embedding queue status
+
+**Example Queries:**
+
+```bash
+# Get all tickets
+curl http://localhost:3000/servicenow_incidents
+
+# Filter by priority
+curl "http://localhost:3000/servicenow_incidents?priority=eq.1"
+
+# Get single ticket
+curl "http://localhost:3000/servicenow_incidents?incident_number=eq.INC0010001"
+```
+
+### Python AI Backend (port 8000)
+
+- **Image:** Custom (built from `backend-python/Dockerfile`)
+- **Container:** `itsm-python-backend`
+- **Framework:** FastAPI
+- **Purpose:** AI-powered similarity search and embeddings
+- **Access:** <http://localhost:8000>
+- **API Docs:** <http://localhost:8000/docs>
+
+**Key Endpoints:**
+- `POST /api/ai/similarity/search` - Find similar tickets
+- `GET /api/ai/similarity/tickets/{id}/family` - Get parent/children
+- `POST /api/ai/similarity/embed` - Generate embedding for text
+- `GET /api/ai/health` - Health check
+
+**Features:**
+- JWT authentication (validates tokens from auth backend)
+- Integrates with LM Studio for embeddings
+- pgvector queries for similarity search
+- Batch processing scripts included
+
+### Embedding Worker (background)
+
+- **Image:** Same as python-backend
+- **Container:** `itsm-embedding-worker`
+- **Command:** `python scripts/embedding_worker.py --interval 10 --batch-size 16`
+- **Purpose:** Automatic background processing of embedding queue
+
+**How It Works:**
+1. Database trigger enqueues new/updated tickets
+2. Worker polls queue every 10 seconds
+3. Processes up to 16 tickets per batch
+4. Generates embeddings via LM Studio
+5. Updates tickets with embedding vectors
+6. Marks queue entries as completed
+
+**Monitoring:**
+
+```bash
+# View worker logs
+docker logs -f itsm-embedding-worker
+
+# Check queue status
+docker exec itsm-postgres psql -U postgres -d itsm_db \
+  -c "SELECT status, COUNT(*) FROM embedding_queue GROUP BY status;"
+```
+
+### pgAdmin 4 (port 5050)
+
+- **Image:** `dpage/pgadmin4:latest`
+- **Container:** `itsm-pgadmin`
+- **Web Interface:** <http://localhost:5050>
+- **Email:** `admin@localhost.com`
+- **Password:** `admin`
+
+**Purpose:** Visual database management and query tool
+
+## Connecting to Services
+
+### From Your Application
+
+The frontend now supports Docker Postgres via PostgREST:
+
+1. Open the app at <http://localhost:8080>
+2. Login with `admin@itsm.local / admin123`
+3. Navigate to **Settings**
+4. Verify **Data Source** is set to "Local API (Docker Postgres)"
+5. API Base URL should be `http://localhost:3000`
+
+**Data Flow:**
+- Frontend → PostgREST (`http://localhost:3000/servicenow_incidents`)
+- PostgREST → Postgres (`itsm-postgres:5432`)
+- AI features → Python Backend (`http://localhost:8000`)
 
 ### From pgAdmin
 
-1. Open <http://localhost:5050> in your browser
-2. Login with `admin@localhost.com` / `admin`
+1. Open <http://localhost:5050> in browser
+2. Login: `admin@localhost.com` / `admin`
 3. Click "Add New Server"
 4. **General tab:**
-   - Name: `ITSM Local` (or any name you like)
+   - Name: `ITSM Local`
 5. **Connection tab:**
-   - Host name/address: `itsm-postgres` ⚠️ **Use the container name, NOT localhost**
-   - Port: `5432` ⚠️ **Use internal port 5432, NOT 15432**
-   - Maintenance database: `itsm_db`
+   - Host: `itsm-postgres` ⚠️ (use container name, not localhost)
+   - Port: `5432` ⚠️ (internal port, not 15432)
+   - Database: `itsm_db`
    - Username: `postgres`
    - Password: `postgres`
-6. Click "Save"
 
-**Important:** pgAdmin runs inside Docker, so it connects to Postgres using the Docker network. The container name `itsm-postgres` is the hostname on that network.
+**Why `itsm-postgres`?** pgAdmin runs inside Docker and uses the Docker network where containers are accessible by their names.
 
-### From your application
+### From Host Machine (psql, scripts)
 
-**The app now supports Docker Postgres via PostgREST!**
+```bash
+# Connect with psql
+psql -h localhost -p 15432 -U postgres -d itsm_db
 
-1. Open the app at <http://localhost:8080>
-2. Navigate to **Settings**
-3. Change **Data Source** to "Local API (Docker Postgres)"
-4. Set **API Base URL** to `http://localhost:3000`
-5. Click **Save Settings**
+# Or use environment variables
+export PGHOST=localhost
+export PGPORT=15432
+export PGDATABASE=itsm_db
+export PGUSER=postgres
+export PGPASSWORD=postgres
+psql
+```
 
-The app will now use PostgREST to query the Docker Postgres database. You can view tickets at <http://localhost:8080/tickets>.
+**From Python Scripts:**
 
-**How it works:**
-- PostgREST automatically creates a REST API from your Postgres schema
-- The app queries `http://localhost:3000/tickets` which maps to the `public.tickets` table
-- Filters and pagination are handled via PostgREST's query parameters
+```python
+import psycopg2
+conn = psycopg2.connect(
+    host="localhost",
+    port=15432,
+    database="itsm_db",
+    user="postgres",
+    password="postgres"
+)
+```
 
 ## Useful Commands
 
+### Service Management
+
 ```bash
-# Start containers
-docker-compose up -d
+# Start all services
+docker compose up -d
 
-# Stop containers
-docker-compose down
+# Start specific services
+docker compose up -d postgres postgrest python-backend
 
-# Stop and remove all data
-docker-compose down -v
+# Stop all services
+docker compose down
 
-# View logs
+# Stop and remove volumes (deletes all data)
+docker compose down -v
+
+# Restart a service
+docker compose restart python-backend
+
+# Rebuild and restart after code changes
+docker compose up -d --build python-backend
+```
+
+### Logs and Debugging
+
+```bash
+# View logs for a service
 docker logs itsm-postgres
-docker logs itsm-pgadmin
+docker logs itsm-python-backend
+docker logs itsm-embedding-worker
 
-# Connect with psql CLI
+# Follow logs in real-time
+docker logs -f itsm-embedding-worker
+
+# View last 100 lines
+docker logs --tail 100 itsm-python-backend
+```
+
+### Database Operations
+
+```bash
+# Connect with psql
+docker exec -it itsm-postgres psql -U postgres -d itsm_db
+
+# Run SQL query directly
+docker exec itsm-postgres psql -U postgres -d itsm_db -c "SELECT COUNT(*) FROM servicenow_incidents;"
+
+# Check embedding queue status
+docker exec itsm-postgres psql -U postgres -d itsm_db \
+  -c "SELECT status, COUNT(*) FROM embedding_queue GROUP BY status;"
+
+# Backup database
+docker exec itsm-postgres pg_dump -U postgres itsm_db > backup.sql
+
+# Restore database
+docker exec -i itsm-postgres psql -U postgres -d itsm_db < backup.sql
+```
+
+### AI Backend Operations
+
+```bash
+# Test AI backend health
+curl http://localhost:8000/api/ai/health
+
+# Populate embeddings for all tickets
+docker exec itsm-python-backend python scripts/populate_embeddings.py
+
+# Populate with limit
+docker exec itsm-python-backend python scripts/populate_embeddings.py --limit 100 --batch-size 8
+
+# Establish ticket relationships
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --dry-run
+
+# Access Python backend shell
+docker exec -it itsm-python-backend bash
+```
+
+### System Monitoring
+
+```bash
+# Check container status
+docker ps
+
+# Check resource usage
+docker stats
+
+# Inspect container details
+docker inspect itsm-postgres
+
+# Check container health
+docker inspect --format='{{.State.Health.Status}}' itsm-python-backend
+```
 docker exec -it itsm-postgres psql -U postgres -d itsm_db
 
 # Restart containers

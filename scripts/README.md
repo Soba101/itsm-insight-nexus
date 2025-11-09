@@ -1,33 +1,39 @@
 # Scripts Directory
 
-This directory contains utility scripts for ServiceNow integration.
+Utility scripts for ServiceNow integration, data loading, and AI embeddings.
+
+## Overview
+
+This directory contains Python scripts for:
+- Fetching incidents from ServiceNow API
+- Loading data into Docker PostgreSQL
+- Generating embeddings for semantic search
+- Establishing ticket relationships
 
 ## Setup
 
 ### Install Dependencies
 
 ```bash
-# Using pip
-pip install -r scripts/requirements.txt
-
-# Or using conda
+# Activate conda environment
 conda activate itsm
+
+# Install Python packages
 pip install -r scripts/requirements.txt
 ```
 
 ### Environment Variables
 
-All scripts now use environment variables from the `.env` file in the project root. Required variables:
+Scripts read from `.env` in project root. Required variables:
 
 ```env
+# ServiceNow API
 SERVICENOW_INSTANCE_URL="https://dev305874.service-now.com"
 SERVICENOW_USERNAME="admin"
 SERVICENOW_PASSWORD="your_password"
 SERVICENOW_AUTH_TYPE="basic"
-```
 
-Optional database configuration (defaults shown):
-```env
+# Docker Postgres (external connection from host)
 DB_HOST="localhost"
 DB_PORT="15432"
 DB_NAME="itsm_db"
@@ -35,51 +41,187 @@ DB_USER="postgres"
 DB_PASSWORD="postgres"
 ```
 
-## Files
+## Scripts
 
-### `fetch_servicenow_incidents.py`
-Fetches incidents from ServiceNow using the Table API (REST API) with complete field data including:
-- caller_id
-- assignment_group
-- impact
-- urgency
-- All other incident fields
+### ServiceNow Integration
+
+#### `fetch_servicenow_incidents.py`
+
+Fetches incidents from ServiceNow Table API with complete field data.
 
 **Usage:**
+
 ```bash
-python3 scripts/fetch_servicenow_incidents.py > data/servicenow_incidents_full.json
+# Fetch all incidents to JSON file
+python scripts/fetch_servicenow_incidents.py > data/servicenow_incidents_full.json
+
+# Or redirect to custom file
+python scripts/fetch_servicenow_incidents.py > data/incidents_$(date +%Y%m%d).json
 ```
 
-### `insert_servicenow_incidents.py`
-Inserts ServiceNow incidents from JSON file into PostgreSQL database.
+**Includes:**
+- All incident fields (number, short_description, description, priority, state, etc.)
+- caller_id, assignment_group
+- impact, urgency
+- Timestamps (opened_at, sys_created_on, etc.)
+
+#### `insert_servicenow_incidents.py`
+
+Loads ServiceNow incidents from JSON into PostgreSQL `servicenow_incidents` table.
 
 **Usage:**
+
 ```bash
-python3 scripts/insert_servicenow_incidents.py
+# Load from default file
+python scripts/insert_servicenow_incidents.py
+
+# Specify custom file
+python scripts/insert_servicenow_incidents.py --file data/custom_incidents.json
 ```
 
 **Requirements:**
-- psycopg2-binary: `pip3 install psycopg2-binary` or `conda install psycopg2`
-- Docker Postgres must be running on port 15432
+- Docker Postgres running on port 15432
+- JSON file in ServiceNow Table API format
+- `psycopg2-binary` package installed
 
-### `test_servicenow_api.sh`
-Test script to verify ServiceNow REST API connectivity and fetch a single incident.
+#### `test_servicenow_api.sh`
+
+Quick test script to verify ServiceNow API connectivity.
 
 **Usage:**
+
 ```bash
+chmod +x scripts/test_servicenow_api.sh
 ./scripts/test_servicenow_api.sh
+```
+
+### AI / Embeddings (Docker Backend)
+
+These scripts run inside the `itsm-python-backend` container:
+
+#### Populate Embeddings
+
+Generate embeddings for tickets that don't have them yet:
+
+```bash
+# Process all tickets without embeddings
+docker exec itsm-python-backend python scripts/populate_embeddings.py
+
+# Limit to first 100 tickets
+docker exec itsm-python-backend python scripts/populate_embeddings.py --limit 100
+
+# Use smaller batch size (default 16)
+docker exec itsm-python-backend python scripts/populate_embeddings.py --batch-size 8
+
+# Dry run (preview without making changes)
+docker exec itsm-python-backend python scripts/populate_embeddings.py --dry-run
+```
+
+**What it does:**
+1. Queries tickets without embeddings
+2. Processes in configurable batches
+3. Generates 768-dim vectors via LM Studio
+4. Stores embeddings in PostgreSQL with pgvector
+
+#### Establish Ticket Relationships
+
+Create parent-child relationships based on similarity:
+
+```bash
+# Preview relationships (dry run)
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --dry-run
+
+# Apply relationships with default threshold (0.75)
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
+
+# Use higher similarity threshold
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --min-similarity 0.85
+
+# Limit processing
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --limit 50
+```
+
+**How it works:**
+1. Finds tickets without parents
+2. Searches for older similar tickets using pgvector
+3. Assigns most similar ticket as parent (if above threshold)
+4. Database triggers update child_incidents arrays automatically
+
+**Recommended workflow:**
+```bash
+# 1. Generate embeddings first
+docker exec itsm-python-backend python scripts/populate_embeddings.py
+
+# 2. Preview relationships
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --dry-run
+
+# 3. Apply relationships
+docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
+
+# 4. View in Graph page of application
+```
+
+#### Embedding Worker (Background)
+
+The `embedding_worker.py` script runs continuously as a Docker service:
+
+```bash
+# Check worker status
+docker logs -f itsm-embedding-worker
+
+# Restart worker
+docker compose restart embedding-worker
+
+# Run manually (for testing)
+docker exec itsm-python-backend python scripts/embedding_worker.py --interval 10 --batch-size 16
 ```
 
 ## Data Flow
 
-1. **Fetch** → `fetch_servicenow_incidents.py` → `data/servicenow_incidents_full.json`
-2. **Insert** → `insert_servicenow_incidents.py` → Docker PostgreSQL (`servicenow_incidents` table)
+```
+1. ServiceNow → fetch_servicenow_incidents.py → data/*.json
+2. JSON → insert_servicenow_incidents.py → PostgreSQL servicenow_incidents
+3. New tickets → DB trigger → embedding_queue
+4. embedding_worker.py → processes queue → generates embeddings
+5. establish_ticket_relationships.py → creates parent-child links
+6. Frontend → AI Backend → pgvector queries → similarity results
+```
 
-## Configuration
+## Troubleshooting
 
-~~All scripts use the ServiceNow credentials from `mcp.json`~~
+### ServiceNow API Issues
 
-**Updated:** All scripts now read credentials from the `.env` file using `python-dotenv`.
+```bash
+# Test connectivity
+./scripts/test_servicenow_api.sh
+
+# Check credentials in .env
+cat .env | grep SERVICENOW
+```
+
+### Database Connection Issues
+
+```bash
+# Verify Docker Postgres is running
+docker ps | grep itsm-postgres
+
+# Test connection
+psql -h localhost -p 15432 -U postgres -d itsm_db -c "SELECT 1"
+```
+
+### Embedding Issues
+
+```bash
+# Check LM Studio is running
+curl http://localhost:1234/v1/models
+
+# View Python backend logs
+docker logs itsm-python-backend
+
+# Check queue status
+docker exec itsm-postgres psql -U postgres -d itsm_db \
+  -c "SELECT status, COUNT(*) FROM embedding_queue GROUP BY status;"
+```
 
 ### MCP Server Configuration
 
