@@ -126,12 +126,18 @@ export const api = {
     }
     if (filters.service) params.business_service = `eq.${filters.service}`;
     if (filters.assignmentGroup) params.assignment_group = `eq.${filters.assignmentGroup}`;
+    
+    // PostgREST date filtering - use separate parameters with AND logic
+    if (filters.dateFrom) {
+      params['opened_at'] = `gte.${filters.dateFrom}`;
+    }
+    if (filters.dateTo) {
+      params['opened_at'] = `lte.${filters.dateTo}`;
+    }
+    // When both are present, use the and parameter to combine conditions
     if (filters.dateFrom && filters.dateTo) {
-  params.opened_at = `gte.${filters.dateFrom},lte.${filters.dateTo}`;
-    } else if (filters.dateFrom) {
-      params.opened_at = `gte.${filters.dateFrom}`;
-    } else if (filters.dateTo) {
-      params.opened_at = `lte.${filters.dateTo}`;
+      params['and'] = `(opened_at.gte.${filters.dateFrom},opened_at.lte.${filters.dateTo})`;
+      delete params['opened_at']; // Remove individual param when using 'and'
     }
     
     const response = await instance.get("/servicenow_incidents", { params });
@@ -139,16 +145,20 @@ export const api = {
   },
 
   async getKPIs(filters: Filters): Promise<KPI> {
-    const settings = getSettings();
-    
-    // Fetch all tickets to calculate KPIs
-    const allTickets = await this.getAllTicketsForCalculation(filters);
-    
-    const total = allTickets.length;
-    const open = allTickets.filter(t => t.status === 'Open').length;
-    const resolved = allTickets.filter(t => t.status === 'Resolved' || t.status === 'Closed').length;
-    const slaCompliant = allTickets.filter(t => t.sla_met === true).length;
-    const sla_compliance = total > 0 ? slaCompliant / total : 0;
+    try {
+      const settings = getSettings();
+      console.log('[API] getKPIs called with filters:', filters);
+      console.log('[API] Settings:', { dataSource: settings.dataSource, apiBaseUrl: settings.apiBaseUrl });
+      
+      // Fetch all tickets to calculate KPIs
+      const allTickets = await this.getAllTicketsForCalculation(filters);
+      console.log('[API] Fetched tickets count:', allTickets.length);
+      
+      const total = allTickets.length;
+      const open = allTickets.filter(t => t.status === 'Open').length;
+      const resolved = allTickets.filter(t => t.status === 'Resolved' || t.status === 'Closed').length;
+      const slaCompliant = allTickets.filter(t => t.sla_met === true).length;
+      const sla_compliance = total > 0 ? slaCompliant / total : 0;
     
     // Calculate MTTR (Mean Time To Resolution) in hours
     const resolvedTickets = allTickets.filter(t => t.resolved_at);
@@ -188,6 +198,10 @@ export const api = {
       backlog,
       backlog_dates,
     };
+    } catch (error) {
+      console.error('[API] Error in getKPIs:', error);
+      throw error;
+    }
   },
 
   async getKPITrends(filters: Filters): Promise<{ 

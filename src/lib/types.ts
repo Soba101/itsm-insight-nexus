@@ -253,3 +253,57 @@ export interface Settings {
   similarityTopK?: number;
   autoDetectDuplicates?: boolean;
 }
+
+export interface UserPreferences {
+  // Appearance
+  theme: "light" | "dark" | "system";
+  
+  // Navigation
+  defaultPage: "dashboard" | "tickets" | "insights" | "graph";
+  
+  // Table Settings
+  ticketsPerPage: 10 | 25 | 50 | 100;
+  defaultSortBy: "opened_at" | "priority" | "status";
+  defaultSortOrder: "asc" | "desc";
+  
+  // Date & Time
+  dateFormat: "MM/DD/YYYY" | "DD/MM/YYYY" | "YYYY-MM-DD";
+  timeFormat: "12h" | "24h";
+  
+  // AI Features
+  enableSimilarTickets: boolean;
+  enableDuplicateDetection: boolean;
+  enableAutoClassification: boolean;
+  similarityThreshold: number; // 0.5 to 0.95
+  
+  // Default Filters
+  defaultStatus?: TicketStatus[];
+  defaultPriority?: Priority[];
+  defaultDateRange?: string; // "7d", "30d", "90d", "all"
+  favoriteAssignmentGroups?: string[];
+  
+  // Notifications
+  enableNotifications: boolean;
+  notifyOnAssignment: boolean;
+  notifyOnStatusChange: boolean;
+  notifyOnSLABreach: boolean;
+}
+
+export const DEFAULT_USER_PREFERENCES: UserPreferences = {
+  theme: "system",
+  defaultPage: "dashboard",
+  ticketsPerPage: 25,
+  defaultSortBy: "opened_at",
+  defaultSortOrder: "desc",
+  dateFormat: "MM/DD/YYYY",
+  timeFormat: "12h",
+  enableSimilarTickets: true,
+  enableDuplicateDetection: true,
+  enableAutoClassification: false,
+  similarityThreshold: 0.75,
+  defaultDateRange: "30d",
+  enableNotifications: true,
+  notifyOnAssignment: true,
+  notifyOnStatusChange: false,
+  notifyOnSLABreach: true,
+};
