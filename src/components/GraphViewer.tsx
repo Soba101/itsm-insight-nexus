@@ -12,7 +12,21 @@ export function GraphViewer({ data }: GraphViewerProps) {
   const cyRef = useRef<Core | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current || !data || !data.nodes || !data.nodes.length) return;
+    if (!containerRef.current || !data || !data.nodes || !data.nodes.length) {
+      cyRef.current?.destroy();
+      cyRef.current = null;
+      return;
+    }
+
+    const nodeColors: Record<string, string> = {
+      root: "#2563eb",
+      parent: "#7c3aed",
+      ancestor: "#4c1d95",
+      sibling: "#f97316",
+      child: "#0ea5e9",
+      grandchild: "#10b981",
+      default: "#94a3b8",
+    };
 
     const elements = [
       ...data.nodes.map((node) => ({
@@ -23,14 +37,7 @@ export function GraphViewer({ data }: GraphViewerProps) {
       })),
     ];
 
-    const getNodeColor = (type: GraphData["nodes"][number]["type"]) => {
-      switch (type) {
-        case "incident": return "hsl(var(--chart-1))";
-        case "problem": return "hsl(var(--chart-2))";
-        case "change": return "hsl(var(--chart-3))";
-        default: return "hsl(var(--muted))";
-      }
-    };
+    cyRef.current?.destroy();
 
     cyRef.current = cytoscape({
       container: containerRef.current,
@@ -39,38 +46,88 @@ export function GraphViewer({ data }: GraphViewerProps) {
         {
           selector: "node",
           style: {
-            "background-color": (ele: NodeSingular) => getNodeColor(ele.data("type") as GraphData["nodes"][number]["type"]),
+            "background-color": (ele: NodeSingular) => {
+              const type = ele.data("type") as GraphData["nodes"][number]["type"];
+              return nodeColors[type] ?? nodeColors.default;
+            },
             label: "data(label)",
-            color: "hsl(var(--foreground))",
+            color: "#0f172a",
+            "text-outline-color": "#ffffff",
+            "text-outline-width": 1,
             "text-valign": "center",
             "text-halign": "center",
-            "font-size": "12px",
-            width: 60,
-            height: 60,
+            "font-size": "11px",
+            width: 52,
+            height: 52,
+            "border-width": 2,
+            "border-color": "#e2e8f0",
           },
         },
         {
           selector: "edge",
           style: {
             width: 2,
-            "line-color": "hsl(var(--border))",
-            "target-arrow-color": "hsl(var(--border))",
+            "line-color": "#94a3b8",
+            "target-arrow-color": "#94a3b8",
             "target-arrow-shape": "triangle",
             "curve-style": "bezier",
+            label: (ele) => {
+              const score = ele.data("score");
+              return typeof score === "number" ? `${Math.round(score * 100)}%` : "";
+            },
+            "font-size": "9px",
+            "text-background-color": "rgba(255,255,255,0.85)",
+            "text-background-opacity": 1,
+            "text-background-padding": "2px",
+            color: "#475569",
           },
         },
       ],
       layout: {
-        name: "cose",
+        name: "concentric",
+        padding: 40,
+        startAngle: Math.PI / 2,
+        sweep: Math.PI * 2,
+        equidistant: true,
+        concentric: (node: NodeSingular) => {
+          const type = node.data("type") as string;
+          switch (type) {
+            case "root":
+              return 6;
+            case "parent":
+            case "ancestor":
+              return 5;
+            case "sibling":
+              return 4;
+            case "child":
+              return 3;
+            case "grandchild":
+              return 2;
+            default:
+              return 1;
+          }
+        },
+        levelWidth: () => 1,
         animate: true,
         animationDuration: 500,
       },
+      wheelSensitivity: 0.2,
+      minZoom: 0.2,
+      maxZoom: 3,
+    });
+
+    cyRef.current.ready(() => {
+      cyRef.current?.resize();
+      cyRef.current?.fit();
     });
 
     return () => {
       cyRef.current?.destroy();
+      cyRef.current = null;
     };
   }, [data]);
+
+  const hasData = data && data.nodes && data.nodes.length > 0;
 
   return (
     <Card>
@@ -80,8 +137,16 @@ export function GraphViewer({ data }: GraphViewerProps) {
       <CardContent>
         <div
           ref={containerRef}
-          className="w-full h-[500px] rounded-lg border bg-background"
-        />
+          className="relative w-full h-[500px] rounded-lg border bg-background"
+        >
+          {!hasData && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-muted-foreground text-sm text-center px-8">
+                No relationships found for this ticket. The ticket may not have any parent or child incidents.
+              </p>
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

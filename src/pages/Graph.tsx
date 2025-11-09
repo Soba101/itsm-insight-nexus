@@ -11,7 +11,7 @@ export default function Graph() {
   const [ticketId, setTicketId] = useState("INC0001234");
   const [searchId, setSearchId] = useState("INC0001234");
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["graph", searchId],
     queryFn: () => api.getGraphLinks(searchId),
     enabled: !!searchId,
@@ -44,6 +44,10 @@ export default function Graph() {
 
       {isLoading ? (
         <Skeleton className="h-[600px]" />
+      ) : error ? (
+        <div className="text-destructive">
+          Error loading graph: {error instanceof Error ? error.message : 'Unknown error'}
+        </div>
       ) : data ? (
         <GraphViewer data={data} />
       ) : null}
