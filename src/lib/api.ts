@@ -16,6 +16,8 @@ import {
   TicketFamilyResponse,
   EmbeddingRequest,
   EmbeddingResponse,
+  Priority,
+  TicketStatus,
 } from "./types";
 
 // Lazy import Supabase client only when needed
@@ -59,7 +61,7 @@ export const api = {
       if (filters.query) query = query.ilike("short_description", `%${filters.query}%`);
       if (filters.priority) {
         // Map P1-P4 to ServiceNow priority 1-5
-        const priorityMap: Record<string, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
+        const priorityMap: Record<Priority, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
         const snPriority = priorityMap[filters.priority];
         if (snPriority) query = query.eq("priority", snPriority);
       }
@@ -69,11 +71,11 @@ export const api = {
       }
       if (filters.status) {
         // Map Ticket status to ServiceNow state
-        const statusMap: Record<string, string[]> = {
-          "Open": ["New"],
+        const statusMap: Record<TicketStatus, string[]> = {
+          Open: ["New"],
           "In Progress": ["In Progress", "On Hold"],
-          "Resolved": ["Resolved"],
-          "Closed": ["Closed", "Cancelled"]
+          Resolved: ["Resolved"],
+          Closed: ["Closed", "Cancelled"],
         };
         const states = statusMap[filters.status];
         if (states && states.length === 1) {
@@ -87,20 +89,21 @@ export const api = {
       if (filters.dateFrom) query = query.gte("opened_at", filters.dateFrom);
       if (filters.dateTo) query = query.lte("opened_at", filters.dateTo);
       
-      const { data, error } = await query;
+  const { data, error } = await query.returns<ServiceNowIncident[]>();
       if (error) throw error;
       
       // Map ServiceNow incidents to Ticket format
-      return (data || []).map((incident: any) => mapServiceNowIncidentToTicket(incident as ServiceNowIncident));
+  const incidents = (data ?? []) as ServiceNowIncident[];
+  return incidents.map((incident) => mapServiceNowIncidentToTicket(incident));
     }
     
     // Docker/PostgREST mode - fetch all tickets from servicenow_incidents
     const instance = createAxiosInstance();
-    const params: any = { limit: 1000 }; // Get up to 1000 tickets for calculation
+  const params: Record<string, string | number> = { limit: 1000 }; // Get up to 1000 tickets for calculation
     
     if (filters.query) params.short_description = `ilike.*${filters.query}*`;
     if (filters.priority) {
-      const priorityMap: Record<string, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
+      const priorityMap: Record<Priority, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
       const snPriority = priorityMap[filters.priority];
       if (snPriority) params.priority = `eq.${snPriority}`;
     }
@@ -108,11 +111,11 @@ export const api = {
       return []; // Only incidents in servicenow_incidents table
     }
     if (filters.status) {
-      const statusMap: Record<string, string[]> = {
-        "Open": ["New"],
+      const statusMap: Record<TicketStatus, string[]> = {
+        Open: ["New"],
         "In Progress": ["In Progress", "On Hold"],
-        "Resolved": ["Resolved"],
-        "Closed": ["Closed", "Cancelled"]
+        Resolved: ["Resolved"],
+        Closed: ["Closed", "Cancelled"],
       };
       const states = statusMap[filters.status];
       if (states && states.length === 1) {
@@ -124,7 +127,7 @@ export const api = {
     if (filters.service) params.business_service = `eq.${filters.service}`;
     if (filters.assignmentGroup) params.assignment_group = `eq.${filters.assignmentGroup}`;
     if (filters.dateFrom && filters.dateTo) {
-      params.opened_at = `gte.${filters.dateFrom},lte.${filters.dateTo}`;
+  params.opened_at = `gte.${filters.dateFrom},lte.${filters.dateTo}`;
     } else if (filters.dateFrom) {
       params.opened_at = `gte.${filters.dateFrom}`;
     } else if (filters.dateTo) {
@@ -291,7 +294,7 @@ export const api = {
         query = query.ilike("short_description", `%${filters.query}%`);
       }
       if (filters.priority) {
-        const priorityMap: Record<string, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
+        const priorityMap: Record<Priority, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
         const snPriority = priorityMap[filters.priority];
         if (snPriority) query = query.eq("priority", snPriority);
       }
@@ -300,11 +303,11 @@ export const api = {
         return { items: [], total: 0 };
       }
       if (filters.status) {
-        const statusMap: Record<string, string[]> = {
-          "Open": ["New"],
+        const statusMap: Record<TicketStatus, string[]> = {
+          Open: ["New"],
           "In Progress": ["In Progress", "On Hold"],
-          "Resolved": ["Resolved"],
-          "Closed": ["Closed", "Cancelled"]
+          Resolved: ["Resolved"],
+          Closed: ["Closed", "Cancelled"],
         };
         const states = statusMap[filters.status];
         if (states && states.length === 1) {
@@ -330,7 +333,7 @@ export const api = {
       const start = (page - 1) * pageSize;
       query = query.range(start, start + pageSize - 1).order("opened_at", { ascending: false });
 
-      const { data, error, count } = await query;
+  const { data, error, count } = await query.returns<ServiceNowIncident[]>();
 
       if (error) {
         console.error("Error fetching tickets:", error);
@@ -338,9 +341,8 @@ export const api = {
       }
 
       // Map ServiceNow incidents to Ticket format
-      const tickets = (data || []).map((incident: any) => 
-        mapServiceNowIncidentToTicket(incident as ServiceNowIncident)
-      );
+      const incidents = (data ?? []) as ServiceNowIncident[];
+      const tickets = incidents.map((incident) => mapServiceNowIncidentToTicket(incident));
 
       return {
         items: tickets,
@@ -352,12 +354,12 @@ export const api = {
     const instance = createAxiosInstance();
     
     // Build PostgREST query parameters for servicenow_incidents
-    const params: any = {};
+  const params: Record<string, string | number> = {};
     if (filters.query) {
       params.short_description = `ilike.*${filters.query}*`;
     }
     if (filters.priority) {
-      const priorityMap: Record<string, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
+      const priorityMap: Record<Priority, string> = { P1: "1", P2: "2", P3: "3", P4: "4" };
       const snPriority = priorityMap[filters.priority];
       if (snPriority) params.priority = `eq.${snPriority}`;
     }
@@ -365,11 +367,11 @@ export const api = {
       return { items: [], total: 0 };
     }
     if (filters.status) {
-      const statusMap: Record<string, string[]> = {
-        "Open": ["New"],
+      const statusMap: Record<TicketStatus, string[]> = {
+        Open: ["New"],
         "In Progress": ["In Progress", "On Hold"],
-        "Resolved": ["Resolved"],
-        "Closed": ["Closed", "Cancelled"]
+        Resolved: ["Resolved"],
+        Closed: ["Closed", "Cancelled"],
       };
       const states = statusMap[filters.status];
       if (states && states.length === 1) {

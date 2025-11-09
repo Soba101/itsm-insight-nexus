@@ -69,9 +69,10 @@ export default function Tickets() {
             description: `${ticketIds.length} ticket(s) will be closed (feature in development)`,
           });
           break;
-        case 'export':
+        case 'export': {
           // Simple CSV export
-          const csvContent = generateCSV(data?.items.filter(t => selectedTickets.has(t.ticket_id)) || []);
+          const selected = data?.items.filter((t) => selectedTickets.has(t.ticket_id)) ?? [];
+          const csvContent = generateCSV(selected);
           downloadCSV(csvContent, `tickets-export-${new Date().toISOString().split('T')[0]}.csv`);
           toast({
             title: "Export Complete",
@@ -79,6 +80,7 @@ export default function Tickets() {
           });
           setSelectedTickets(new Set());
           break;
+        }
         case 'delete':
           toast({
             title: "Delete Tickets",

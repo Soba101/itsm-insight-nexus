@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Ticket } from "@/lib/types";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { User, ArrowUp, CheckCircle, X } from "lucide-react";
@@ -19,6 +19,8 @@ interface TicketDrawerProps {
 export function TicketDrawer({ ticket, open, onClose }: TicketDrawerProps) {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const slaBadgeVariant: BadgeProps["variant"] = ticket.sla_met ? "success" : "destructive";
 
   const handleAssign = async () => {
     setActionLoading("assign");
@@ -89,7 +91,7 @@ export function TicketDrawer({ ticket, open, onClose }: TicketDrawerProps) {
           <div className="flex gap-2">
             <Badge variant="outline">{ticket.type}</Badge>
             <Badge>{ticket.priority}</Badge>
-            <Badge variant={ticket.sla_met ? "success" : "destructive" as any}>
+            <Badge variant={slaBadgeVariant}>
               {ticket.sla_met ? "SLA Met" : "SLA Missed"}
             </Badge>
           </div>
