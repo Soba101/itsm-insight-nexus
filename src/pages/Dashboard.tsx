@@ -13,24 +13,11 @@ import { formatMTTR, getSLAVariant } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Search, RefreshCw, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Dashboard() {
-  // Set default date range to last 30 days
-  const getDefaultFilters = (): Filters => {
-    const now = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
-    return {
-      dateFrom: thirtyDaysAgo.toISOString(),
-      dateTo: now.toISOString(),
-    };
-  };
-
-  const [filters, setFilters] = useState<Filters>(getDefaultFilters());
+  const [filters, setFilters] = useState<Filters>({});
   const [ticketId, setTicketId] = useState("INC0001234");
   const [searchId, setSearchId] = useState("INC0001234");
   const [autoRefresh, setAutoRefresh] = useState(true);

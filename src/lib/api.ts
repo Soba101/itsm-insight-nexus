@@ -209,40 +209,43 @@ export const api = {
     previous: KPI; 
     delta: Record<string, number> 
   }> {
-    // Calculate date ranges for current and previous periods
-    const currentPeriodDays = 30; // Default to last 30 days
-    const now = new Date();
-    
-    // Current period
-    const currentStart = new Date(now);
-    currentStart.setDate(currentStart.getDate() - currentPeriodDays);
-    
-    // Previous period (same duration, before current period)
-    const previousStart = new Date(currentStart);
-    previousStart.setDate(previousStart.getDate() - currentPeriodDays);
-    
-    const currentFilters = { 
-      ...filters, 
-      dateFrom: currentStart.toISOString(), 
-      dateTo: now.toISOString() 
+    const hasCompleteDateRange = Boolean(filters.dateFrom && filters.dateTo);
+
+    if (!hasCompleteDateRange) {
+      const current = await this.getKPIs(filters);
+      return {
+        current,
+        previous: current,
+        delta: {}
+      };
+    }
+
+    const currentFilters = { ...filters };
+
+    const rangeEnd = new Date(filters.dateTo!);
+    const rangeStart = new Date(filters.dateFrom!);
+
+  const rangeDurationMs = rangeEnd.getTime() - rangeStart.getTime();
+  const safeRangeDuration = Math.max(rangeDurationMs, 24 * 60 * 60 * 1000);
+  const previousRangeEnd = new Date(rangeStart.getTime());
+  const previousRangeStart = new Date(rangeStart.getTime() - safeRangeDuration);
+
+    const previousFilters = {
+      ...filters,
+      dateFrom: previousRangeStart.toISOString(),
+      dateTo: previousRangeEnd.toISOString(),
     };
-    const previousFilters = { 
-      ...filters, 
-      dateFrom: previousStart.toISOString(), 
-      dateTo: currentStart.toISOString() 
-    };
-    
+
     const [current, previous] = await Promise.all([
       this.getKPIs(currentFilters),
       this.getKPIs(previousFilters)
     ]);
-    
-    // Calculate deltas (percentage change)
-    const calculateDelta = (current: number, previous: number): number => {
-      if (previous === 0) return current > 0 ? 100 : 0;
-      return ((current - previous) / previous) * 100;
+
+    const calculateDelta = (currentValue: number, previousValue: number): number => {
+      if (previousValue === 0) return currentValue > 0 ? 100 : 0;
+      return ((currentValue - previousValue) / previousValue) * 100;
     };
-    
+
     const delta = {
       total: calculateDelta(current.total, previous.total),
       open: calculateDelta(current.open, previous.open),
@@ -250,7 +253,7 @@ export const api = {
       sla_compliance: calculateDelta(current.sla_compliance * 100, previous.sla_compliance * 100),
       mttr_hours: calculateDelta(current.mttr_hours, previous.mttr_hours),
     };
-    
+
     return { current, previous, delta };
   },
 

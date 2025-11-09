@@ -15,6 +15,45 @@ interface BreakdownCardProps {
 export function BreakdownCard({ priorityData, categoryData, assignmentData }: BreakdownCardProps) {
   const [activeTab, setActiveTab] = useState("priority");
 
+  // Sort priority data P1->P4 for proper display order
+  const sortedPriorityData = [...priorityData].sort((a, b) => {
+    const priorityOrder: Record<string, number> = { P1: 1, P2: 2, P3: 3, P4: 4 };
+    return (priorityOrder[a.label] || 999) - (priorityOrder[b.label] || 999);
+  });
+
+  const formatLabel = (label: string) => {
+    if (!label) return label;
+
+    // Special case for "Problem Analyzers" to prevent bad splitting
+    if (label === "Problem Analyzers") {
+      return "Problem\nAnalyzers";
+    }
+
+    if (label.includes("/")) {
+      const parts = label.split("/").map((part) => part.trim());
+      return parts.join("\n");
+    }
+
+    if (label.includes(" ")) {
+      const words = label.split(" ");
+      if (words.length === 2) {
+        return words.join("\n");
+      }
+      // For 3+ words, split more intelligently
+      if (words.length === 3) {
+        return `${words[0]} ${words[1]}\n${words[2]}`;
+      }
+      const midpoint = Math.ceil(words.length / 2);
+      const firstLine = words.slice(0, midpoint).join(" ");
+      const secondLine = words.slice(midpoint).join(" ");
+      return `${firstLine}\n${secondLine}`;
+    }
+
+    const maxLength = 20;
+    if (label.length <= maxLength) return label;
+    return `${label.slice(0, maxLength - 1)}…`;
+  };
+
   const getTooltipContent = () => {
     switch (activeTab) {
       case "priority":
@@ -61,34 +100,44 @@ export function BreakdownCard({ priorityData, categoryData, assignmentData }: Br
     }
   };
 
-  const renderChart = (data: Breakdown[]) => (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} layout="vertical">
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-        <XAxis
-          type="number"
-          stroke="hsl(var(--muted-foreground))"
-          tick={{ fill: "hsl(var(--muted-foreground))" }}
-        />
-        <YAxis
-          type="category"
-          dataKey="label"
-          stroke="hsl(var(--muted-foreground))"
-          tick={{ fill: "hsl(var(--muted-foreground))" }}
-        />
-        <Tooltip
-          contentStyle={{
-            backgroundColor: "hsl(var(--popover))",
-            border: "1px solid hsl(var(--border))",
-            borderRadius: "6px",
-          }}
-        />
-        <Bar dataKey="count" fill="hsl(var(--chart-2))" radius={[0, 4, 4, 0]}>
-          <LabelList dataKey="count" position="right" fill="hsl(var(--foreground))" />
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
-  );
+  const renderChart = (data: Breakdown[]) => {
+    return (
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart
+          data={data}
+          layout="vertical"
+          margin={{ top: 10, right: 30, bottom: 10, left: 5 }}
+        >
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+            <XAxis
+              type="number"
+              stroke="hsl(var(--muted-foreground))"
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+            />
+            <YAxis
+              type="category"
+              dataKey="label"
+              stroke="hsl(var(--muted-foreground))"
+              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+              width={120}
+              tickFormatter={formatLabel}
+              tickLine={false}
+              interval={0}
+            />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "hsl(var(--popover))",
+              border: "1px solid hsl(var(--border))",
+              borderRadius: "6px",
+            }}
+          />
+          <Bar dataKey="count" fill="hsl(var(--chart-2))" radius={[0, 4, 4, 0]}>
+            <LabelList dataKey="count" position="right" fill="hsl(var(--foreground))" fontSize={12} />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  };
 
   return (
     <Card>
@@ -117,7 +166,7 @@ export function BreakdownCard({ priorityData, categoryData, assignmentData }: Br
             <TabsTrigger value="assignment">Assignment</TabsTrigger>
           </TabsList>
           <TabsContent value="priority" className="mt-4">
-            {renderChart(priorityData)}
+            {renderChart(sortedPriorityData)}
           </TabsContent>
           <TabsContent value="category" className="mt-4">
             {renderChart(categoryData)}
