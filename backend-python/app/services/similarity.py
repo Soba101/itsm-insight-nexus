@@ -36,8 +36,7 @@ def cosine_similarity_sql(embedding: List[float], limit: int = 5, min_similarity
             priority,
             opened_at,
             parent_incident,
-            similarity_score,
-            (1 - (embedding <=> %s::vector)) AS similarity
+            (1 - (embedding <=> %s::vector)) AS similarity_score
         FROM servicenow_incidents
         WHERE embedding IS NOT NULL
           AND parent_incident IS NULL  -- Only match potential parent tickets
@@ -72,14 +71,17 @@ async def find_similar_tickets(
         register_vector(conn)
         
         cursor = conn.cursor(cursor_factory=RealDictCursor)
-        
+
         # Build query
         sql = cosine_similarity_sql(query_embedding, top_k + 1, min_similarity)  # +1 in case we exclude one
-        
+
+        # Ensure embeddings are native Python floats for psycopg2/pgvector adapters
+        normalized_embedding = [float(value) for value in query_embedding]
+
         # Execute query (need to pass embedding 4 times due to SQL structure)
         cursor.execute(
             sql,
-            (query_embedding, query_embedding, min_similarity, query_embedding, top_k + 1)
+            (normalized_embedding, normalized_embedding, float(min_similarity), normalized_embedding, top_k + 1)
         )
         
         results = cursor.fetchall()
@@ -102,7 +104,7 @@ async def find_similar_tickets(
                 "state": row['state'],
                 "priority": row['priority'],
                 "opened_at": row['opened_at'].isoformat() if row['opened_at'] else None,
-                "similarity_score": float(row['similarity']),
+                "similarity_score": float(row['similarity_score']),
                 "already_has_parent": row['parent_incident'] is not None
             })
         
@@ -163,7 +165,7 @@ async def get_ticket_family(
         # Get the ticket itself
         cursor.execute("""
             SELECT incident_number, short_description, description, state, priority,
-                   opened_at, parent_incident, child_incidents, similarity_score
+                   opened_at, parent_incident, child_incidents
             FROM servicenow_incidents
             WHERE incident_number = %s
         """, (incident_number,))
@@ -173,38 +175,65 @@ async def get_ticket_family(
             return {"error": "Ticket not found"}
         
         ticket_dict = dict(ticket)
+        # Normalize field formats for API consumers
+        opened_at_value = ticket_dict.get('opened_at')
+        if opened_at_value is not None:
+            ticket_dict['opened_at'] = opened_at_value.isoformat()
+        ticket_dict['child_incidents'] = list(ticket_dict.get('child_incidents') or [])
+        ticket_dict['similarity_score'] = None  # Add None for consistency
         
         # Get parent if exists
         parent = None
-        if ticket_dict['parent_incident']:
+        if ticket_dict.get('parent_incident'):
             cursor.execute("""
-                SELECT incident_number, short_description, state, priority, opened_at
+                SELECT incident_number, short_description, description, state, 
+                       priority, opened_at, parent_incident, child_incidents
                 FROM servicenow_incidents
                 WHERE incident_number = %s
             """, (ticket_dict['parent_incident'],))
             parent_row = cursor.fetchone()
             if parent_row:
                 parent = dict(parent_row)
+                parent_opened_at = parent.get('opened_at')
+                if parent_opened_at is not None:
+                    parent['opened_at'] = parent_opened_at.isoformat()
+                parent['child_incidents'] = list(parent.get('child_incidents') or [])
+                parent['similarity_score'] = ticket_dict.get('similarity_score')
         
         # Get children if any
         children = []
-        if ticket_dict['child_incidents']:
-            placeholders = ','.join(['%s'] * len(ticket_dict['child_incidents']))
+        child_incidents_list = ticket_dict.get('child_incidents')
+        if child_incidents_list:
+            placeholders = ','.join(['%s'] * len(child_incidents_list))
             cursor.execute(f"""
-                SELECT incident_number, short_description, state, priority, 
-                       opened_at, similarity_score
+                SELECT incident_number, short_description, description, state, 
+                       priority, opened_at, parent_incident, child_incidents, similarity_score
                 FROM servicenow_incidents
                 WHERE incident_number IN ({placeholders})
                 ORDER BY similarity_score DESC NULLS LAST
-            """, tuple(ticket_dict['child_incidents']))
-            children = [dict(row) for row in cursor.fetchall()]
+            """, tuple(child_incidents_list))
+            children = []
+            for row in cursor.fetchall():
+                child = dict(row)
+                child_opened_at = child.get('opened_at')
+                if child_opened_at is not None:
+                    child['opened_at'] = child_opened_at.isoformat()
+                similarity = child.get('similarity_score')
+                if similarity is not None:
+                    child['similarity_score'] = float(similarity)
+                child['child_incidents'] = list(child.get('child_incidents') or [])
+                children.append(child)
         
         cursor.close()
+        
+        # Calculate total_children count
+        total_children = len(children)
         
         return {
             "ticket": ticket_dict,
             "parent": parent,
-            "children": children
+            "children": children,
+            "total_children": total_children
         }
         
     except Exception as e:

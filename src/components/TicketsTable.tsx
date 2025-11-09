@@ -4,8 +4,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Download, ArrowUpDown } from "lucide-react";
+import { Download, ArrowUpDown, Search, MoreHorizontal } from "lucide-react";
 import { TicketDrawer } from "./TicketDrawer";
+import { SimilarTicketsModal } from "./SimilarTicketsModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface TicketsTableProps {
   tickets?: Ticket[];
@@ -26,6 +33,8 @@ export function TicketsTable({
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [sortField, setSortField] = useState<SortField>("opened_at");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [similarModalOpen, setSimilarModalOpen] = useState(false);
+  const [similarTicketId, setSimilarTicketId] = useState<string | null>(null);
 
   const allSelected = tickets.length > 0 && selectedTickets.size === tickets.length;
   const someSelected = selectedTickets.size > 0 && selectedTickets.size < tickets.length;
@@ -98,6 +107,11 @@ export function TicketsTable({
     a.click();
   };
 
+  const handleFindSimilar = (ticketId: string) => {
+    setSimilarTicketId(ticketId);
+    setSimilarModalOpen(true);
+  };
+
   return (
     <>
       <div className="flex justify-end mb-4">
@@ -167,6 +181,7 @@ export function TicketsTable({
                 </Button>
               </TableHead>
               <TableHead>Description</TableHead>
+              <TableHead className="w-12">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -220,6 +235,21 @@ export function TicketsTable({
                 >
                   {ticket.short_desc}
                 </TableCell>
+                <TableCell onClick={(e) => e.stopPropagation()}>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleFindSimilar(ticket.ticket_id)}>
+                        <Search className="h-4 w-4 mr-2" />
+                        Find Similar
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -233,6 +263,20 @@ export function TicketsTable({
           onClose={() => setSelectedTicket(null)}
         />
       )}
+
+      <SimilarTicketsModal
+        incidentNumber={similarTicketId}
+        open={similarModalOpen}
+        onOpenChange={setSimilarModalOpen}
+        onTicketClick={(incidentNumber) => {
+          // Find the ticket and open its drawer
+          const ticket = tickets.find(t => t.ticket_id === incidentNumber);
+          if (ticket) {
+            setSelectedTicket(ticket);
+            setSimilarModalOpen(false);
+          }
+        }}
+      />
     </>
   );
 }

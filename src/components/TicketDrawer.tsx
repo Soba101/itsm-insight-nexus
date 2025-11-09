@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { User, ArrowUp, CheckCircle, X } from "lucide-react";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { SimilarTicketsCard } from "./SimilarTicketsCard";
+import { TicketFamilyCard } from "./TicketFamilyCard";
 
 interface TicketDrawerProps {
   ticket: Ticket;
@@ -193,6 +195,25 @@ export function TicketDrawer({ ticket, open, onClose }: TicketDrawerProps) {
             </div>
           )}
           */}
+
+          {/* Ticket Family and Similar Tickets */}
+          <Separator />
+          <div className="space-y-4 mt-4">
+            <TicketFamilyCard 
+              incidentNumber={ticket.ticket_id}
+              onTicketClick={(incidentNumber) => {
+                // TODO: Navigate to the clicked ticket or open its drawer
+                console.log("Navigate to ticket:", incidentNumber);
+              }}
+            />
+            <SimilarTicketsCard 
+              incidentNumber={ticket.ticket_id}
+              onTicketClick={(incidentNumber) => {
+                // TODO: Navigate to the clicked ticket or open its drawer
+                console.log("Navigate to ticket:", incidentNumber);
+              }}
+            />
+          </div>
         </div>
       </SheetContent>
     </Sheet>

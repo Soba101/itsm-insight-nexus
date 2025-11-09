@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { Database, Cloud, Server, CheckCircle2, XCircle, Brain } from "lucide-react";
 import {
   Select,
@@ -23,7 +22,7 @@ export default function Settings() {
     authToken: "",
     dataSource: "docker",
     aiBackendUrl: "http://localhost:8000",
-    aiEnabled: false,
+    aiEnabled: true,
   });
   const [previousDataSource, setPreviousDataSource] = useState<"docker" | "supabase">("docker");
   const [isConnected, setIsConnected] = useState(false);
@@ -36,7 +35,7 @@ export default function Settings() {
       setSettings({
         ...parsedSettings,
         aiBackendUrl: parsedSettings.aiBackendUrl || "http://localhost:8000",
-        aiEnabled: parsedSettings.aiEnabled || false,
+        aiEnabled: true,
       });
       setPreviousDataSource(parsedSettings.dataSource);
     }
@@ -46,8 +45,10 @@ export default function Settings() {
 
   const handleSave = () => {
     const dataSourceChanged = previousDataSource !== settings.dataSource;
+    const nextSettings = { ...settings, aiEnabled: true };
     
-    localStorage.setItem("itsm-settings", JSON.stringify(settings));
+    setSettings(nextSettings);
+    localStorage.setItem("itsm-settings", JSON.stringify(nextSettings));
     
     if (dataSourceChanged) {
       toast({
@@ -265,18 +266,15 @@ export default function Settings() {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between space-x-2">
             <div className="space-y-0.5">
-              <Label htmlFor="ai-enabled">Enable AI Features</Label>
+              <p className="text-sm font-medium leading-none">AI Features</p>
               <p className="text-xs text-muted-foreground">
-                Activate AI-powered ticket analysis and insights
+                AI-powered ticket analysis is always enabled for this workspace.
               </p>
             </div>
-            <Switch
-              id="ai-enabled"
-              checked={settings.aiEnabled || false}
-              onCheckedChange={(checked) =>
-                setSettings({ ...settings, aiEnabled: checked })
-              }
-            />
+            <Badge variant="default" className="gap-2">
+              <CheckCircle2 className="h-3 w-3" />
+              Enabled
+            </Badge>
           </div>
 
           <div className="space-y-2">
@@ -288,7 +286,6 @@ export default function Settings() {
               onChange={(e) =>
                 setSettings({ ...settings, aiBackendUrl: e.target.value })
               }
-              disabled={!settings.aiEnabled}
             />
             <p className="text-xs text-muted-foreground">
               Python FastAPI service for NLP and RAG features (default: http://localhost:8000)
@@ -299,7 +296,6 @@ export default function Settings() {
             <Button 
               onClick={testAiConnection} 
               variant="outline"
-              disabled={!settings.aiEnabled}
             >
               Test Connection
             </Button>

@@ -77,7 +77,14 @@ export function DuplicatesPanel({ clusters }: DuplicatesPanelProps) {
               className="p-3 rounded-lg border hover:bg-muted/50 cursor-pointer transition-colors"
             >
               <div className="flex items-center justify-between mb-2">
-                <p className="font-medium">{cluster.cluster_id}</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">{cluster.cluster_id}</p>
+                  {cluster.similarity_score && (
+                    <Badge variant="destructive" className="text-xs">
+                      {(cluster.similarity_score * 100).toFixed(0)}% match
+                    </Badge>
+                  )}
+                </div>
                 <Badge variant="outline">{cluster.ticket_ids.length} tickets</Badge>
               </div>
               <div className="flex flex-wrap gap-1">

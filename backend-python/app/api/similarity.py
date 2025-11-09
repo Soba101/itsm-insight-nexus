@@ -131,7 +131,7 @@ async def search_similar(
 
 			stored_embedding = ticket_row.get("embedding")
 			if stored_embedding is not None:
-				query_embedding = list(stored_embedding)
+				query_embedding = [float(value) for value in stored_embedding]
 			else:
 				combined_text = combine_ticket_text(
 					ticket_row.get("short_description") or "",

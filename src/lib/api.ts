@@ -12,6 +12,10 @@ import {
   Ticket,
   ServiceNowIncident,
   mapServiceNowIncidentToTicket,
+  SimilaritySearchResponse,
+  TicketFamilyResponse,
+  EmbeddingRequest,
+  EmbeddingResponse,
 } from "./types";
 
 // Lazy import Supabase client only when needed
@@ -422,9 +426,55 @@ export const api = {
   },
 
   async getDuplicates(filters: Filters): Promise<DuplicateCluster[]> {
-    // Duplicates require similarity analysis - return empty array for now
-    // In production, this would call an ML service or use pre-computed clusters
-    return [];
+    const settings = getSettings();
+    
+    // If AI backend is not configured, return empty
+    if (!settings.aiBackendUrl) {
+      return [];
+    }
+    
+    try {
+      // Get all tickets
+      const tickets = await this.getTickets(filters);
+      
+      // For each ticket, find similar ones
+      const clusters: DuplicateCluster[] = [];
+      const processed = new Set<string>();
+      
+      for (const ticket of tickets.items.slice(0, 10)) { // Limit to first 10 for performance
+        if (processed.has(ticket.ticket_id)) continue;
+        
+        try {
+          const result = await this.searchSimilarTickets({
+            incident_number: ticket.ticket_id,
+            top_k: 5,
+            min_similarity: 0.85, // High threshold for duplicates
+          });
+          
+          if (result.results.length > 0) {
+            const ticketIds = [
+              ticket.ticket_id,
+              ...result.results.map(r => r.incident_number)
+            ];
+            
+            clusters.push({
+              cluster_id: `cluster-${ticket.ticket_id}`,
+              ticket_ids: ticketIds,
+              similarity_score: result.results[0]?.similarity_score || 0,
+            });
+            
+            ticketIds.forEach(id => processed.add(id));
+          }
+        } catch (error) {
+          console.error(`Failed to find similar tickets for ${ticket.ticket_id}:`, error);
+        }
+      }
+      
+      return clusters;
+    } catch (error) {
+      console.error("Failed to get duplicates:", error);
+      return [];
+    }
   },
 
   async getSummary(ticketIds: string[]): Promise<Summary> {
@@ -500,10 +550,83 @@ export const api = {
     return response.data;
   },
 
+  /**
+   * Search for similar tickets using semantic embeddings
+   */
+  async searchSimilarTickets(params: {
+    incident_number?: string;
+    short_description?: string;
+    description?: string;
+    top_k?: number;
+    min_similarity?: number;
+  }): Promise<SimilaritySearchResponse> {
+    const settings = getSettings();
+    const aiBackendUrl = settings.aiBackendUrl || "http://localhost:8000";
+    const token = localStorage.getItem("auth-token");
+    
+    if (!token) {
+      throw new Error("Authentication required");
+    }
+    
+    const response = await axios.post(
+      `${aiBackendUrl}/api/ai/similarity/search`,
+      params,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    
+    return response.data;
+  },
+
+  /**
+   * Get ticket family (parent + children)
+   */
+  async getTicketFamily(incident_number: string): Promise<TicketFamilyResponse> {
+    const settings = getSettings();
+    const aiBackendUrl = settings.aiBackendUrl || "http://localhost:8000";
+    const token = localStorage.getItem("auth-token");
+    
+    if (!token) {
+      throw new Error("Authentication required");
+    }
+    
+    const response = await axios.get(
+      `${aiBackendUrl}/api/ai/similarity/tickets/${incident_number}/family`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    
+    return response.data;
+  },
+
+  /**
+   * Generate embedding for text (for preview/testing)
+   */
+  async generateEmbedding(data: EmbeddingRequest): Promise<EmbeddingResponse> {
+    const settings = getSettings();
+    const aiBackendUrl = settings.aiBackendUrl || "http://localhost:8000";
+    const token = localStorage.getItem("auth-token");
+    
+    if (!token) {
+      throw new Error("Authentication required");
+    }
+    
+    const response = await axios.post(
+      `${aiBackendUrl}/api/ai/similarity/embed`,
+      data,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    
+    return response.data;
+  },
+
   // Future AI methods (Phase 2+):
   // async classifyTicket(text: string): Promise<ClassificationResult>
   // async analyzeSentiment(text: string): Promise<SentimentResult>
-  // async findDuplicates(ticketId: string): Promise<DuplicateCluster[]>
   // async searchKnowledgeBase(query: string): Promise<KBResult[]>
   // async askRAG(question: string): Promise<RAGAnswer>
 };

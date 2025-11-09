@@ -151,10 +151,62 @@ export interface NLPTopic {
 export interface DuplicateCluster {
   cluster_id: string;
   ticket_ids: string[];
+  similarity_score?: number;
 }
 
 export interface Summary {
   text: string;
+}
+
+// Similarity search types
+export interface SimilarTicket {
+  incident_number: string;
+  short_description: string | null;
+  description: string | null;
+  state: string | null;
+  priority: string | null;
+  opened_at: string | null;
+  similarity_score: number; // 0.0 to 1.0
+  already_has_parent: boolean;
+}
+
+export interface SimilaritySearchResponse {
+  model_name: string;
+  embedding_dimension: number;
+  query_incident: string | null;
+  generated_embedding: boolean;
+  results: SimilarTicket[];
+}
+
+// Ticket family types
+export interface TicketSummary {
+  incident_number: string;
+  short_description: string | null;
+  description: string | null;
+  state: string | null;
+  priority: string | null;
+  opened_at: string | null;
+  parent_incident: string | null;
+  child_incidents: string[] | null;
+  similarity_score: number | null;
+}
+
+export interface TicketFamilyResponse {
+  parent: TicketSummary | null;
+  children: TicketSummary[];
+  total_children: number;
+}
+
+// Embedding request/response
+export interface EmbeddingRequest {
+  short_description: string;
+  description?: string;
+}
+
+export interface EmbeddingResponse {
+  model_name: string;
+  embedding_dimension: number;
+  embedding: number[];
 }
 
 export interface GraphNode {
@@ -196,4 +248,8 @@ export interface Settings {
   dataSource: "docker" | "supabase";
   aiBackendUrl?: string;
   aiEnabled?: boolean;
+  similarityEnabled?: boolean;
+  similarityThreshold?: number;
+  similarityTopK?: number;
+  autoDetectDuplicates?: boolean;
 }

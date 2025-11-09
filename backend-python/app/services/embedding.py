@@ -95,10 +95,13 @@ def generate_embedding(text: str) -> List[float]:
             model=LM_STUDIO_MODEL,
             input=text
         )
-        
-        embedding = response.data[0].embedding
-        logger.debug(f"Generated embedding with dimension: {len(embedding)}")
-        
+
+        raw_embedding = response.data[0].embedding
+        logger.debug(f"Generated embedding with dimension: {len(raw_embedding)}")
+
+        # Ensure we only return native Python floats so psycopg2 can adapt them
+        embedding = [float(value) for value in raw_embedding]
+
         return embedding
         
     except Exception as e:
@@ -139,8 +142,9 @@ def generate_embeddings_batch(texts: List[str], batch_size: int = 16) -> List[Li
                 input=batch
             )
             
-            batch_embeddings = [item.embedding for item in response.data]
-            embeddings.extend(batch_embeddings)
+            for item in response.data:
+                # Normalize to plain Python floats for downstream database adapters
+                embeddings.append([float(value) for value in item.embedding])
         
         logger.info(f"Successfully generated {len(embeddings)} embeddings")
         return embeddings

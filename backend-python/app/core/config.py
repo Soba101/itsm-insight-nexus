@@ -1,6 +1,8 @@
 """
 Configuration management for ITSM AI Backend.
 """
+from typing import Optional
+
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
@@ -28,6 +30,9 @@ class Settings(BaseSettings):
     model_dir: str = "/app/.models"
     embed_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     combine_weight: float = 0.65
+
+    # Optional CORS overrides (comma-separated list)
+    additional_cors_origins: Optional[str] = None
     
     class Config:
         env_file = ".env"

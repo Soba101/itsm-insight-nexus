@@ -23,6 +23,17 @@ logger = logging.getLogger(__name__)
 # Get settings
 settings = get_settings()
 
+default_cors_origins = {
+    "http://localhost:8080",  # Vite dev server
+    "http://localhost:5173",
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:5173",
+}
+
+if settings.additional_cors_origins:
+    extra_origins = [origin.strip() for origin in settings.additional_cors_origins.split(",")]
+    default_cors_origins.update(filter(None, extra_origins))
+
 # Create FastAPI app
 app = FastAPI(
     title="ITSM AI Backend",
@@ -35,12 +46,8 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8080",  # Vite dev server
-        "http://localhost:5173",  # Alternative Vite port
-        "http://127.0.0.1:8080",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=list(default_cors_origins),
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3})(:\d+)?$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
