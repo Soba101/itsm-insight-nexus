@@ -300,3 +300,21 @@ This project uses Lovable for rapid development. Changes can be made via:
 1. **Lovable Platform** - Commits automatically
 2. **Local IDE** - Push changes to sync
 3. **GitHub Directly** - Edit files in browser
+
+## 📚 Documentation
+
+- **[Setup Guide](docs/SETUP_GUIDE.md)** - Complete installation instructions
+- **[Docker Guide](docs/DOCKER.md)** - Container configuration and troubleshooting
+- **[Model Performance](docs/Model-performance.md)** - Evaluation methodology
+- **[Model Results](docs/model-results.md)** - Benchmark results and comparisons
+- **[Quick Start Testing](QUICKSTART_MODEL_TESTING.md)** - Model testing guide
+
+## 📊 Model Performance
+
+Current embedding model: **EmbeddingGemma-300m-qat**
+
+**Speed:** ⭐⭐⭐⭐⭐ Exceptional (26ms avg embedding, 1.2ms search)  
+**Quality:** ⭐☆☆☆☆ Poor (negative separation gap, 38.9% category agreement)  
+**Status:** ⚠️ Not recommended for production
+
+See `docs/model-results.md` for detailed benchmarks and testing Qwen3-8B alternative.

@@ -1094,18 +1094,18 @@ Long-term monitoring and optimization:
 
 ```bash
 # Phase 1: Computational Benchmarks (run these first)
-docker exec itsm-python-backend python scripts/benchmark_embedding_speed.py
-docker exec itsm-python-backend python scripts/benchmark_similarity_search.py
-docker exec itsm-python-backend python scripts/benchmark_e2e_pipeline.py
+docker exec itsm-python-backend python scripts/performance_eval/benchmark_embedding_speed.py
+docker exec itsm-python-backend python scripts/performance_eval/benchmark_similarity_search.py
+docker exec itsm-python-backend python scripts/performance_eval/benchmark_e2e_pipeline.py
 
 # Phase 1: Quality Analysis
-docker exec itsm-python-backend python scripts/analyze_similarity_distribution.py
-docker exec itsm-python-backend python scripts/evaluate_parent_child_links.py
+docker exec itsm-python-backend python scripts/performance_eval/analyze_similarity_distribution.py
+docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_child_links.py
 
 # Phase 2: Advanced Evaluation (requires manual labeling first)
-docker exec itsm-python-backend python scripts/evaluate_precision_at_k.py
-docker exec itsm-python-backend python scripts/evaluate_clustering.py
-docker exec itsm-python-backend python scripts/evaluate_duplicate_detection.py
+docker exec itsm-python-backend python scripts/performance_eval/evaluate_precision_at_k.py
+docker exec itsm-python-backend python scripts/performance_eval/evaluate_clustering.py
+docker exec itsm-python-backend python scripts/performance_eval/evaluate_duplicate_detection.py
 ```
 
 ---

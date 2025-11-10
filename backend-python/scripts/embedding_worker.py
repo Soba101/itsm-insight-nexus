@@ -33,6 +33,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Dual-column mode: populate both embedding columns for A/B testing
+POPULATE_BOTH_MODELS = os.getenv("POPULATE_BOTH_MODELS", "false").lower() == "true"
+
 
 def fetch_queued_tickets(batch_size: int = 16) -> List[Dict[str, Any]]:
     """Fetch tickets from the queue that need embeddings."""
@@ -92,6 +95,16 @@ def process_tickets(tickets: List[Dict[str, Any]]):
         # Generate embeddings
         embeddings = generate_embeddings_batch(texts, batch_size=len(tickets))
         model_info = get_model_info()
+        embedding_dim = model_info['embedding_dimension']
+        
+        # Determine which column to update based on dimension
+        if embedding_dim == 768:
+            column_name = "embedding"
+        elif embedding_dim == 4096:
+            column_name = "embedding_4096"
+        else:
+            logger.warning(f"Unexpected embedding dimension {embedding_dim}, using 'embedding' column")
+            column_name = "embedding"
         
         # Store embeddings
         with get_db_connection() as conn:
@@ -102,10 +115,10 @@ def process_tickets(tickets: List[Dict[str, Any]]):
                 incident = ticket['incident_number']
                 
                 try:
-                    # Update ticket with embedding
-                    cursor.execute("""
+                    # Update ticket with embedding in appropriate column
+                    cursor.execute(f"""
                         UPDATE servicenow_incidents
-                        SET embedding = %s,
+                        SET {column_name} = %s,
                             embedding_model = %s,
                             embedded_at = %s
                         WHERE incident_number = %s
@@ -176,7 +189,13 @@ def run_worker(interval: int = 5, batch_size: int = 16):
     
     init_connection_pool()
     model_info = get_model_info()
-    logger.info(f"Using model: {model_info['model_name']} (dimension: {model_info['embedding_dimension']})")
+    embedding_dim = model_info['embedding_dimension']
+    column_name = "embedding_4096" if embedding_dim == 4096 else "embedding"
+    
+    logger.info(f"Using model: {model_info['model_name']} (dimension: {embedding_dim}, column: {column_name})")
+    
+    if POPULATE_BOTH_MODELS:
+        logger.warning("POPULATE_BOTH_MODELS mode not yet implemented - using single column mode")
     
     iteration = 0
     

@@ -13,7 +13,7 @@ from psycopg2.extras import RealDictCursor
 
 logger = logging.getLogger(__name__)
 
-def cosine_similarity_sql(embedding: List[float], limit: int = 5, min_similarity: float = 0.0) -> str:
+def cosine_similarity_sql(embedding: List[float], limit: int = 5, min_similarity: float = 0.0, embedding_column: str = "embedding") -> str:
     """
     Generate SQL query for cosine similarity search using pgvector.
     
@@ -21,6 +21,7 @@ def cosine_similarity_sql(embedding: List[float], limit: int = 5, min_similarity
         embedding: Query embedding vector
         limit: Maximum number of results to return
         min_similarity: Minimum similarity score threshold (0.0-1.0)
+        embedding_column: Column name to use for embeddings (e.g., "embedding" or "embedding_4096")
         
     Returns:
         str: SQL query string
@@ -36,12 +37,12 @@ def cosine_similarity_sql(embedding: List[float], limit: int = 5, min_similarity
             priority,
             opened_at,
             parent_incident,
-            (1 - (embedding <=> %s::vector)) AS similarity_score
+            (1 - ({embedding_column} <=> %s::vector)) AS similarity_score
         FROM servicenow_incidents
-        WHERE embedding IS NOT NULL
+        WHERE {embedding_column} IS NOT NULL
           AND parent_incident IS NULL  -- Only match potential parent tickets
-          AND (1 - (embedding <=> %s::vector)) >= %s  -- Minimum similarity threshold
-        ORDER BY embedding <=> %s::vector  -- Order by distance (ascending = most similar)
+          AND (1 - ({embedding_column} <=> %s::vector)) >= %s  -- Minimum similarity threshold
+        ORDER BY {embedding_column} <=> %s::vector  -- Order by distance (ascending = most similar)
         LIMIT %s
     """
 
@@ -51,7 +52,8 @@ async def find_similar_tickets(
     query_embedding: List[float],
     top_k: int = 5,
     min_similarity: float = 0.7,
-    exclude_incident: Optional[str] = None
+    exclude_incident: Optional[str] = None,
+    embedding_column: str = "embedding"
 ) -> List[Dict[str, Any]]:
     """
     Find tickets similar to the query embedding using cosine similarity.
@@ -62,6 +64,7 @@ async def find_similar_tickets(
         top_k: Number of most similar tickets to return
         min_similarity: Minimum similarity score (0.0-1.0)
         exclude_incident: Incident number to exclude from results (e.g., self)
+        embedding_column: Column name to use for embeddings (e.g., "embedding" or "embedding_4096")
         
     Returns:
         List[Dict]: List of similar tickets with similarity scores
@@ -73,7 +76,7 @@ async def find_similar_tickets(
         cursor = conn.cursor(cursor_factory=RealDictCursor)
 
         # Build query
-        sql = cosine_similarity_sql(query_embedding, top_k + 1, min_similarity)  # +1 in case we exclude one
+        sql = cosine_similarity_sql(query_embedding, top_k + 1, min_similarity, embedding_column)  # +1 in case we exclude one
 
         # Ensure embeddings are native Python floats for psycopg2/pgvector adapters
         normalized_embedding = [float(value) for value in query_embedding]
