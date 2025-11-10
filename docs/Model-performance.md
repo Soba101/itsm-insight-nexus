@@ -2,13 +2,17 @@
 
 **Document Created:** 10 November 2025  
 **Current Model:** EmbeddingGemma-300m-qat (768-dimensional, via LM Studio)  
+**Models Under Test:**
+- **text-embedding-qwen3-embedding-8b** (8B parameter model)
+- **text-embedding-embeddinggemma-300m-qat** (300M parameter quantized model, baseline)
+
 **Use Case:** ITSM ticket semantic similarity search and parent-child relationship detection
 
 ---
 
 ## Executive Summary
 
-This document outlines a comprehensive plan to measure and evaluate the performance of the embedding model used for ticket similarity detection. Performance evaluation covers three dimensions: **Quality Metrics** (how accurate are the embeddings), **Computational Metrics** (how fast/efficient), and **Business Metrics** (real-world impact).
+This document outlines a comprehensive plan to measure and evaluate the performance of embedding models used for ticket similarity detection. We will compare two models head-to-head: the larger Qwen3-8B model against the current EmbeddingGemma-300m baseline. Performance evaluation covers three dimensions: **Quality Metrics** (how accurate are the embeddings), **Computational Metrics** (how fast/efficient), and **Business Metrics** (real-world impact).
 
 **Recommended Priority:**
 1. **Phase 1 (Quick Wins):** Computational metrics - Easy to implement, immediate insights
@@ -956,14 +960,38 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
 
 **Goal:** Evaluate alternative embedding models against current baseline.
 
-**Candidates to Test:**
-- Current: `EmbeddingGemma-300m-qat` (768-dim, quantized)
-- Alternative 1: `all-MiniLM-L6-v2` (384-dim, smaller/faster)
-- Alternative 2: `text-embedding-ada-002` (OpenAI, 1536-dim, cloud API)
-- Alternative 3: `bge-large-en-v1.5` (1024-dim, SOTA)
+**Primary Comparison:**
+- **Model A (Baseline):** `text-embedding-embeddinggemma-300m-qat` (768-dim, 300M parameters, quantized)
+  - Smaller, faster, lower resource requirements
+  - Current production model
+- **Model B (Challenger):** `text-embedding-qwen3-embedding-8b` (dimensions TBD, 8B parameters)
+  - Larger, potentially more accurate
+  - Higher computational cost
+
+**Additional Candidates for Future Testing:**
+- `all-MiniLM-L6-v2` (384-dim, smaller/faster)
+- `text-embedding-ada-002` (OpenAI, 1536-dim, cloud API)
+- `bge-large-en-v1.5` (1024-dim, SOTA)
 
 **Implementation Difficulty:** ⭐⭐⭐⭐ **Hard**  
 **Time Estimate:** 16-24 hours (per model comparison)
+
+**Comparison Methodology:**
+
+1. **Parallel Embedding Generation**
+   - Generate embeddings for same dataset with both models
+   - Store in separate columns: `embedding` (Gemma) vs `embedding_qwen` (Qwen3)
+   
+2. **Side-by-Side Metrics**
+   - Run all Phase 1 & 2 metrics for both models
+   - Compare on identical test sets
+   - Create comparison tables
+
+3. **Key Comparison Dimensions**
+   - **Quality:** Precision@K, MRR, clustering metrics, duplicate detection ROC AUC
+   - **Speed:** Embedding latency, tokens/sec, memory usage
+   - **Size:** Model disk size, RAM requirements
+   - **Cost:** Compute time per 1000 tickets
 
 **Process:**
 1. Generate embeddings with alternative model
@@ -971,6 +999,15 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
 3. Run all quality metrics for both models
 4. Compare head-to-head on same test set
 5. Measure computational cost difference
+
+**Expected Trade-offs:**
+- **Qwen3-8B:** Higher accuracy, slower inference, more memory (~16GB)
+- **EmbeddingGemma-300m:** Faster inference, lower memory (~2GB), potentially lower accuracy
+
+**Decision Criteria:**
+- If Qwen3 improves Precision@5 by >10% and latency <1s per ticket → **Switch to Qwen3**
+- If Qwen3 improves Precision@5 by <5% or latency >2s per ticket → **Keep Gemma**
+- If mixed results → **Hybrid approach** (Gemma for real-time, Qwen3 for batch jobs)
 
 ---
 
