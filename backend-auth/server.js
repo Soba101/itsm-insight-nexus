@@ -4,6 +4,14 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pg from 'pg';
 import dotenv from 'dotenv';
+import { 
+  validateRegistration, 
+  validateLogin, 
+  validatePasswordReset, 
+  validatePasswordUpdate,
+  rateLimit,
+  errorHandler 
+} from './validation.js';
 
 dotenv.config();
 
@@ -35,6 +43,9 @@ const pool = new Pool({
 app.use(cors());
 app.use(express.json());
 
+// Apply rate limiting to auth endpoints
+const authRateLimit = rateLimit(10, 60000); // 10 requests per minute
+
 // Auth middleware
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -54,7 +65,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Register endpoint
-app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', authRateLimit, validateRegistration, async (req, res) => {
   try {
     const { email, password, full_name } = req.body;
 
@@ -92,13 +103,9 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // Login endpoint
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', authRateLimit, validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
-    }
 
     // Get user from database
     const result = await pool.query(
@@ -144,13 +151,9 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Forgot password endpoint
-app.post('/api/auth/forgot-password', async (req, res) => {
+app.post('/api/auth/forgot-password', authRateLimit, validatePasswordReset, async (req, res) => {
   try {
     const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
-    }
 
     // Check if user exists
     const result = await pool.query(
@@ -190,17 +193,9 @@ app.post('/api/auth/forgot-password', async (req, res) => {
 });
 
 // Update password endpoint (requires authentication)
-app.post('/api/auth/update-password', authenticateToken, async (req, res) => {
+app.post('/api/auth/update-password', authenticateToken, validatePasswordUpdate, async (req, res) => {
   try {
     const { password } = req.body;
-
-    if (!password) {
-      return res.status(400).json({ message: 'Password is required' });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Password must be at least 6 characters' });
-    }
 
     // Hash new password
     const password_hash = await bcrypt.hash(password, 10);
@@ -242,6 +237,9 @@ app.get('/api/auth/verify', authenticateToken, async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'ITSM Auth API is running' });
 });
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {

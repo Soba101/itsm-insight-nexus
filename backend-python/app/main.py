@@ -5,12 +5,20 @@ FastAPI application with JWT authentication and health check endpoint.
 from fastapi import FastAPI, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from pydantic import ValidationError
 from typing import Dict, Optional
 import logging
 
 from app.core.config import get_settings
 from app.core.auth import get_current_user, validate_token_optional
 from app.core.database import close_connection_pool, init_connection_pool, test_connection
+from app.core.error_handlers import (
+    APIError,
+    api_error_handler,
+    validation_exception_handler,
+    general_exception_handler,
+)
 from app.api.similarity import router as similarity_router
 
 # Configure logging
@@ -52,6 +60,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register error handlers
+app.add_exception_handler(APIError, api_error_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(ValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, general_exception_handler)
 
 
 @app.on_event("startup")
