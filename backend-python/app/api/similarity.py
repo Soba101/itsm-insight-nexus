@@ -38,7 +38,7 @@ class SimilaritySearchRequest(BaseModel):
 	description: Optional[str] = Field(None, max_length=8000)
 	top_k: int = Field(5, ge=1, le=20)
 	min_similarity: float = Field(0.7, ge=0.0, le=1.0)
-	model: str = Field("gemma", pattern="^(gemma|qwen3)$")  # Model selection for A/B testing
+	model: str = Field("qwen3", pattern="^(gemma|qwen3)$")  # Model selection for A/B testing (default: qwen3)
 
 	@model_validator(mode="after")
 	def validate_inputs(self) -> "SimilaritySearchRequest":
