@@ -335,7 +335,7 @@ curl http://localhost:8000/api/ai/health
 
 ### Common Issues
 
-*"Connection refused"**
+**"Connection refused"**
 
 - Check container is running: `docker compose ps`
 - Check logs: `docker logs itsm-python-backend`
