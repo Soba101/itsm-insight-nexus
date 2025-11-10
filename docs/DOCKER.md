@@ -57,6 +57,7 @@ docker logs itsm-embedding-worker
   - Automatic embedding queue triggers
 
 **Initial Data:**
+
 - Sample tickets loaded from `docker/init.sql`
 - Migrations auto-applied from `docker/migrations/`
 
@@ -94,12 +95,14 @@ curl "http://localhost:3000/servicenow_incidents?incident_number=eq.INC0010001"
 - **API Docs:** <http://localhost:8000/docs>
 
 **Key Endpoints:**
+
 - `POST /api/ai/similarity/search` - Find similar tickets
 - `GET /api/ai/similarity/tickets/{id}/family` - Get parent/children
 - `POST /api/ai/similarity/embed` - Generate embedding for text
 - `GET /api/ai/health` - Health check
 
 **Features:**
+
 - JWT authentication (validates tokens from auth backend)
 - Integrates with LM Studio for embeddings
 - pgvector queries for similarity search
@@ -113,6 +116,7 @@ curl "http://localhost:3000/servicenow_incidents?incident_number=eq.INC0010001"
 - **Purpose:** Automatic background processing of embedding queue
 
 **How It Works:**
+
 1. Database trigger enqueues new/updated tickets
 2. Worker polls queue every 10 seconds
 3. Processes up to 16 tickets per batch
@@ -154,6 +158,7 @@ The frontend now supports Docker Postgres via PostgREST:
 5. API Base URL should be `http://localhost:3000`
 
 **Data Flow:**
+
 - Frontend → PostgREST (`http://localhost:3000/servicenow_incidents`)
 - PostgREST → Postgres (`itsm-postgres:5432`)
 - AI features → Python Backend (`http://localhost:8000`)
@@ -295,14 +300,18 @@ docker inspect itsm-postgres
 # Check container health
 docker inspect --format='{{.State.Health.Status}}' itsm-python-backend
 ```
+
 docker exec -it itsm-postgres psql -U postgres -d itsm_db
 
 # Restart containers
+
 docker-compose restart
 
 # Rebuild (if you change docker/init.sql)
+
 docker-compose down -v
 docker-compose up -d --build
+
 ```
 
 ## Database Schema
@@ -317,17 +326,25 @@ The `docker/init.sql` script creates:
 
 **Port 5432 already in use:**
 ```bash
+
 # Check what's using the port
+
 lsof -i :5432
+
 # Stop local Postgres if running
+
 brew services stop postgresql
+
 ```
 
 **Permission errors:**
 ```bash
+
 # Reset volumes
+
 docker-compose down -v
 docker-compose up -d
+
 ```
 
 **Can't connect from pgAdmin:**

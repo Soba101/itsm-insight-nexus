@@ -18,6 +18,7 @@
 ### Why Medium Difficulty?
 
 **Advantages (makes it easier):**
+
 - ✅ Backend API fully implemented and tested
 - ✅ React Query infrastructure already in place
 - ✅ Existing UI components to build upon
@@ -25,6 +26,7 @@
 - ✅ shadcn-ui components available
 
 **Challenges (makes it harder):**
+
 - ⚠️ Multiple components need updates
 - ⚠️ Need to handle parent-child relationships in UI
 - ⚠️ UX considerations for displaying similarity scores
@@ -172,11 +174,11 @@ async searchSimilarTickets(params: {
   const settings = getSettings();
   const aiBackendUrl = settings.aiBackendUrl || "http://localhost:8000";
   const token = localStorage.getItem("auth-token");
-  
+
   if (!token) {
     throw new Error("Authentication required");
   }
-  
+
   const response = await axios.post(
     `${aiBackendUrl}/api/ai/similarity/search`,
     params,
@@ -184,7 +186,7 @@ async searchSimilarTickets(params: {
       headers: { Authorization: `Bearer ${token}` },
     }
   );
-  
+
   return response.data;
 },
 
@@ -195,18 +197,18 @@ async getTicketFamily(incident_number: string): Promise<TicketFamilyResponse> {
   const settings = getSettings();
   const aiBackendUrl = settings.aiBackendUrl || "http://localhost:8000";
   const token = localStorage.getItem("auth-token");
-  
+
   if (!token) {
     throw new Error("Authentication required");
   }
-  
+
   const response = await axios.get(
     `${aiBackendUrl}/api/ai/similarity/tickets/${incident_number}/family`,
     {
       headers: { Authorization: `Bearer ${token}` },
     }
   );
-  
+
   return response.data;
 },
 
@@ -217,11 +219,11 @@ async generateEmbedding(data: EmbeddingRequest): Promise<EmbeddingResponse> {
   const settings = getSettings();
   const aiBackendUrl = settings.aiBackendUrl || "http://localhost:8000";
   const token = localStorage.getItem("auth-token");
-  
+
   if (!token) {
     throw new Error("Authentication required");
   }
-  
+
   const response = await axios.post(
     `${aiBackendUrl}/api/ai/similarity/embed`,
     data,
@@ -229,7 +231,7 @@ async generateEmbedding(data: EmbeddingRequest): Promise<EmbeddingResponse> {
       headers: { Authorization: `Bearer ${token}` },
     }
   );
-  
+
   return response.data;
 },
 
@@ -238,49 +240,49 @@ async generateEmbedding(data: EmbeddingRequest): Promise<EmbeddingResponse> {
  */
 async getDuplicates(filters: Filters): Promise<DuplicateCluster[]> {
   const settings = getSettings();
-  
+
   // If AI backend is not configured, return empty
   if (!settings.aiBackendUrl) {
     return [];
   }
-  
+
   try {
     // Get all tickets
     const tickets = await this.getTickets(filters);
-    
+
     // For each ticket, find similar ones
     const clusters: DuplicateCluster[] = [];
     const processed = new Set<string>();
-    
+
     for (const ticket of tickets.slice(0, 10)) { // Limit to first 10 for performance
       if (processed.has(ticket.incident_number)) continue;
-      
+
       try {
         const result = await this.searchSimilarTickets({
           incident_number: ticket.incident_number,
           top_k: 5,
           min_similarity: 0.85, // High threshold for duplicates
         });
-        
+
         if (result.results.length > 0) {
           const ticketIds = [
             ticket.incident_number,
             ...result.results.map(r => r.incident_number)
           ];
-          
+
           clusters.push({
             cluster_id: `cluster-${ticket.incident_number}`,
             ticket_ids: ticketIds,
             similarity_score: result.results[0]?.similarity_score || 0,
           });
-          
+
           ticketIds.forEach(id => processed.add(id));
         }
       } catch (error) {
         console.error(`Failed to find similar tickets for ${ticket.incident_number}:`, error);
       }
     }
-    
+
     return clusters;
   } catch (error) {
     console.error("Failed to get duplicates:", error);
@@ -290,6 +292,7 @@ async getDuplicates(filters: Filters): Promise<DuplicateCluster[]> {
 ```
 
 **Files to Edit:**
+
 - `src/lib/types.ts` - Add new types
 - `src/lib/api.ts` - Add methods and update getDuplicates()
 
@@ -316,10 +319,10 @@ interface SimilarTicketsCardProps {
   topK?: number;
 }
 
-export function SimilarTicketsCard({ 
-  incidentNumber, 
+export function SimilarTicketsCard({
+  incidentNumber,
   minSimilarity = 0.7,
-  topK = 5 
+  topK = 5
 }: SimilarTicketsCardProps) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["similar-tickets", incidentNumber, minSimilarity, topK],
@@ -399,7 +402,7 @@ export function SimilarTicketsCard({
                       </Badge>
                     )}
                   </div>
-                  <Badge 
+                  <Badge
                     variant={ticket.similarity_score >= 0.85 ? "destructive" : "default"}
                   >
                     {(ticket.similarity_score * 100).toFixed(0)}% match
@@ -551,10 +554,12 @@ import { TicketFamilyCard } from "./TicketFamilyCard";
 ```
 
 **Files to Create:**
+
 - `src/components/SimilarTicketsCard.tsx`
 - `src/components/TicketFamilyCard.tsx`
 
 **Files to Edit:**
+
 - `src/components/TicketDrawer.tsx`
 
 ---
@@ -612,8 +617,8 @@ export function SimilarTicketsModal({
         <DialogHeader>
           <DialogTitle>Similar to {incidentNumber}</DialogTitle>
         </DialogHeader>
-        <SimilarTicketsCard 
-          incidentNumber={incidentNumber} 
+        <SimilarTicketsCard
+          incidentNumber={incidentNumber}
           topK={10}
           minSimilarity={0.6}
         />
@@ -624,9 +629,11 @@ export function SimilarTicketsModal({
 ```
 
 **Files to Create:**
+
 - `src/components/SimilarTicketsModal.tsx`
 
 **Files to Edit:**
+
 - `src/components/TicketsTable.tsx`
 
 ---
@@ -658,6 +665,7 @@ const { data: duplicates } = useQuery({
 ```
 
 **Files to Edit:**
+
 - `src/components/DuplicatesPanel.tsx`
 - `src/pages/Dashboard.tsx`
 - `src/pages/Insights.tsx`
@@ -691,6 +699,7 @@ export interface Settings {
 ```
 
 **Files to Edit:**
+
 - `src/pages/Settings.tsx`
 - `src/lib/types.ts` (Settings interface)
 
@@ -729,8 +738,8 @@ export function DuplicateWarningBanner({
       <AlertTitle>Potential Duplicate Detected</AlertTitle>
       <AlertDescription className="mt-2">
         <p className="mb-3">
-          Found {similarTickets.length} similar ticket(s). 
-          Highest match: <strong>{highestMatch.incident_number}</strong> 
+          Found {similarTickets.length} similar ticket(s).
+          Highest match: <strong>{highestMatch.incident_number}</strong>
           ({(highestMatch.similarity_score * 100).toFixed(0)}% similar)
         </p>
         <div className="flex gap-2">
@@ -787,9 +796,11 @@ useEffect(() => {
 ```
 
 **Files to Create:**
+
 - `src/components/DuplicateWarningBanner.tsx`
 
 **Files to Edit:**
+
 - Ticket creation form component (if exists, or note for future implementation)
 
 ---
@@ -916,18 +927,21 @@ describe("Similarity Search Flow", () => {
 ## 🔄 Rollout Plan
 
 ### Phase 1: Soft Launch (Week 1)
+
 - Deploy to staging
 - Test with small user group (5-10 users)
 - Gather feedback on UI/UX
 - Monitor performance metrics
 
 ### Phase 2: Limited Release (Week 2)
+
 - Deploy to 25% of users
 - Monitor error rates
 - Collect usage analytics
 - Adjust thresholds if needed
 
 ### Phase 3: Full Deployment (Week 3)
+
 - Deploy to all users
 - Announce feature via in-app notification
 - Provide documentation/training
@@ -958,17 +972,20 @@ describe("Similarity Search Flow", () => {
 ## 📚 Resources
 
 ### Documentation
+
 - Backend API docs: <http://localhost:8000/docs>
 - React Query docs: <https://tanstack.com/query/latest>
 - shadcn-ui components: <https://ui.shadcn.com>
 
 ### Code References
+
 - Backend implementation: `backend-python/README.md`
 - API layer: `src/lib/api.ts`
 - Types: `src/lib/types.ts`
 - Components: `src/components/`
 
 ### Testing
+
 - Component examples: `src/components/TicketsTable.tsx`
 - Query patterns: `src/pages/Dashboard.tsx`
 - Auth handling: `src/contexts/AuthContext.tsx`
@@ -978,6 +995,7 @@ describe("Similarity Search Flow", () => {
 ## ✅ Checklist
 
 ### Pre-Implementation
+
 - [ ] Review backend API endpoints
 - [ ] Test endpoints with curl/Postman
 - [ ] Verify all tickets have embeddings
@@ -985,6 +1003,7 @@ describe("Similarity Search Flow", () => {
 - [ ] Confirm JWT authentication works
 
 ### Implementation
+
 - [ ] Phase 1: API Layer complete
 - [ ] Phase 2: Ticket Detail enhancements complete
 - [ ] Phase 3: Table enhancements complete
@@ -993,6 +1012,7 @@ describe("Similarity Search Flow", () => {
 - [ ] Phase 6: Duplicate warning implemented
 
 ### Testing
+
 - [ ] Unit tests written and passing
 - [ ] Integration tests complete
 - [ ] Manual testing checklist verified
@@ -1000,6 +1020,7 @@ describe("Similarity Search Flow", () => {
 - [ ] Error handling tested
 
 ### Deployment
+
 - [ ] Code reviewed
 - [ ] Documentation updated
 - [ ] Staging deployment successful

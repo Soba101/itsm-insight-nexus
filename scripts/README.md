@@ -5,6 +5,7 @@ Utility scripts for ServiceNow integration, data loading, and AI embeddings.
 ## Overview
 
 This directory contains Python scripts for:
+
 - Fetching incidents from ServiceNow API
 - Loading data into Docker PostgreSQL
 - Generating embeddings for semantic search
@@ -60,6 +61,7 @@ python scripts/fetch_servicenow_incidents.py > data/incidents_$(date +%Y%m%d).js
 ```
 
 **Includes:**
+
 - All incident fields (number, short_description, description, priority, state, etc.)
 - caller_id, assignment_group
 - impact, urgency
@@ -80,6 +82,7 @@ python scripts/insert_servicenow_incidents.py --file data/custom_incidents.json
 ```
 
 **Requirements:**
+
 - Docker Postgres running on port 15432
 - JSON file in ServiceNow Table API format
 - `psycopg2-binary` package installed
@@ -118,6 +121,7 @@ docker exec itsm-python-backend python scripts/populate_embeddings.py --dry-run
 ```
 
 **What it does:**
+
 1. Queries tickets without embeddings
 2. Processes in configurable batches
 3. Generates 768-dim vectors via LM Studio
@@ -142,12 +146,14 @@ docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
 ```
 
 **How it works:**
+
 1. Finds tickets without parents
 2. Searches for older similar tickets using pgvector
 3. Assigns most similar ticket as parent (if above threshold)
 4. Database triggers update child_incidents arrays automatically
 
 **Recommended workflow:**
+
 ```bash
 # 1. Generate embeddings first
 docker exec itsm-python-backend python scripts/populate_embeddings.py

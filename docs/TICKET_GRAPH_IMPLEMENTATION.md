@@ -3,6 +3,7 @@
 ## What Was Fixed
 
 ### 1. **API Implementation** (`src/lib/api.ts`)
+
 - ✅ Replaced stubbed `getGraphLinks()` method with real implementation
 - ✅ Now fetches ticket family data from AI backend endpoint `/api/ai/similarity/tickets/{incident_number}/family`
 - ✅ Converts family data (ticket, parent, children) into graph nodes and edges
@@ -10,11 +11,13 @@
 - ✅ Graceful error handling - returns empty graph on failure
 
 ### 2. **UI Improvements**
+
 - ✅ **GraphViewer component** - Added empty state message when no relationships exist
 - ✅ **Graph page** - Added error handling to display API errors
 - ✅ Better user feedback for all scenarios
 
 ### 3. **Relationship Establishment Script**
+
 - ✅ Created `backend-python/scripts/establish_ticket_relationships.py`
 - ✅ Analyzes embeddings to find similar tickets
 - ✅ Assigns parent-child relationships based on semantic similarity
@@ -24,6 +27,7 @@
 - ✅ Batch processing with progress tracking
 
 ### 4. **Documentation**
+
 - ✅ Updated `backend-python/README.md` with script usage
 - ✅ Added workflow recommendations
 - ✅ Documented all parameters and options
@@ -31,13 +35,16 @@
 ## Current State
 
 ### What Works
+
 ✅ Graph API endpoint is connected to backend
 ✅ Graph visualization component handles all states (loading, error, empty, data)
 ✅ Relationship establishment script is ready to use
 ✅ Database has embeddings for all tickets
 
 ### Why Graph Is Empty
+
 The graph appears empty because **no parent-child relationships have been established yet**. This is expected for a fresh dataset where:
+
 - All tickets have embeddings ✅
 - No tickets have `parent_incident` assigned ❌
 - No tickets have `child_incidents` populated ❌
@@ -45,6 +52,7 @@ The graph appears empty because **no parent-child relationships have been establ
 ## How to Populate the Graph
 
 ### Option 1: Run the Script (For Real Data)
+
 ```bash
 # Preview what would be done
 docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --dry-run
@@ -57,12 +65,13 @@ docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
 ```
 
 ### Option 2: Manual Test Data (For Quick Demo)
+
 If you want to test the graph visualization immediately, you can manually create relationships:
 
 ```sql
 -- Connect to database and manually set relationships
-UPDATE servicenow_incidents 
-SET parent_incident = 'INC0000007', similarity_score = 0.85 
+UPDATE servicenow_incidents
+SET parent_incident = 'INC0000007', similarity_score = 0.85
 WHERE incident_number = 'INC0000017';
 
 -- The database trigger will automatically update child_incidents
@@ -77,6 +86,7 @@ WHERE incident_number = 'INC0000017';
 - **< 0.50**: Not similar enough to link
 
 Your current dataset appears to have mostly unique tickets, which is normal for a real ITSM system. You might need to:
+
 1. Lower the threshold to 0.6 or 0.65 to find more relationships
 2. Wait for actual duplicate tickets to appear in production
 3. Manually create test relationships for demonstration

@@ -1,17 +1,20 @@
 # Implementation Plan: Topics, Duplicates & Graph Features
 
 ## Overview
+
 This document outlines the implementation plan to enable Topics Panel (NLP analysis), Duplicates Panel (similarity detection), and Graph Viewer (relationship mapping) using the Docker Postgres database.
 
 ## Current State
 
 ### ✅ Working Features
+
 - Tickets listing (all 10 tickets from Docker Postgres)
 - KPIs (calculated from ticket data)
 - Trend charts (ticket creation over time)
 - Breakdown charts (priority, category, assignment group)
 
 ### ⚠️ Not Yet Implemented
+
 - **Topics Panel** - Returns empty array `[]`
 - **Duplicates Panel** - Returns empty array `[]`
 - **Graph Viewer** - Returns empty graph `{ nodes: [], edges: [] }`
@@ -19,50 +22,62 @@ This document outlines the implementation plan to enable Topics Panel (NLP analy
 ## Architecture Options
 
 ### Option A: Python Backend API (Recommended)
+
 **Pros:**
+
 - Full control over ML/NLP processing
 - Can use established libraries (scikit-learn, spaCy, NetworkX)
 - Easy to add new features
 - RESTful API integrates seamlessly with existing PostgREST
 
 **Cons:**
+
 - Requires additional service in Docker
 - More complex deployment
 
 **Tech Stack:**
+
 - FastAPI or Flask
 - scikit-learn (TF-IDF, clustering)
 - spaCy (NLP)
 - NetworkX (graph analysis)
 
 ### Option B: PostgreSQL Functions + PostgREST
+
 **Pros:**
+
 - No additional services needed
 - Leverages existing PostgreSQL extensions
 - PostgREST automatically exposes functions
 
 **Cons:**
+
 - Limited ML capabilities
 - Complex SQL for advanced analysis
 - Harder to maintain
 
 **Tech Stack:**
+
 - PostgreSQL with pg_trgm extension (similarity)
 - Custom PL/pgSQL functions
 - PostgREST RPC calls
 
 ### Option C: Pre-computed Results in Database
+
 **Pros:**
+
 - Fastest query performance
 - Simple to implement initially
 - Good for demos/testing
 
 **Cons:**
+
 - Requires background jobs to update
 - Not real-time
 - More database storage
 
 **Tech Stack:**
+
 - New tables: `nlp_topics`, `duplicate_clusters`, `ticket_relationships`
 - Scheduled jobs (cron or task queue)
 - Same API endpoints, different data source
@@ -72,12 +87,14 @@ This document outlines the implementation plan to enable Topics Panel (NLP analy
 ## Recommended Approach: Option A + C Hybrid
 
 **Phase 1: Pre-computed Results (Quick Win)**
+
 - Add database tables for pre-computed results
 - Populate with sample/initial data
 - Update API to query these tables
 - Timeline: 1-2 hours
 
 **Phase 2: Python Backend Service**
+
 - Build FastAPI service for ML processing
 - Implement actual NLP and similarity algorithms
 - Add background jobs to populate tables
@@ -136,7 +153,7 @@ CREATE INDEX idx_ticket_relationships_target ON public.ticket_relationships(targ
 ```sql
 -- Sample NLP Topics (based on existing tickets)
 INSERT INTO public.nlp_topics (topic, keywords, count, sample_ticket_ids, confidence)
-VALUES 
+VALUES
   ('Email Issues', ARRAY['email', 'spam', 'filter', 'message'], 3, ARRAY['INC001', 'INC007'], 0.85),
   ('Network Problems', ARRAY['network', 'vpn', 'connection', 'slow'], 2, ARRAY['INC002', 'INC005'], 0.92),
   ('Database Performance', ARRAY['database', 'cpu', 'timeout', 'slow'], 2, ARRAY['PRB001', 'INC008'], 0.88),
@@ -145,14 +162,14 @@ VALUES
 
 -- Sample Duplicate Clusters
 INSERT INTO public.duplicate_clusters (cluster_id, ticket_ids, similarity_score, reason)
-VALUES 
+VALUES
   ('CLUSTER-001', ARRAY['INC001', 'INC007'], 0.75, 'Both relate to email service issues'),
   ('CLUSTER-002', ARRAY['INC002', 'INC005'], 0.68, 'Both involve network connectivity problems'),
   ('CLUSTER-003', ARRAY['PRB001', 'INC008'], 0.82, 'Both are database performance issues');
 
 -- Sample Ticket Relationships (for graph)
 INSERT INTO public.ticket_relationships (source_ticket_id, target_ticket_id, relationship_type, weight)
-VALUES 
+VALUES
   ('INC001', 'INC007', 'related', 0.75),
   ('INC007', 'INC001', 'related', 0.75),
   ('INC002', 'INC005', 'duplicate', 0.68),
@@ -172,18 +189,18 @@ Replace current empty implementations with database queries:
 ```typescript
 async getTopics(filters: Filters): Promise<NLPTopic[]> {
   const settings = getSettings();
-  
+
   if (settings.dataSource === "supabase") {
     const { data, error } = await supabase
       .from("nlp_topics")
       .select("*")
       .order("count", { ascending: false })
       .limit(5);
-    
+
     if (error) throw error;
     return (data || []) as NLPTopic[];
   }
-  
+
   // Docker/PostgREST mode
   const instance = createAxiosInstance();
   const response = await instance.get("/nlp_topics", {
@@ -192,23 +209,23 @@ async getTopics(filters: Filters): Promise<NLPTopic[]> {
       limit: 5,
     },
   });
-  
+
   return response.data;
 },
 
 async getDuplicates(filters: Filters): Promise<DuplicateCluster[]> {
   const settings = getSettings();
-  
+
   if (settings.dataSource === "supabase") {
     const { data, error } = await supabase
       .from("duplicate_clusters")
       .select("*")
       .order("similarity_score", { ascending: false });
-    
+
     if (error) throw error;
     return (data || []) as DuplicateCluster[];
   }
-  
+
   // Docker/PostgREST mode
   const instance = createAxiosInstance();
   const response = await instance.get("/duplicate_clusters", {
@@ -216,22 +233,22 @@ async getDuplicates(filters: Filters): Promise<DuplicateCluster[]> {
       order: "similarity_score.desc",
     },
   });
-  
+
   return response.data;
 },
 
 async getGraphLinks(ticketId: string): Promise<GraphData> {
   const settings = getSettings();
-  
+
   if (settings.dataSource === "supabase") {
     // Get all relationships for this ticket
     const { data: relationships, error } = await supabase
       .from("ticket_relationships")
       .select("*")
       .or(`source_ticket_id.eq.${ticketId},target_ticket_id.eq.${ticketId}`);
-    
+
     if (error) throw error;
-    
+
     // Get all related tickets
     const ticketIds = new Set<string>();
     ticketIds.add(ticketId);
@@ -239,12 +256,12 @@ async getGraphLinks(ticketId: string): Promise<GraphData> {
       ticketIds.add(rel.source_ticket_id);
       ticketIds.add(rel.target_ticket_id);
     });
-    
+
     const { data: tickets } = await supabase
       .from("tickets")
       .select("ticket_id, short_desc, priority, status")
       .in("ticket_id", Array.from(ticketIds));
-    
+
     // Build graph structure
     const nodes = tickets?.map(t => ({
       id: t.ticket_id,
@@ -252,27 +269,27 @@ async getGraphLinks(ticketId: string): Promise<GraphData> {
       title: t.short_desc,
       group: t.priority,
     })) || [];
-    
+
     const edges = relationships?.map(rel => ({
       from: rel.source_ticket_id,
       to: rel.target_ticket_id,
       label: rel.relationship_type,
       weight: rel.weight,
     })) || [];
-    
+
     return { nodes, edges };
   }
-  
+
   // Docker/PostgREST mode
   const instance = createAxiosInstance();
-  
+
   // Get relationships
   const relResponse = await instance.get("/ticket_relationships", {
     params: {
       or: `(source_ticket_id.eq.${ticketId},target_ticket_id.eq.${ticketId})`,
     },
   });
-  
+
   // Get ticket IDs
   const ticketIds = new Set<string>();
   ticketIds.add(ticketId);
@@ -280,7 +297,7 @@ async getGraphLinks(ticketId: string): Promise<GraphData> {
     ticketIds.add(rel.source_ticket_id);
     ticketIds.add(rel.target_ticket_id);
   });
-  
+
   // Get tickets
   const ticketsResponse = await instance.get("/tickets", {
     params: {
@@ -288,7 +305,7 @@ async getGraphLinks(ticketId: string): Promise<GraphData> {
       select: "ticket_id,short_desc,priority,status",
     },
   });
-  
+
   // Build graph
   const nodes = ticketsResponse.data.map((t: any) => ({
     id: t.ticket_id,
@@ -296,14 +313,14 @@ async getGraphLinks(ticketId: string): Promise<GraphData> {
     title: t.short_desc,
     group: t.priority,
   }));
-  
+
   const edges = relResponse.data.map((rel: any) => ({
     from: rel.source_ticket_id,
     to: rel.target_ticket_id,
     label: rel.relationship_type,
     weight: rel.weight,
   }));
-  
+
   return { nodes, edges };
 },
 ```
@@ -374,23 +391,28 @@ async def scheduled_analysis():
 ## Implementation Steps
 
 ### Step 1: Add Schema (15 min)
+
 1. Create `docker/add_nlp_tables.sql`
 2. Run: `docker exec -i itsm-postgres psql -U postgres -d itsm_db < docker/add_nlp_tables.sql`
 
 ### Step 2: Add Sample Data (10 min)
+
 1. Create `docker/populate_nlp_data.sql`
 2. Run: `docker exec -i itsm-postgres psql -U postgres -d itsm_db < docker/populate_nlp_data.sql`
 
 ### Step 3: Update API (30 min)
+
 1. Update `src/lib/api.ts` - implement `getTopics()`, `getDuplicates()`, `getGraphLinks()`
 2. Test with PostgREST: `curl http://localhost:3000/nlp_topics`
 
 ### Step 4: Verify in UI (5 min)
+
 1. Restart dev server
 2. Check Dashboard - Topics and Duplicates panels should show data
 3. Test Graph Viewer with ticket IDs: INC001, INC002, etc.
 
 ### Step 5: (Optional) Python ML Service (4-8 hours)
+
 1. Create `ml-service/` directory
 2. Implement FastAPI endpoints
 3. Add to docker-compose.yml
@@ -401,10 +423,11 @@ async def scheduled_analysis():
 ## Testing Plan
 
 ### Manual Testing
+
 1. **Topics Panel**
    - Should show 5 topics
    - Click on topic to see sample tickets
-   
+
 2. **Duplicates Panel**
    - Should show 3 clusters
    - Display similarity scores
@@ -416,6 +439,7 @@ async def scheduled_analysis():
    - Verify nodes are clickable
 
 ### API Testing
+
 ```bash
 # Test topics endpoint
 curl http://localhost:3000/nlp_topics

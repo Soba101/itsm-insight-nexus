@@ -1,0 +1,87 @@
+Traceback (most recent call last):
+  File "/app/scripts/performance_eval/benchmark_embedding_speed.py", line 12, in <module>
+    import psutil
+ModuleNotFoundError: No module named 'psutil'
+Traceback (most recent call last):
+  File "/app/scripts/performance_eval/benchmark_similarity_search.py", line 13, in <module>
+    from app.core.database import get_db_connection
+ModuleNotFoundError: No module named 'app'
+Traceback (most recent call last):
+  File "/app/scripts/performance_eval/benchmark_e2e_pipeline.py", line 13, in <module>
+    from app.core.database import get_db_connection
+ModuleNotFoundError: No module named 'app'
+Traceback (most recent call last):
+  File "/app/scripts/performance_eval/analyze_similarity_distribution.py", line 15, in <module>
+    from app.core.database import get_db_connection
+ModuleNotFoundError: No module named 'app'
+Traceback (most recent call last):
+  File "/app/scripts/performance_eval/evaluate_parent_child_links.py", line 12, in <module>
+    from app.core.database import get_db_connection
+ModuleNotFoundError: No module named 'app'
+
+================================================================================
+🎯 MODEL PERFORMANCE EVALUATION - PHASE 1: QUICK WINS
+================================================================================
+Started at: 2025-11-10 05:57:41
+
+This will run 5 benchmark scripts to establish baseline performance metrics.
+Estimated time: 5-10 minutes
+================================================================================
+
+================================================================================
+🚀 Running: Embedding Speed Benchmark
+================================================================================
+
+❌ Embedding Speed Benchmark failed with return code 1
+
+================================================================================
+🚀 Running: Similarity Search Benchmark
+================================================================================
+
+❌ Similarity Search Benchmark failed with return code 1
+
+================================================================================
+🚀 Running: End-to-End Pipeline Benchmark
+================================================================================
+
+❌ End-to-End Pipeline Benchmark failed with return code 1
+
+================================================================================
+🚀 Running: Similarity Distribution Analysis
+================================================================================
+
+❌ Similarity Distribution Analysis failed with return code 1
+
+================================================================================
+🚀 Running: Parent-Child Link Quality Evaluation
+================================================================================
+
+❌ Parent-Child Link Quality Evaluation failed with return code 1
+
+================================================================================
+📊 PHASE 1 BENCHMARK SUMMARY
+================================================================================
+
+Completed at: 2025-11-10 05:57:45
+Total Time: 4.3s (0.1 minutes)
+
+--------------------------------------------------------------------------------
+Results:
+--------------------------------------------------------------------------------
+  ❌ FAIL | Embedding Speed Benchmark                     | N/A
+  ❌ FAIL | Similarity Search Benchmark                   | N/A
+  ❌ FAIL | End-to-End Pipeline Benchmark                 | N/A
+  ❌ FAIL | Similarity Distribution Analysis              | N/A
+  ❌ FAIL | Parent-Child Link Quality Evaluation          | N/A
+
+--------------------------------------------------------------------------------
+Summary: 0 passed, 5 failed out of 5 benchmarks
+--------------------------------------------------------------------------------
+
+⚠️  Some benchmarks failed. Please review the errors above.
+Common issues:
+  - LM Studio not running (check http://localhost:1234)
+  - Database connection issues (check docker-compose services)
+  - No embeddings in database (run populate_embeddings.py first)
+
+================================================================================

@@ -1,0 +1,364 @@
+2025-11-10 07:54:49,267 - INFO - Starting embedding speed benchmark...
+2025-11-10 07:54:49,271 - INFO - Database connection pool initialized: postgres:5432/itsm_db
+2025-11-10 07:54:49,272 - INFO - Loaded 78 ticket descriptions
+2025-11-10 07:54:49,272 - INFO - Initializing LM Studio client: http://host.docker.internal:1234/v1
+2025-11-10 07:54:49,278 - INFO - LM Studio client initialized. Model: text-embedding-qwen3-embedding-8b
+2025-11-10 07:54:50,520 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:50,804 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:51,170 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:51,634 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:52,089 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:52,533 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:52,794 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:53,093 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:53,352 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:53,613 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:53,635 - INFO - Generating embeddings for 1 texts in batches of 16
+2025-11-10 07:54:53,893 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:53,907 - INFO - Successfully generated 1 embeddings
+2025-11-10 07:54:53,907 - INFO - Generating embeddings for 4 texts in batches of 16
+2025-11-10 07:54:55,051 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:55,109 - INFO - Successfully generated 4 embeddings
+2025-11-10 07:54:55,110 - INFO - Generating embeddings for 8 texts in batches of 16
+2025-11-10 07:54:57,627 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:54:57,738 - INFO - Successfully generated 8 embeddings
+2025-11-10 07:54:57,738 - INFO - Generating embeddings for 16 texts in batches of 16
+2025-11-10 07:55:02,481 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:55:02,685 - INFO - Successfully generated 16 embeddings
+2025-11-10 07:55:02,686 - INFO - Generating embeddings for 32 texts in batches of 16
+2025-11-10 07:55:07,497 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:55:14,154 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:55:14,348 - INFO - Successfully generated 32 embeddings
+2025-11-10 07:55:14,350 - INFO - Generating embeddings for 8 texts in batches of 16
+2025-11-10 07:55:16,993 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:55:17,101 - INFO - Successfully generated 8 embeddings
+
+============================================================
+EMBEDDING GENERATION BENCHMARK
+============================================================
+
+📊 Single Ticket Latency:
+------------------------------------------------------------
+  Ticket  1 | Tokens:   13 | Latency: 1264.0ms | Tokens/sec:   10.3
+  Ticket  2 | Tokens:    3 | Latency:  287.0ms | Tokens/sec:   10.5
+  Ticket  3 | Tokens:   25 | Latency:  370.3ms | Tokens/sec:   67.5
+  Ticket  4 | Tokens:   45 | Latency:  464.5ms | Tokens/sec:   96.9
+  Ticket  5 | Tokens:   30 | Latency:  452.9ms | Tokens/sec:   66.2
+  Ticket  6 | Tokens:   29 | Latency:  440.6ms | Tokens/sec:   65.8
+  Ticket  7 | Tokens:   22 | Latency:  260.8ms | Tokens/sec:   84.4
+  Ticket  8 | Tokens:   10 | Latency:  300.9ms | Tokens/sec:   33.2
+  Ticket  9 | Tokens:   26 | Latency:  256.9ms | Tokens/sec:  101.2
+  Ticket 10 | Tokens:   10 | Latency:  263.6ms | Tokens/sec:   37.9
+
+📈 Summary Statistics:
+  Mean Latency:    436.1ms ± 287.0ms
+  Median Latency:  335.6ms
+  Min Latency:     256.9ms
+  Max Latency:    1264.0ms
+
+============================================================
+📊 Batch Throughput:
+------------------------------------------------------------
+  Batch Size:  1 | Time:  0.27s | Throughput:   3.7 tickets/sec | Per-ticket:  272.2ms
+  Batch Size:  4 | Time:  1.20s | Throughput:   3.3 tickets/sec | Per-ticket:  300.5ms
+  Batch Size:  8 | Time:  2.63s | Throughput:   3.0 tickets/sec | Per-ticket:  328.6ms
+  Batch Size: 16 | Time:  4.95s | Throughput:   3.2 tickets/sec | Per-ticket:  309.2ms
+  Batch Size: 32 | Time: 11.66s | Throughput:   2.7 tickets/sec | Per-ticket:  364.5ms
+
+============================================================
+📊 Memory Usage:
+------------------------------------------------------------
+  ⚠️  psutil not available - memory monitoring skipped
+
+============================================================
+SUCCESS CRITERIA EVALUATION
+============================================================
+
+✓ Mean latency <500ms per ticket: ✅ PASS (436.1ms)
+✓ Batch throughput >5 tickets/second: ❌ FAIL (2.9 tickets/sec)
+✓ Memory usage <2GB: ⚠️  SKIPPED (psutil not available)
+
+============================================================
+BENCHMARK COMPLETE
+============================================================
+2025-11-10 07:55:18,252 - INFO - Starting similarity search benchmark...
+2025-11-10 07:55:18,257 - INFO - Database connection pool initialized: postgres:5432/itsm_db
+2025-11-10 07:55:18,260 - INFO - Total tickets with embeddings: 78
+2025-11-10 07:55:18,262 - INFO - Loaded 20 sample embeddings
+
+============================================================
+SIMILARITY SEARCH BENCHMARK
+============================================================
+
+📊 Dataset Size: 78 tickets with embeddings
+
+============================================================
+📊 Query Latency by Top-K:
+------------------------------------------------------------
+  Top- 5: Mean=   1.3ms ±   0.2ms | P95=   1.8ms | Min=  1.1ms | Max=   1.9ms
+  Top-10: Mean=   1.4ms ±   0.4ms | P95=   2.1ms | Min=  1.2ms | Max=   2.5ms
+  Top-20: Mean=   1.8ms ±   0.5ms | P95=   2.7ms | Min=  1.4ms | Max=   2.8ms
+  Top-50: Mean=   1.2ms ±   0.0ms | P95=   1.2ms | Min=  1.2ms | Max=   1.3ms
+
+============================================================
+📊 Query Plan Analysis:
+------------------------------------------------------------
+  ⚠️  Sequential Scan detected (no index being used)
+  💡 Consider creating an index:
+     CREATE INDEX ON servicenow_incidents USING hnsw (embedding vector_cosine_ops);
+
+📋 Query Plan Details:
+[
+  {
+    "Plan": {
+      "Node Type": "Limit",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 13.97,
+      "Total Cost": 14.0,
+      "Plan Rows": 10,
+      "Plan Width": 27,
+      "Plans": [
+        {
+          "Node Type": "Sort",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Startup Cost": 13.97,
+          "Total Cost": 14.16,
+          "Plan Rows": 76,
+          "Plan Width": 27,
+ ...
+
+============================================================
+SUCCESS CRITERIA EVALUATION
+============================================================
+
+✓ Top-10 search <50ms (p95): ✅ PASS (2.1ms)
+✓ Top-10 search <100ms (mean): ✅ PASS (1.4ms)
+✓ HNSW index is active: ❌ FAIL - Using sequential scan
+✓ Performance scales sub-linearly: ✅ PASS (ratio: 0.91x)
+
+============================================================
+BENCHMARK COMPLETE
+============================================================
+2025-11-10 07:55:19,587 - INFO - Starting end-to-end pipeline benchmark...
+2025-11-10 07:55:19,587 - INFO - Initializing LM Studio client: http://host.docker.internal:1234/v1
+2025-11-10 07:55:19,594 - INFO - LM Studio client initialized. Model: text-embedding-qwen3-embedding-8b
+2025-11-10 07:55:20,233 - INFO - HTTP Request: POST http://host.docker.internal:1234/v1/embeddings "HTTP/1.1 200 OK"
+2025-11-10 07:55:20,256 - INFO - Database connection pool initialized: postgres:5432/itsm_db
+2025-11-10 07:55:20,265 - ERROR - Database transaction error: expected 768 dimensions, not 4096
+
+2025-11-10 07:55:20,265 - ERROR - Error during benchmark: expected 768 dimensions, not 4096
+Traceback (most recent call last):
+  File "/app/scripts/performance_eval/benchmark_e2e_pipeline.py", line 66, in benchmark_e2e_pipeline
+    cursor.execute("""
+psycopg2.errors.DataException: expected 768 dimensions, not 4096
+
+
+============================================================
+END-TO-END PIPELINE BENCHMARK
+============================================================
+
+📋 Test Ticket: TEST_E2E_BENCHMARK_001
+Description: Network connectivity issue in Building A
+
+------------------------------------------------------------
+Step 1: Embedding Generation
+------------------------------------------------------------
+  ✓ Embedding generated: 4096 dimensions
+  ⏱️  Time: 664.8ms
+
+------------------------------------------------------------
+Step 2: Database Storage
+------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/scripts/performance_eval/benchmark_e2e_pipeline.py", line 187, in <module>
+    benchmark_e2e_pipeline()
+  File "/app/scripts/performance_eval/benchmark_e2e_pipeline.py", line 66, in benchmark_e2e_pipeline
+    cursor.execute("""
+psycopg2.errors.DataException: expected 768 dimensions, not 4096
+
+2025-11-10 07:55:21,387 - INFO - Starting similarity distribution analysis...
+2025-11-10 07:55:21,391 - INFO - Database connection pool initialized: postgres:5432/itsm_db
+2025-11-10 07:55:21,392 - INFO - Fetching tickets with embeddings...
+2025-11-10 07:55:21,400 - INFO - Loaded 78 tickets
+2025-11-10 07:55:21,400 - INFO - Calculating similarity scores...
+2025-11-10 07:55:21,400 - INFO - Processed 10/100 tickets
+2025-11-10 07:55:21,401 - INFO - Processed 20/100 tickets
+2025-11-10 07:55:21,401 - INFO - Processed 30/100 tickets
+2025-11-10 07:55:21,402 - INFO - Processed 40/100 tickets
+2025-11-10 07:55:21,402 - INFO - Processed 50/100 tickets
+2025-11-10 07:55:21,403 - INFO - Processed 60/100 tickets
+2025-11-10 07:55:21,403 - INFO - Processed 70/100 tickets
+
+============================================================
+SIMILARITY DISTRIBUTION ANALYSIS
+============================================================
+
+📊 Same Category:
+  Mean: 0.4933
+  Std:  0.0967
+  Min:  0.1429
+  Max:  0.6728
+  Count: 232
+
+📊 Different Category:
+  Mean: 0.5335
+  Std:  0.0816
+  Min:  0.1759
+  Max:  0.7484
+  Count: 493
+
+📈 Separation Gap: -0.0402
+
+============================================================
+SUCCESS CRITERIA EVALUATION
+============================================================
+
+✓ Same category mean similarity >0.60: ❌ FAIL (0.4933)
+✓ Different category mean similarity <0.50: ❌ FAIL (0.5335)
+✓ Separation gap >0.10: ❌ FAIL (-0.0402)
+
+📊 Same Priority:
+  Mean: 0.4827
+
+📊 Different Priority:
+  Mean: 0.5331
+
+📈 Priority Separation Gap: -0.0504
+
+============================================================
+ANALYSIS COMPLETE
+============================================================
+2025-11-10 07:55:22,480 - INFO - Starting parent-child link quality evaluation...
+2025-11-10 07:55:22,483 - INFO - Database connection pool initialized: postgres:5432/itsm_db
+2025-11-10 07:55:22,484 - INFO - Found 18 parent-child links
+
+============================================================
+PARENT-CHILD LINK QUALITY EVALUATION
+============================================================
+
+📊 Total Links Analyzed: 18
+
+------------------------------------------------------------
+📈 Similarity Score Statistics:
+------------------------------------------------------------
+  Mean:   0.4971
+  Median: 0.4907
+  Std:    0.0594
+  Min:    0.4082
+  Max:    0.6890
+  Count:  18/18
+
+------------------------------------------------------------
+📊 Category Agreement:
+------------------------------------------------------------
+  Same Category:      7/18 (38.9%)
+  Different Category: 11/18 (61.1%)
+
+------------------------------------------------------------
+📊 Priority Agreement:
+------------------------------------------------------------
+  Same Priority:      7/18 (38.9%)
+  Different Priority: 11/18 (61.1%)
+
+------------------------------------------------------------
+📊 Similarity Distribution:
+------------------------------------------------------------
+  0.95-1.00:    0 (  0.0%) 
+  0.90-0.95:    0 (  0.0%) 
+  0.85-0.90:    0 (  0.0%) 
+  0.80-0.85:    0 (  0.0%) 
+  0.75-0.80:    0 (  0.0%) 
+  <0.75:   18 (100.0%) ██████████████████████████████████████████████████
+
+------------------------------------------------------------
+📊 Links by Category:
+------------------------------------------------------------
+  Inquiry / Help                :   12 ( 66.7%)
+  Software                      :    3 ( 16.7%)
+  Hardware                      :    2 ( 11.1%)
+  Unknown                       :    1 (  5.6%)
+
+============================================================
+SUCCESS CRITERIA EVALUATION
+============================================================
+
+✓ Mean similarity >0.80 for linked tickets: ❌ FAIL (0.4971)
+✓ Category agreement >70%: ❌ FAIL (38.9%)
+✓ Most links in 0.80-0.95 range: ❌ FAIL (0.0% in range)
+
+------------------------------------------------------------
+📊 Overall Link Quality: ⚠️  NEEDS IMPROVEMENT
+
+============================================================
+EVALUATION COMPLETE
+============================================================
+
+================================================================================
+🎯 MODEL PERFORMANCE EVALUATION - PHASE 1: QUICK WINS
+================================================================================
+Started at: 2025-11-10 07:54:49
+
+This will run 5 benchmark scripts to establish baseline performance metrics.
+Estimated time: 5-10 minutes
+================================================================================
+
+================================================================================
+🚀 Running: Embedding Speed Benchmark
+================================================================================
+
+✅ Embedding Speed Benchmark completed in 28.1s
+
+================================================================================
+🚀 Running: Similarity Search Benchmark
+================================================================================
+
+✅ Similarity Search Benchmark completed in 0.2s
+
+================================================================================
+🚀 Running: End-to-End Pipeline Benchmark
+================================================================================
+
+❌ End-to-End Pipeline Benchmark failed with return code 1
+
+================================================================================
+🚀 Running: Similarity Distribution Analysis
+================================================================================
+
+✅ Similarity Distribution Analysis completed in 0.1s
+
+================================================================================
+🚀 Running: Parent-Child Link Quality Evaluation
+================================================================================
+
+✅ Parent-Child Link Quality Evaluation completed in 0.1s
+
+================================================================================
+📊 PHASE 1 BENCHMARK SUMMARY
+================================================================================
+
+Completed at: 2025-11-10 07:55:22
+Total Time: 33.5s (0.6 minutes)
+
+--------------------------------------------------------------------------------
+Results:
+--------------------------------------------------------------------------------
+  ✅ PASS | Embedding Speed Benchmark                     | 28.1s
+  ✅ PASS | Similarity Search Benchmark                   | 0.2s
+  ❌ FAIL | End-to-End Pipeline Benchmark                 | N/A
+  ✅ PASS | Similarity Distribution Analysis              | 0.1s
+  ✅ PASS | Parent-Child Link Quality Evaluation          | 0.1s
+
+--------------------------------------------------------------------------------
+Summary: 4 passed, 1 failed out of 5 benchmarks
+--------------------------------------------------------------------------------
+
+⚠️  Some benchmarks failed. Please review the errors above.
+Common issues:
+  - LM Studio not running (check http://localhost:1234)
+  - Database connection issues (check docker-compose services)
+  - No embeddings in database (run populate_embeddings.py first)
+
+================================================================================

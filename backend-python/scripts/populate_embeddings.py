@@ -14,7 +14,7 @@ import logging
 import os
 import sys
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -35,12 +35,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def fetch_tickets_without_embeddings(limit: int = None) -> List[Dict[str, Any]]:
+def fetch_tickets_without_embeddings(limit: Optional[int] = None, embedding_column: str = "embedding") -> List[Dict[str, Any]]:
     """
-    Fetch tickets that don't have embeddings yet.
+    Fetch tickets that don't have embeddings yet in the specified column.
     
     Args:
         limit: Maximum number of tickets to fetch (None for all)
+        embedding_column: Column name to check (e.g., "embedding" or "embedding_4096")
         
     Returns:
         List of ticket dictionaries
@@ -48,7 +49,7 @@ def fetch_tickets_without_embeddings(limit: int = None) -> List[Dict[str, Any]]:
     with get_db_connection() as conn:
         cursor = conn.cursor()
         
-        query = """
+        query = f"""
             SELECT 
                 incident_number,
                 short_description,
@@ -56,7 +57,7 @@ def fetch_tickets_without_embeddings(limit: int = None) -> List[Dict[str, Any]]:
                 priority,
                 category
             FROM servicenow_incidents
-            WHERE embedding IS NULL
+            WHERE {embedding_column} IS NULL
             ORDER BY opened_at DESC
         """
         
@@ -69,12 +70,12 @@ def fetch_tickets_without_embeddings(limit: int = None) -> List[Dict[str, Any]]:
         cursor.close()
         
         tickets = [dict(zip(columns, row)) for row in rows]
-        logger.info(f"Found {len(tickets)} tickets without embeddings")
+        logger.info(f"Found {len(tickets)} tickets without embeddings in {embedding_column}")
         
         return tickets
 
 
-def store_embeddings(tickets: List[Dict[str, Any]], embeddings: List[List[float]], model_name: str):
+def store_embeddings(tickets: List[Dict[str, Any]], embeddings: List[List[float]], model_name: str, embedding_column: str = "embedding"):
     """
     Store generated embeddings in the database.
     
@@ -82,6 +83,7 @@ def store_embeddings(tickets: List[Dict[str, Any]], embeddings: List[List[float]
         tickets: List of ticket dictionaries
         embeddings: List of embedding vectors (same order as tickets)
         model_name: Name of the model used
+        embedding_column: Column name to store embeddings (e.g., "embedding" or "embedding_4096")
     """
     if len(tickets) != len(embeddings):
         raise ValueError(f"Mismatch: {len(tickets)} tickets but {len(embeddings)} embeddings")
@@ -90,10 +92,10 @@ def store_embeddings(tickets: List[Dict[str, Any]], embeddings: List[List[float]
         register_vector(conn)
         cursor = conn.cursor()
         
-        update_query = """
+        update_query = f"""
             UPDATE servicenow_incidents
             SET 
-                embedding = %s,
+                {embedding_column} = %s,
                 embedding_model = %s,
                 embedded_at = %s
             WHERE incident_number = %s
@@ -131,14 +133,24 @@ def populate_embeddings(batch_size: int = 16, limit: int = None):
         init_connection_pool()
         logger.info("Database connection pool initialized")
         
-        # Get model info
+        # Get model info and determine column
         model_info = get_model_info()
         model_name = model_info['model_name']
         embedding_dim = get_embedding_dimension()
-        logger.info(f"Using model: {model_name} (dimension: {embedding_dim})")
+        
+        # Auto-detect which column to use based on dimension
+        if embedding_dim == 768:
+            embedding_column = "embedding"
+        elif embedding_dim == 4096:
+            embedding_column = "embedding_4096"
+        else:
+            logger.warning(f"Unexpected embedding dimension {embedding_dim}, using 'embedding' column")
+            embedding_column = "embedding"
+        
+        logger.info(f"Using model: {model_name} (dimension: {embedding_dim}, column: {embedding_column})")
         
         # Fetch tickets
-        tickets = fetch_tickets_without_embeddings(limit=limit)
+        tickets = fetch_tickets_without_embeddings(limit=limit, embedding_column=embedding_column)
         
         if not tickets:
             logger.info("No tickets need embeddings. All done!")
@@ -171,8 +183,8 @@ def populate_embeddings(batch_size: int = 16, limit: int = None):
                 embeddings = generate_embeddings_batch(texts, batch_size=len(batch))
                 logger.info(f"Generated {len(embeddings)} embeddings")
                 
-                # Store in database
-                store_embeddings(batch, embeddings, model_name)
+                # Store in database with correct column
+                store_embeddings(batch, embeddings, model_name, embedding_column=embedding_column)
                 
             except Exception as e:
                 logger.error(f"Failed to process batch {batch_num}: {e}")

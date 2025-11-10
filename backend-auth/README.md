@@ -5,12 +5,13 @@ JWT-based authentication API for ITSM Insight Nexus using Docker PostgreSQL.
 ## Overview
 
 This Express.js backend provides:
+
 - User registration and login with JWT tokens
 - Password reset functionality
 - Token validation middleware
 - PostgreSQL-based user management
 
-**Port:** 3001  
+**Port:** 3001
 **Database:** Docker Postgres (itsm_db) on port 15432
 
 ## Setup
@@ -44,7 +45,8 @@ DB_USER=postgres
 DB_PASSWORD=postgres
 ```
 
-**Important:** 
+**Important:**
+
 - `JWT_SECRET` must match the one in `backend-python/.env` for AI backend authentication
 - Use `DB_HOST=localhost` and `DB_PORT=15432` (external Docker port)
 
@@ -57,6 +59,7 @@ node run-migration.js
 ```
 
 This will:
+
 - Create `users` table with columns: id, email, password_hash, full_name, role, is_active, created_at, updated_at
 - Create `password_reset_tokens` table
 - Seed test admin user
@@ -71,13 +74,13 @@ npm run dev
 npm start
 ```
 
-Server will run on **http://localhost:3001**
+Server will run on <http://localhost:3001>
 
 ## Test Credentials
 
 After running the migration, you can log in with:
 
-```
+```text
 Email: admin@itsm.local
 Password: admin123
 ```
@@ -85,6 +88,7 @@ Password: admin123
 ## API Endpoints
 
 ### POST `/api/auth/register`
+
 Register a new user.
 
 ```json
@@ -96,6 +100,7 @@ Register a new user.
 ```
 
 ### POST `/api/auth/login`
+
 Login and get JWT token.
 
 ```json
@@ -106,6 +111,7 @@ Login and get JWT token.
 ```
 
 Response:
+
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -119,6 +125,7 @@ Response:
 ```
 
 ### POST `/api/auth/forgot-password`
+
 Request password reset.
 
 ```json
@@ -128,14 +135,17 @@ Request password reset.
 ```
 
 ### POST `/api/auth/update-password`
+
 Update password (requires authentication).
 
 Headers:
-```
+
+```text
 Authorization: Bearer <token>
 ```
 
 Body:
+
 ```json
 {
   "password": "newpassword123"
@@ -143,19 +153,23 @@ Body:
 ```
 
 ### GET `/api/auth/verify`
+
 Verify token and get user data.
 
 Headers:
-```
+
+```text
 Authorization: Bearer <token>
 ```
 
 ### GET `/api/health`
+
 Health check endpoint.
 
 ## Database Schema
 
 ### users table
+
 - `id` - UUID primary key
 - `email` - VARCHAR(255) unique
 - `password_hash` - VARCHAR(255)
@@ -166,6 +180,7 @@ Health check endpoint.
 - `updated_at` - TIMESTAMP
 
 ### password_reset_tokens table
+
 - `id` - UUID primary key
 - `user_id` - UUID foreign key to users
 - `token` - VARCHAR(255) unique

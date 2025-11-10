@@ -1,8 +1,8 @@
 # Settings Page - Comprehensive Redesign & Improvements
 
-**Generated:** 2025-11-09  
-**Page:** `/settings`  
-**Framework:** React + TypeScript + shadcn/ui  
+**Generated:** 2025-11-09
+**Page:** `/settings`
+**Framework:** React + TypeScript + shadcn/ui
 **Context:** Integrating with another software, need clear separation between system config and user preferences
 
 ---
@@ -12,11 +12,13 @@
 The Settings page currently mixes system-level configuration with missing user preferences. This document proposes a **tabbed architecture** separating admin/system settings from user experience controls, plus identifies 21 UX improvements across validation, connection testing, and feature discoverability.
 
 **Key Recommendations:**
+
 1. **Split into 3 tabs:** System (admin), My Preferences (user), Account (profile)
 2. **Add user-level AI controls:** similarity threshold slider, duplicate detection toggles, etc.
 3. **Fix critical UX gaps:** unsaved changes warning, URL validation, connection testing
 
 **Difficulty Scale:**
+
 - 🟢 **Easy (1-2h)**: Simple changes, minimal risk
 - 🟡 **Medium (3-6h)**: Moderate complexity, requires testing
 - 🟠 **Hard (1-2d)**: Significant refactoring or new patterns
@@ -29,6 +31,7 @@ The Settings page currently mixes system-level configuration with missing user p
 ### Problem Statement
 
 Current Settings page mixes:
+
 1. **System-level config** (data sources, backend URLs) - deployment concerns
 2. **User preferences** - missing entirely
 3. **Non-interactive "always enabled" AI toggle** - confusing
@@ -58,6 +61,7 @@ Since this integrates with other software, users need control over **their exper
 **Audience:** Admins, power users, initial setup
 
 **Current Sections:**
+
 1. Data Source selection
 2. API Configuration
 3. AI Backend
@@ -141,7 +145,7 @@ const validateUrl = (url: string): boolean => {
       </div>
       <Switch
         checked={settings.aiEnabled}
-        onCheckedChange={(checked) => 
+        onCheckedChange={(checked) =>
           setSettings({ ...settings, aiEnabled: checked })
         }
       />
@@ -155,7 +159,7 @@ const validateUrl = (url: string): boolean => {
 
 ### Tab 2: My Preferences (NEW - User Experience Controls)
 
-**Audience:** All users  
+**Audience:** All users
 **Purpose:** Control personal experience, defaults, AI feature usage
 
 This is the **primary missing piece**. Users need settings for:
@@ -506,6 +510,7 @@ This is the **primary missing piece**. Users need settings for:
 ### 1. Information Architecture & Layout
 
 ### 1.1 Current State
+
 - 3 main card sections: Data Source, API Configuration, AI Backend
 - Linear vertical layout with no grouping
 - All settings visible at once (no tabs/sections)
@@ -514,6 +519,7 @@ This is the **primary missing piece**. Users need settings for:
 ### 1.2 Issues Identified
 
 #### **I1.1** No visual hierarchy between system vs. user settings 🟡 P2
+
 **Problem:** Data Source (system-level) mixed with API config (user-level) without clear distinction.
 
 **Impact:** Users may not understand which settings affect the entire system vs. individual connections.
@@ -521,6 +527,7 @@ This is the **primary missing piece**. Users need settings for:
 **Difficulty:** 🟢 Easy (1h)
 
 **Solution:**
+
 ```tsx
 // Add section headers with descriptive text
 <div className="space-y-2 mb-6">
@@ -541,6 +548,7 @@ This is the **primary missing piece**. Users need settings for:
 ```
 
 #### **I1.2** No "unsaved changes" indicator 🟠 P1
+
 **Problem:** Users can modify settings without feedback that changes need saving. Easy to navigate away and lose work.
 
 **Impact:** Accidental loss of configuration changes, frustration.
@@ -548,6 +556,7 @@ This is the **primary missing piece**. Users need settings for:
 **Difficulty:** 🟡 Medium (3h)
 
 **Solution:**
+
 ```tsx
 const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 const [originalSettings, setOriginalSettings] = useState<SettingsType | null>(null);
@@ -585,6 +594,7 @@ useEffect(() => {
 ```
 
 #### **I1.3** Settings cards lack collapsible/expandable states 🟢 P3
+
 **Problem:** All cards always expanded. No way to focus on one area.
 
 **Impact:** Minor. Could improve focus for users with specific tasks.
@@ -592,6 +602,7 @@ useEffect(() => {
 **Difficulty:** 🟡 Medium (2h)
 
 **Solution:**
+
 ```tsx
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -620,6 +631,7 @@ const [openSections, setOpenSections] = useState({
 ## 2. Data Source Configuration
 
 ### 2.1 Current State
+
 - Select dropdown with 2 options: Supabase (Cloud) / Docker (Local)
 - Changes require page reload
 - Icon indicator shows current source
@@ -628,6 +640,7 @@ const [openSections, setOpenSections] = useState({
 ### 2.2 Issues Identified
 
 #### **D2.1** No confirmation dialog before data source switch 🟠 P1
+
 **Problem:** Switching data sources immediately triggers reload after 1s toast. No chance to review impact or cancel.
 
 **Impact:** High. Data source change is destructive (loses current session, unsaved work on other pages).
@@ -635,6 +648,7 @@ const [openSections, setOpenSections] = useState({
 **Difficulty:** 🟢 Easy (1.5h)
 
 **Solution:**
+
 ```tsx
 import {
   AlertDialog,
@@ -684,6 +698,7 @@ const confirmDataSourceChange = () => {
 ```
 
 #### **D2.2** No "Test Connection" for data sources 🟡 P2
+
 **Problem:** Users can select a source but can't verify it's reachable before saving. Only find out after reload fails.
 
 **Impact:** Poor troubleshooting experience. Users forced into reload cycle to test.
@@ -691,6 +706,7 @@ const confirmDataSourceChange = () => {
 **Difficulty:** 🟡 Medium (4h)
 
 **Solution:**
+
 ```tsx
 const [dataSourceStatus, setDataSourceStatus] = useState<{
   docker: boolean | null;
@@ -730,6 +746,7 @@ const testDataSource = async (source: "docker" | "supabase") => {
 ```
 
 #### **D2.3** No guidance on prerequisites for each source 🟡 P3
+
 **Problem:** Users don't know what needs to be running before selecting a source (e.g., Docker Compose up, Supabase project setup).
 
 **Impact:** Selection failures without clear next steps.
@@ -737,6 +754,7 @@ const testDataSource = async (source: "docker" | "supabase") => {
 **Difficulty:** 🟢 Easy (1h)
 
 **Solution:**
+
 ```tsx
 // Add an info popover with prerequisites
 import { Info } from "lucide-react";
@@ -778,6 +796,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 ## 3. API Configuration
 
 ### 3.1 Current State
+
 - API Base URL input (disabled when Supabase selected)
 - Auth Token password input (disabled when Supabase selected)
 - Helpful hint text for Docker setup
@@ -786,6 +805,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 ### 3.2 Issues Identified
 
 #### **A3.1** No URL validation 🟠 P1
+
 **Problem:** Users can enter invalid URLs. No client-side validation before save.
 
 **Impact:** Runtime errors, poor UX. Users don't know URL is invalid until API calls fail.
@@ -793,6 +813,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 **Difficulty:** 🟢 Easy (1.5h)
 
 **Solution:**
+
 ```tsx
 const [urlError, setUrlError] = useState<string>("");
 
@@ -832,6 +853,7 @@ const validateUrl = (url: string): boolean => {
 ```
 
 #### **A3.2** Auth token lacks show/hide toggle 🟢 P2
+
 **Problem:** Password field for token means users can't verify they typed it correctly.
 
 **Impact:** Typos in tokens lead to auth failures that are hard to debug.
@@ -839,6 +861,7 @@ const validateUrl = (url: string): boolean => {
 **Difficulty:** 🟢 Easy (1h)
 
 **Solution:**
+
 ```tsx
 const [showToken, setShowToken] = useState(false);
 
@@ -865,6 +888,7 @@ const [showToken, setShowToken] = useState(false);
 ```
 
 #### **A3.3** No "Test API Connection" button 🟡 P2
+
 **Problem:** Like data sources, users can't verify API connectivity before saving. Only AI backend has test button.
 
 **Impact:** Users save, reload, then discover API is unreachable. Slow feedback loop.
@@ -872,30 +896,31 @@ const [showToken, setShowToken] = useState(false);
 **Difficulty:** 🟡 Medium (3h)
 
 **Solution:**
+
 ```tsx
 const [apiConnectionStatus, setApiConnectionStatus] = useState<boolean | null>(null);
 
 const testApiConnection = async () => {
   if (!validateUrl(settings.apiBaseUrl)) return;
-  
+
   try {
     const headers: HeadersInit = {};
     if (settings.authToken) {
-      headers.Authorization = settings.authToken.startsWith("Bearer ") 
-        ? settings.authToken 
+      headers.Authorization = settings.authToken.startsWith("Bearer ")
+        ? settings.authToken
         : `Bearer ${settings.authToken}`;
     }
-    
+
     const response = await fetch(settings.apiBaseUrl, {
       method: "HEAD",
       headers,
     });
-    
+
     setApiConnectionStatus(response.ok);
     toast({
       title: response.ok ? "API Connected" : "Connection Failed",
-      description: response.ok 
-        ? "Successfully reached API endpoint" 
+      description: response.ok
+        ? "Successfully reached API endpoint"
         : `Status: ${response.status}`,
       variant: response.ok ? "default" : "destructive",
     });
@@ -924,6 +949,7 @@ const testApiConnection = async () => {
 ```
 
 #### **A3.4** Disabled state not obvious enough 🟢 P3
+
 **Problem:** When Supabase is selected, API inputs are disabled but styling doesn't make it clear these are intentionally locked.
 
 **Impact:** Minor confusion. Users may think inputs are broken.
@@ -931,6 +957,7 @@ const testApiConnection = async () => {
 **Difficulty:** 🟢 Easy (30min)
 
 **Solution:**
+
 ```tsx
 <div className={cn(
   "space-y-4 transition-opacity",
@@ -953,6 +980,7 @@ const testApiConnection = async () => {
 ## 4. AI Backend Configuration
 
 ### 4.1 Current State
+
 - Always-enabled badge (non-toggleable)
 - AI Backend URL input
 - Test Connection button with status badge
@@ -961,6 +989,7 @@ const testApiConnection = async () => {
 ### 4.2 Issues Identified
 
 #### **AI4.1** "Always enabled" messaging contradicts toggle expectations 🟢 P2
+
 **Problem:** Text says "AI Features" then states "always enabled for this workspace" with a permanent badge. Users expect a toggle.
 
 **Impact:** Confusion about whether AI features can be disabled. Misleading if aiEnabled flag exists in types but isn't used.
@@ -968,6 +997,7 @@ const testApiConnection = async () => {
 **Difficulty:** 🟢 Easy (1h)
 
 **Solution Option 1:** Remove toggle entirely, make it clear this is informational
+
 ```tsx
 <div className="rounded-lg bg-muted p-4">
   <div className="flex items-center gap-2 mb-2">
@@ -981,6 +1011,7 @@ const testApiConnection = async () => {
 ```
 
 **Solution Option 2:** Make it actually toggleable
+
 ```tsx
 <div className="flex items-center justify-between">
   <div className="space-y-0.5">
@@ -992,7 +1023,7 @@ const testApiConnection = async () => {
   <Switch
     id="ai-toggle"
     checked={settings.aiEnabled ?? true}
-    onCheckedChange={(checked) => 
+    onCheckedChange={(checked) =>
       setSettings({ ...settings, aiEnabled: checked })
     }
   />
@@ -1000,6 +1031,7 @@ const testApiConnection = async () => {
 ```
 
 #### **AI4.2** AI URL test doesn't validate response structure 🟡 P3
+
 **Problem:** Test only checks if `/api/ai/health` returns 200. Doesn't verify it's actually the AI backend (could be any server).
 
 **Impact:** False positives if wrong URL entered.
@@ -1007,13 +1039,14 @@ const testApiConnection = async () => {
 **Difficulty:** 🟢 Easy (1h)
 
 **Solution:**
+
 ```tsx
 const testAiConnection = async () => {
   // ... existing fetch code
-  
+
   if (response.ok) {
     const data = await response.json();
-    
+
     // Validate response shape
     if (!data.service || !data.version) {
       setAiConnected(false);
@@ -1024,7 +1057,7 @@ const testAiConnection = async () => {
       });
       return;
     }
-    
+
     // Verify it's our backend
     if (data.service !== "ITSM AI Backend") {
       setAiConnected(false);
@@ -1035,7 +1068,7 @@ const testAiConnection = async () => {
       });
       return;
     }
-    
+
     // Success
     setAiConnected(true);
     toast({
@@ -1048,6 +1081,7 @@ const testAiConnection = async () => {
 ```
 
 #### **AI4.3** Feature roadmap box should be collapsible 🟢 P3
+
 **Problem:** Roadmap info is helpful initially but takes space once user knows the features. No way to hide it.
 
 **Impact:** Minor. Reduces clutter for experienced users.
@@ -1055,6 +1089,7 @@ const testAiConnection = async () => {
 **Difficulty:** 🟢 Easy (45min)
 
 **Solution:**
+
 ```tsx
 const [showRoadmap, setShowRoadmap] = useState(true);
 
@@ -1074,6 +1109,7 @@ const [showRoadmap, setShowRoadmap] = useState(true);
 ```
 
 #### **AI4.4** No link to backend documentation 🟡 P3
+
 **Problem:** Users see AI backend config but no quick way to learn how to start the Python backend or troubleshoot issues.
 
 **Impact:** Higher support burden. Users don't discover docs.
@@ -1081,6 +1117,7 @@ const [showRoadmap, setShowRoadmap] = useState(true);
 **Difficulty:** 🟢 Easy (30min)
 
 **Solution:**
+
 ```tsx
 <CardDescription className="flex items-center justify-between">
   Configure AI features: ticket classification, sentiment analysis, and RAG
@@ -1100,6 +1137,7 @@ const [showRoadmap, setShowRoadmap] = useState(true);
 ### 5.1 Issues Identified
 
 #### **G5.1** No keyboard shortcuts 🟡 P3
+
 **Problem:** Power users must mouse to "Save" button. No Ctrl/Cmd+S shortcut.
 
 **Impact:** Minor efficiency loss for frequent config changes.
@@ -1107,6 +1145,7 @@ const [showRoadmap, setShowRoadmap] = useState(true);
 **Difficulty:** 🟢 Easy (1h)
 
 **Solution:**
+
 ```tsx
 useEffect(() => {
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -1127,6 +1166,7 @@ useEffect(() => {
 ```
 
 #### **G5.2** No settings import/export 🟠 P3
+
 **Problem:** Users can't backup settings or share configs across environments/machines.
 
 **Impact:** Difficult to replicate setups. Manual re-entry for multi-machine workflows.
@@ -1134,6 +1174,7 @@ useEffect(() => {
 **Difficulty:** 🟡 Medium (3h)
 
 **Solution:**
+
 ```tsx
 const exportSettings = () => {
   const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
@@ -1186,6 +1227,7 @@ const importSettings = async (file: File) => {
 ```
 
 #### **G5.3** No settings reset to defaults 🟢 P3
+
 **Problem:** If user misconfigures, no easy way to reset to known-good defaults.
 
 **Impact:** Users may need to manually re-enter default values or clear localStorage.
@@ -1193,6 +1235,7 @@ const importSettings = async (file: File) => {
 **Difficulty:** 🟢 Easy (1h)
 
 **Solution:**
+
 ```tsx
 const defaultSettings: SettingsType = {
   apiBaseUrl: "http://localhost:3000",
@@ -1233,6 +1276,7 @@ const resetToDefaults = () => {
 ```
 
 #### **G5.4** No loading states during tests 🟢 P2
+
 **Problem:** Test Connection buttons don't show loading state. User doesn't know if click registered.
 
 **Impact:** Users click multiple times, unclear if test is running.
@@ -1240,6 +1284,7 @@ const resetToDefaults = () => {
 **Difficulty:** 🟢 Easy (30min)
 
 **Solution:**
+
 ```tsx
 const [isTestingAi, setIsTestingAi] = useState(false);
 
@@ -1252,8 +1297,8 @@ const testAiConnection = async () => {
   }
 };
 
-<Button 
-  onClick={testAiConnection} 
+<Button
+  onClick={testAiConnection}
   variant="outline"
   disabled={isTestingAi}
 >
@@ -1263,6 +1308,7 @@ const testAiConnection = async () => {
 ```
 
 #### **G5.5** Connection status badge at top is misleading 🟡 P2
+
 **Problem:** "Connected/Disconnected" badge in header always shows "Connected" (hardcoded `isConnected = true`). Doesn't reflect actual system state.
 
 **Impact:** False sense of security. Users think system is healthy when it may not be.
@@ -1270,6 +1316,7 @@ const testAiConnection = async () => {
 **Difficulty:** 🟡 Medium (4h)
 
 **Solution:**
+
 ```tsx
 const [systemStatus, setSystemStatus] = useState<{
   dataSource: boolean;
@@ -1336,15 +1383,19 @@ const overallConnected = Object.values(systemStatus).some(v => v);
 ## 6. Advanced Features (Future Enhancements)
 
 ### **F6.1** Settings versioning/history 🔴 Complex (5d)
+
 Track changes to settings over time with rollback capability.
 
 ### **F6.2** Environment profiles 🟠 Hard (2d)
+
 Dev/Staging/Prod presets that can be switched quickly.
 
 ### **F6.3** Settings validation on mount 🟡 Medium (4h)
+
 Test all connections when page loads, show health dashboard.
 
 ### **F6.4** Auto-detect local services 🟠 Hard (1d)
+
 Scan common ports (3000, 8000, 15432) and suggest configs.
 
 ---
@@ -1373,7 +1424,7 @@ Scan common ports (3000, 8000, 15432) and suggest configs.
 | **G5.2** | Import/export settings | P3 | 🟡 Medium | 3h | ⭐⭐ |
 | **I1.3** | Collapsible cards | P3 | 🟡 Medium | 2h | ⭐ |
 
-**Total Estimated Time for P1-P2 items:** ~18-22 hours (2-3 days)  
+**Total Estimated Time for P1-P2 items:** ~18-22 hours (2-3 days)
 **Quick wins (< 2h, high impact):** D2.1, A3.1, A3.2, AI4.1, G5.4, I1.1
 
 ---
@@ -1381,27 +1432,35 @@ Scan common ports (3000, 8000, 15432) and suggest configs.
 ## Recommended Implementation Phases
 
 ### **Phase 1: Critical UX (1 day)**
+
 Focus on preventing data loss and validation failures.
+
 - D2.1: Confirmation dialog for data source switch
 - A3.1: URL validation
 - I1.2: Unsaved changes indicator
 - G5.4: Loading states during tests
 
 ### **Phase 2: Connection Testing (1 day)**
+
 Help users verify configurations before committing.
+
 - A3.3: Test API connection
 - D2.2: Test data source connection
 - G5.5: Real system status badge
 
 ### **Phase 3: Polish & Convenience (0.5 day)**
+
 Quick wins for better UX.
+
 - A3.2: Auth token show/hide
 - AI4.1: Fix "always enabled" messaging
 - I1.1: Visual hierarchy sections
 - G5.1: Keyboard shortcuts
 
 ### **Phase 4: Advanced (Optional, 1 day)**
+
 Nice-to-have features for power users.
+
 - G5.2: Import/export settings
 - G5.3: Reset to defaults
 - I1.3: Collapsible cards
@@ -1412,6 +1471,7 @@ Nice-to-have features for power users.
 ## Accessibility Notes
 
 Current state is generally accessible, but improvements needed:
+
 - Add `aria-describedby` to inputs linking to error messages
 - Ensure color is not the only indicator (connection status)
 - Test with screen readers after adding dialogs

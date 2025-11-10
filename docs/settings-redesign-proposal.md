@@ -1,6 +1,6 @@
 # Settings Page Redesign Proposal
 
-**Date:** 2025-11-09  
+**Date:** 2025-11-09
 **Context:** Integrating with another software, need clear separation between system config and user preferences
 
 ---
@@ -8,6 +8,7 @@
 ## Problem Statement
 
 Current Settings page mixes:
+
 1. **System-level config** (data sources, backend URLs) - deployment concerns
 2. **User preferences** - missing entirely
 3. **Non-interactive "always enabled" AI toggle** - confusing
@@ -19,6 +20,7 @@ Since this integrates with other software, users need control over **their exper
 ## Proposed Solution: Tabbed Settings
 
 ### Architecture
+
 ```
 ┌─────────────────────────────────────────┐
 │  Settings                         [?]    │
@@ -35,10 +37,11 @@ Since this integrates with other software, users need control over **their exper
 
 ## Tab 1: System (Admin/Advanced)
 
-**Audience:** Admins, power users, initial setup  
+**Audience:** Admins, power users, initial setup
 **When to show:** Always visible, or hide if user.role !== 'admin'
 
 **Sections:**
+
 1. **Data Source** (keep as-is, add confirmation dialog)
 2. **API Configuration** (keep, add validation)
 3. **AI Backend** (rename to "AI System Configuration")
@@ -48,6 +51,7 @@ Since this integrates with other software, users need control over **their exper
    - Move feature roadmap to a "Learn More" link
 
 **Changes:**
+
 ```tsx
 // Simplified AI Backend section
 <Card>
@@ -67,7 +71,7 @@ Since this integrates with other software, users need control over **their exper
       </div>
       <Switch
         checked={settings.aiEnabled}
-        onCheckedChange={(checked) => 
+        onCheckedChange={(checked) =>
           setSettings({ ...settings, aiEnabled: checked })
         }
       />
@@ -89,7 +93,7 @@ Since this integrates with other software, users need control over **their exper
     <Button onClick={testAiConnection} variant="outline" disabled={!settings.aiEnabled}>
       Test Connection
     </Button>
-    
+
     <Button variant="link" asChild>
       <a href="/docs/PHASE1_COMPLETE.md" target="_blank">
         View AI Backend Documentation
@@ -103,7 +107,7 @@ Since this integrates with other software, users need control over **their exper
 
 ## Tab 2: My Preferences (NEW - Primary User Settings)
 
-**Audience:** All users  
+**Audience:** All users
 **Purpose:** Control personal experience, defaults, AI feature usage
 
 ### Section 1: Display & Interface
@@ -442,6 +446,7 @@ Since this integrates with other software, users need control over **their exper
 ## Tab 3: Account (User Profile)
 
 **Sections:**
+
 1. **Profile Information**
    - Name, email (read-only if SSO)
    - Avatar upload
@@ -537,18 +542,21 @@ localStorage.getItem(`itsm-user-prefs-${userId}`)
 ## Migration Plan
 
 ### Phase 1: Refactor Current (2-3 hours)
+
 1. Add Tabs component to Settings page
 2. Move existing cards to "System" tab
 3. Fix AI Backend section (remove "always enabled", add real toggle)
 4. Add unsaved changes warning
 
 ### Phase 2: User Preferences (4-6 hours)
+
 1. Create UserPreferences type
 2. Build "My Preferences" tab UI
 3. Wire up localStorage persistence
 4. Apply preferences across app (theme, defaults, etc.)
 
 ### Phase 3: Backend Integration (Optional, 1-2 days)
+
 1. Add `user_preferences` table to Postgres
 2. Create API endpoints for CRUD
 3. Migrate from localStorage to API
@@ -561,11 +569,13 @@ localStorage.getItem(`itsm-user-prefs-${userId}`)
 ### "How can we improve this or should we just remove this?"
 
 **Improve it by:**
+
 1. Making the global AI toggle actually functional (not "always enabled")
 2. Moving it to a "System" tab for admins
 3. Adding **user-level** AI controls in "My Preferences" tab
 
 **Don't remove it** - but reframe it:
+
 - System/Admin: "Is AI backend available?" (URL, global toggle)
 - User: "Do I want to use AI features?" (per-user toggles, thresholds)
 
@@ -574,6 +584,7 @@ localStorage.getItem(`itsm-user-prefs-${userId}`)
 Since integrating with other software, users need:
 
 **Must Have (Phase 1):**
+
 - ✅ Theme preference
 - ✅ Default page after login
 - ✅ Tickets per page
@@ -581,12 +592,14 @@ Since integrating with other software, users need:
 - ✅ Similarity threshold slider
 
 **Should Have (Phase 2):**
+
 - ✅ Default filters (status, date range)
 - ✅ Date format preference
 - ✅ Favorite assignment groups
 - ✅ Notification preferences
 
 **Nice to Have (Future):**
+
 - Profile picture
 - Timezone
 - API tokens

@@ -64,6 +64,8 @@ services:
       - OMP_NUM_THREADS=2
       - MKL_NUM_THREADS=2
       - OPENBLAS_NUM_THREADS=2
+      - LM_STUDIO_BASE_URL=http://host.docker.internal:1234/v1
+      - LM_STUDIO_MODEL=text-embedding-qwen3-embedding-8b
     volumes:
       - model-cache:/root/.cache/huggingface
       - ./backend-python:/app
@@ -91,6 +93,8 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - LOG_LEVEL=INFO
+      - LM_STUDIO_BASE_URL=http://host.docker.internal:1234/v1
+      - LM_STUDIO_MODEL=text-embedding-qwen3-embedding-8b
     volumes:
       - ./backend-python:/app
     depends_on:

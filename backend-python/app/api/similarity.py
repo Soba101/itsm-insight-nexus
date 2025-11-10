@@ -38,6 +38,7 @@ class SimilaritySearchRequest(BaseModel):
 	description: Optional[str] = Field(None, max_length=8000)
 	top_k: int = Field(5, ge=1, le=20)
 	min_similarity: float = Field(0.7, ge=0.0, le=1.0)
+	model: str = Field("qwen3", pattern="^(gemma|qwen3)$")  # Model selection for A/B testing (default: qwen3)
 
 	@model_validator(mode="after")
 	def validate_inputs(self) -> "SimilaritySearchRequest":
@@ -106,6 +107,9 @@ async def search_similar(
 	model_info = get_model_info()
 	query_embedding: Optional[List[float]] = None
 	generated_embedding = False
+	
+	# Determine which embedding column to use based on model parameter
+	embedding_column = "embedding_4096" if payload.model == "qwen3" else "embedding"
 
 	with get_db_connection() as conn:
 		register_vector(conn)
@@ -113,8 +117,8 @@ async def search_similar(
 		if payload.incident_number:
 			cursor = conn.cursor(cursor_factory=RealDictCursor)
 			cursor.execute(
-				"""
-				SELECT incident_number, short_description, description, embedding
+				f"""
+				SELECT incident_number, short_description, description, {embedding_column}
 				FROM servicenow_incidents
 				WHERE incident_number = %s
 				""",
@@ -129,7 +133,7 @@ async def search_similar(
 					detail="Incident not found",
 				)
 
-			stored_embedding = ticket_row.get("embedding")
+			stored_embedding = ticket_row.get(embedding_column)
 			if stored_embedding is not None:
 				query_embedding = [float(value) for value in stored_embedding]
 			else:
@@ -142,9 +146,9 @@ async def search_similar(
 
 				cursor = conn.cursor()
 				cursor.execute(
-					"""
+					f"""
 					UPDATE servicenow_incidents
-					SET embedding = %s, embedding_model = %s, embedded_at = %s
+					SET {embedding_column} = %s, embedding_model = %s, embedded_at = %s
 					WHERE incident_number = %s
 					""",
 					(
@@ -166,6 +170,7 @@ async def search_similar(
 			top_k=payload.top_k,
 			min_similarity=payload.min_similarity,
 			exclude_incident=payload.incident_number,
+			embedding_column=embedding_column,  # Pass column name to similarity function
 		)
 
 	return SimilaritySearchResponse(

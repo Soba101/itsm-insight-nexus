@@ -1,7 +1,7 @@
 # Bundle Size Optimization Implementation Plan
 
-**Date:** 6 November 2025  
-**Current Issue:** Single JS bundle is 1,469 KB (449 KB gzipped) - exceeds Vite's 500 KB recommendation  
+**Date:** 6 November 2025
+**Current Issue:** Single JS bundle is 1,469 KB (449 KB gzipped) - exceeds Vite's 500 KB recommendation
 **Goal:** Reduce initial bundle size to <500 KB through code-splitting and lazy loading
 
 ---
@@ -9,6 +9,7 @@
 ## 📊 Current State Analysis
 
 ### Bundle Composition (Estimated)
+
 ```
 Total Bundle: 1,469 KB (449 KB gzipped)
 
@@ -28,6 +29,7 @@ Major Contributors:
 ```
 
 ### Current Loading Strategy
+
 - **All routes loaded upfront** (no code-splitting)
 - **All UI components bundled** (even unused ones)
 - **Large libraries always loaded** (Recharts, Cytoscape)
@@ -37,6 +39,7 @@ Major Contributors:
 ## 🎯 Implementation Strategy
 
 ### Phase 1: Route-Based Code Splitting (High Impact)
+
 **Difficulty:** ⭐⭐ Easy-Medium | **Impact:** 🚀🚀🚀 High | **Time:** 1-2 hours
 
 Split application by routes so each page loads only what it needs.
@@ -44,6 +47,7 @@ Split application by routes so each page loads only what it needs.
 #### Changes Required:
 
 **File:** `src/App.tsx`
+
 ```typescript
 // BEFORE: Direct imports
 import Dashboard from "./pages/Dashboard";
@@ -71,6 +75,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 ```
 
 **Expected Result:**
+
 - Main bundle: ~800-900 KB (down from 1,469 KB)
 - Dashboard chunk: ~100-150 KB
 - Tickets chunk: ~100-150 KB
@@ -83,13 +88,16 @@ const Settings = lazy(() => import("./pages/Settings"));
 ---
 
 ### Phase 2: Library-Specific Optimization (Medium Impact)
+
 **Difficulty:** ⭐⭐⭐ Medium | **Impact:** 🚀🚀 Medium-High | **Time:** 2-3 hours
 
 #### 2A. Optimize Heavy Libraries
 
 **Cytoscape (250 KB)**
+
 - Already isolated to Graph page (will benefit from Phase 1)
 - Consider: Load only when user interacts with graph view
+
 ```typescript
 // In GraphViewer.tsx
 const [showGraph, setShowGraph] = useState(false);
@@ -97,25 +105,31 @@ const Cytoscape = lazy(() => import('cytoscape'));
 ```
 
 **Recharts (200 KB)**
+
 - Used in Dashboard and Insights pages
 - Consider: Create shared chart chunk
+
 ```typescript
 // src/components/charts/index.ts
 export const ChartWrapper = lazy(() => import('./ChartWrapper'));
 ```
 
 **Radix UI (300 KB total)**
+
 - 23+ component packages loaded
 - Review actual usage in each route
 - Opportunity: Remove unused Radix components
+
 ```bash
 # Audit unused Radix imports
 npx depcheck
 ```
 
 **Lucide Icons (100 KB)**
+
 - Tree-shakeable but may not be optimized
 - Action: Verify named imports are used (not default)
+
 ```typescript
 // GOOD: Tree-shakeable
 import { Search, Filter, X } from "lucide-react";
@@ -125,6 +139,7 @@ import * as Icons from "lucide-react";
 ```
 
 #### 2B. Date-fns Optimization
+
 ```typescript
 // BEFORE: Large locale imports
 import { format } from "date-fns";
@@ -140,6 +155,7 @@ import format from "date-fns/format";
 ---
 
 ### Phase 3: Vite Build Configuration (Low-Medium Impact)
+
 **Difficulty:** ⭐⭐ Easy-Medium | **Impact:** 🚀 Low-Medium | **Time:** 1 hour
 
 #### Update `vite.config.ts`
@@ -174,6 +190,7 @@ export default defineConfig(({ mode }) => ({
 ```
 
 **Benefits:**
+
 - Better browser caching (vendor chunks change less)
 - Parallel loading of chunks
 - Smaller incremental updates
@@ -185,27 +202,32 @@ export default defineConfig(({ mode }) => ({
 ---
 
 ### Phase 4: Advanced Optimizations (Optional)
+
 **Difficulty:** ⭐⭐⭐⭐ Medium-Hard | **Impact:** 🚀 Variable | **Time:** 3-5 hours
 
 #### 4A. Dynamic Imports for Modals/Drawers
+
 ```typescript
 // TicketDrawer.tsx - only load when opened
 const TicketDetailView = lazy(() => import('./TicketDetailView'));
 ```
 
 #### 4B. Icon Optimization
+
 ```typescript
 // Create custom icon subset if using many Lucide icons
 // Or switch to SVG sprites for frequently used icons
 ```
 
 #### 4C. Component Library Analysis
+
 ```bash
 # Analyze bundle with vite-plugin-visualizer
 npm install --save-dev rollup-plugin-visualizer
 ```
 
 Add to `vite.config.ts`:
+
 ```typescript
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -216,6 +238,7 @@ plugins: [
 ```
 
 #### 4D. Remove Unused Dependencies
+
 ```bash
 # Identify unused packages
 npx depcheck
@@ -235,6 +258,7 @@ npx depcheck
 ## 📋 Implementation Checklist
 
 ### Phase 1: Route Splitting (RECOMMENDED START)
+
 - [ ] Create `PageLoader` component for Suspense fallback
 - [ ] Convert page imports to `lazy()` in `App.tsx`
 - [ ] Wrap Routes in `Suspense` boundary
@@ -244,6 +268,7 @@ npx depcheck
 - [ ] Test in production mode (`npm run build && npm run preview`)
 
 ### Phase 2: Library Optimization
+
 - [ ] Audit Radix UI usage with `depcheck`
 - [ ] Verify Lucide icons use named imports
 - [ ] Review Recharts usage (can it be deferred?)
@@ -252,6 +277,7 @@ npx depcheck
 - [ ] Re-build and measure impact
 
 ### Phase 3: Build Config
+
 - [ ] Add `manualChunks` configuration
 - [ ] Test chunk loading in browser Network tab
 - [ ] Verify cache behavior with repeated visits
@@ -259,6 +285,7 @@ npx depcheck
 - [ ] Document chunk strategy in README
 
 ### Phase 4: Advanced (Optional)
+
 - [ ] Install and run bundle visualizer
 - [ ] Identify largest remaining chunks
 - [ ] Lazy-load modal/drawer content
@@ -270,6 +297,7 @@ npx depcheck
 ## 🎯 Success Metrics
 
 ### Target Bundle Sizes
+
 ```
 Initial Load (Target):
 ├─ Main chunk:          < 300 KB (currently ~1,470 KB)
@@ -286,6 +314,7 @@ On-Demand Chunks:
 ```
 
 ### Performance Goals
+
 - **First Contentful Paint (FCP):** < 1.5s on 3G
 - **Time to Interactive (TTI):** < 3.5s on 3G
 - **Lighthouse Score:** > 90 (Performance)
@@ -307,6 +336,7 @@ On-Demand Chunks:
 ## 🔧 Testing Strategy
 
 ### 1. Development Testing
+
 ```bash
 # Activate environment
 conda activate itsm
@@ -316,6 +346,7 @@ npm run build && npm run preview
 ```
 
 ### 2. Bundle Analysis
+
 ```bash
 # After adding visualizer plugin
 npm run build
@@ -323,6 +354,7 @@ npm run build
 ```
 
 ### 3. Manual Testing
+
 - [ ] Navigate to each route (Dashboard, Tickets, Insights, Graph, Settings)
 - [ ] Check Network tab for chunk loading
 - [ ] Verify mock data mode works
@@ -331,6 +363,7 @@ npm run build
 - [ ] Verify no console errors
 
 ### 4. Lighthouse Audit
+
 ```bash
 # In Chrome DevTools
 # Lighthouse > Performance > Generate Report
@@ -341,16 +374,19 @@ npm run build
 ## 📈 Expected Outcomes
 
 ### Immediate (Phase 1)
+
 - **Bundle size:** 1,469 KB → ~800 KB (45% reduction)
 - **Gzipped:** 449 KB → ~250 KB (44% reduction)
 - **Initial load time:** Improved by 30-40%
 
 ### With Phase 2
+
 - **Bundle size:** ~800 KB → ~600-700 KB (additional 15-20%)
 - **Tree-shaking:** Better optimization of libraries
 - **Cache efficiency:** Improved for returning users
 
 ### With Phase 3
+
 - **Better caching:** Vendor chunks cached separately
 - **Parallel loading:** Multiple chunks load simultaneously
 - **Faster updates:** Only app code chunk changes on updates
@@ -362,27 +398,29 @@ npm run build
 ### Overall Project Difficulty: ⭐⭐⭐ (3/5) - Medium
 
 **Breakdown:**
+
 - **Phase 1 (Route Splitting):** ⭐⭐ Easy-Medium
   - Standard React pattern
   - Well-documented approach
   - Low risk of breaking changes
-  
+
 - **Phase 2 (Library Optimization):** ⭐⭐⭐ Medium
   - Requires dependency analysis
   - May need code refactoring
   - Testing required for regressions
-  
+
 - **Phase 3 (Build Config):** ⭐⭐ Easy-Medium
   - Configuration-only changes
   - Well-documented Vite feature
   - Minimal code changes
-  
+
 - **Phase 4 (Advanced):** ⭐⭐⭐⭐ Medium-Hard
   - Deep optimization techniques
   - Requires performance profiling
   - Higher complexity, lower guaranteed ROI
 
 ### Recommended Approach
+
 **Start with Phase 1** - It provides the biggest impact (45% reduction) with the least risk and complexity. This alone will resolve the Vite warning.
 
 **Then assess:** After Phase 1, measure actual performance in production. Only proceed with Phases 2-4 if load times are still problematic.

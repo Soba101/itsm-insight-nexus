@@ -1,10 +1,14 @@
 # Backend Integration Guide
+
 Target project: Vite + React + TypeScript UI in this repo.
 Existing services: `docker-compose.yml` sets up Postgres and pgAdmin.
 Goal: integrate a FastAPI backend that provides ticket classification, sentiment, hybrid search, and RAG.
+
 ## 1) Backend service
+
 Create a sibling folder at repo root: `backend/` with the FastAPI app.
 Expose:
+
 - `GET /health`
 - `POST /tickets/ingest`
 - `POST /nlp/classify`
@@ -14,6 +18,7 @@ Expose:
 - `POST /rag/answer`
 
 Enable CORS for the UI dev server:
+
 ```py
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -27,6 +32,7 @@ app.add_middleware(
 ```
 
 Environment variables (.env in `backend/`):
+
 ```
 API_KEYS=devkey123
 MODEL_DIR=.models
@@ -35,7 +41,9 @@ COMBINE_WEIGHT=0.65
 ```
 
 ## 2) Frontend config
+
 Add to UI `.env.local`:
+
 ```
 VITE_API_BASE_URL=http://localhost:8000
 VITE_API_KEY=devkey123
@@ -44,7 +52,9 @@ VITE_API_KEY=devkey123
 Never commit secrets to `.env`. Copy keys to `.env.local` only.
 
 ## 3) API client (UI)
+
 Create `src/lib/backend.ts`:
+
 ```ts
 const BASE = import.meta.env.VITE_API_BASE_URL;
 const KEY = import.meta.env.VITE_API_KEY;
@@ -98,12 +108,14 @@ export async function kbUpload(file: File) {
 ```
 
 ## 4) UI wiring
+
 - Ticket create or edit screen: after user enters subject + description, call `ingestTicket` to show predicted category, priority, and sentiment. Let users accept or override.
 - Knowledge Base page: add a file input that posts to `kbUpload`. After upload, show a toast with doc id.
 - Search page: add a text input and show results from `kbSearch`.
 - Assistant page: question box that calls `ragAnswer`, render `answer` plus citation chips.
 
 Minimal example component:
+
 ```tsx
 import { useState } from "react";
 import { ingestTicket } from "@/lib/backend";
@@ -142,7 +154,9 @@ export function SmartIntake() {
 ```
 
 ## 5) Compose
+
 Extend your existing `docker-compose.yml` to run the backend and the UI:
+
 ```yaml
 services:
   backend:
@@ -188,6 +202,7 @@ volumes:
 ```
 
 Add `docker/Dockerfile.ui` in the UI repo:
+
 ```dockerfile
 FROM node:20-alpine AS build
 WORKDIR /app
@@ -202,6 +217,7 @@ CMD ["npm","run","preview","--","--host","0.0.0.0","--port","8080"]
 ```
 
 ## 6) Local run
+
 ```bash
 # from repo root
 docker compose up --build
@@ -210,15 +226,18 @@ docker compose up --build
 ```
 
 ## 7) Security and secrets
+
 - Move real credentials out of `.env` at repo root. Use `.env.local` and do not commit it.
 - Configure the backend API key and CORS. Use HTTPS in production behind a reverse proxy.
 - Rotate any exposed credentials immediately.
 
 ## 8) Optional: connect to ServiceNow or Supabase
+
 - On ticket creation in Supabase, trigger the backend ingestion via a webhook to `/tickets/ingest`.
 - To sync ServiceNow incidents, set up a poller in the backend or a ServiceNow outbound REST message to the backend.
 
 ## 9) Smoke tests
+
 - `GET /health` returns `{status:"ok"}`
 - Upload a PDF in the KB page and verify it appears in search.
 - In Smart Intake, paste a ticket. You should see category, priority, and sentiment.

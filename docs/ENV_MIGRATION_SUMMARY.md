@@ -1,6 +1,6 @@
 # Environment Configuration Migration
 
-**Date:** 6 November 2025  
+**Date:** 6 November 2025
 **Status:** ✅ Complete
 
 ## Summary
@@ -10,6 +10,7 @@ Updated Python scripts to use environment variables from `.env` file instead of 
 ## Changes Made
 
 ### 1. Updated `.env` File
+
 Added proper database configuration variables:
 
 ```env
@@ -22,6 +23,7 @@ DB_PASSWORD="postgres"
 ```
 
 ### 2. Updated `scripts/fetch_servicenow_incidents.py`
+
 - ✅ Added `python-dotenv` import
 - ✅ Load `.env` file from project root
 - ✅ Read `SERVICENOW_INSTANCE_URL`, `SERVICENOW_USERNAME`, `SERVICENOW_PASSWORD` from environment
@@ -29,6 +31,7 @@ DB_PASSWORD="postgres"
 - ✅ Dynamic API endpoint construction
 
 **Before:**
+
 ```python
 INSTANCE_URL = "https://dev305874.service-now.com/"
 USERNAME = "admin"
@@ -36,6 +39,7 @@ PASSWORD = "Sbg2A+Rp8By*"
 ```
 
 **After:**
+
 ```python
 from dotenv import load_dotenv
 
@@ -48,12 +52,14 @@ PASSWORD = os.getenv('SERVICENOW_PASSWORD')
 ```
 
 ### 3. Updated `scripts/insert_servicenow_incidents.py`
+
 - ✅ Added `python-dotenv` import
 - ✅ Load `.env` file from project root
 - ✅ Read database config from environment variables with defaults
 - ✅ Supports: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
 
 **Before:**
+
 ```python
 DB_CONFIG = {
     "host": "localhost",
@@ -65,6 +71,7 @@ DB_CONFIG = {
 ```
 
 **After:**
+
 ```python
 from dotenv import load_dotenv
 
@@ -81,6 +88,7 @@ DB_CONFIG = {
 ```
 
 ### 4. Created `scripts/requirements.txt`
+
 Added necessary Python dependencies:
 
 ```txt
@@ -126,11 +134,13 @@ python3 scripts/insert_servicenow_incidents.py
 ## Configuration Variables
 
 ### Required (ServiceNow)
+
 - `SERVICENOW_INSTANCE_URL` - Your ServiceNow instance URL
 - `SERVICENOW_USERNAME` - ServiceNow API username
 - `SERVICENOW_PASSWORD` - ServiceNow API password
 
 ### Optional (Database - with defaults)
+
 - `DB_HOST` - Database host (default: `localhost`)
 - `DB_PORT` - Database port (default: `15432`)
 - `DB_NAME` - Database name (default: `itsm_db`)
