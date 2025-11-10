@@ -1,8 +1,8 @@
 # Settings Page - Comprehensive Redesign & Improvements
 
-**Generated:** 2025-11-09  
-**Page:** `/settings`  
-**Framework:** React + TypeScript + shadcn/ui  
+**Generated:** 2025-11-09
+**Page:** `/settings`
+**Framework:** React + TypeScript + shadcn/ui
 **Context:** Integrating with another software, need clear separation between system config and user preferences
 
 ---
@@ -145,7 +145,7 @@ const validateUrl = (url: string): boolean => {
       </div>
       <Switch
         checked={settings.aiEnabled}
-        onCheckedChange={(checked) => 
+        onCheckedChange={(checked) =>
           setSettings({ ...settings, aiEnabled: checked })
         }
       />
@@ -159,7 +159,7 @@ const validateUrl = (url: string): boolean => {
 
 ### Tab 2: My Preferences (NEW - User Experience Controls)
 
-**Audience:** All users  
+**Audience:** All users
 **Purpose:** Control personal experience, defaults, AI feature usage
 
 This is the **primary missing piece**. Users need settings for:
@@ -902,25 +902,25 @@ const [apiConnectionStatus, setApiConnectionStatus] = useState<boolean | null>(n
 
 const testApiConnection = async () => {
   if (!validateUrl(settings.apiBaseUrl)) return;
-  
+
   try {
     const headers: HeadersInit = {};
     if (settings.authToken) {
-      headers.Authorization = settings.authToken.startsWith("Bearer ") 
-        ? settings.authToken 
+      headers.Authorization = settings.authToken.startsWith("Bearer ")
+        ? settings.authToken
         : `Bearer ${settings.authToken}`;
     }
-    
+
     const response = await fetch(settings.apiBaseUrl, {
       method: "HEAD",
       headers,
     });
-    
+
     setApiConnectionStatus(response.ok);
     toast({
       title: response.ok ? "API Connected" : "Connection Failed",
-      description: response.ok 
-        ? "Successfully reached API endpoint" 
+      description: response.ok
+        ? "Successfully reached API endpoint"
         : `Status: ${response.status}`,
       variant: response.ok ? "default" : "destructive",
     });
@@ -1023,7 +1023,7 @@ const testApiConnection = async () => {
   <Switch
     id="ai-toggle"
     checked={settings.aiEnabled ?? true}
-    onCheckedChange={(checked) => 
+    onCheckedChange={(checked) =>
       setSettings({ ...settings, aiEnabled: checked })
     }
   />
@@ -1043,10 +1043,10 @@ const testApiConnection = async () => {
 ```tsx
 const testAiConnection = async () => {
   // ... existing fetch code
-  
+
   if (response.ok) {
     const data = await response.json();
-    
+
     // Validate response shape
     if (!data.service || !data.version) {
       setAiConnected(false);
@@ -1057,7 +1057,7 @@ const testAiConnection = async () => {
       });
       return;
     }
-    
+
     // Verify it's our backend
     if (data.service !== "ITSM AI Backend") {
       setAiConnected(false);
@@ -1068,7 +1068,7 @@ const testAiConnection = async () => {
       });
       return;
     }
-    
+
     // Success
     setAiConnected(true);
     toast({
@@ -1297,8 +1297,8 @@ const testAiConnection = async () => {
   }
 };
 
-<Button 
-  onClick={testAiConnection} 
+<Button
+  onClick={testAiConnection}
   variant="outline"
   disabled={isTestingAi}
 >
@@ -1424,7 +1424,7 @@ Scan common ports (3000, 8000, 15432) and suggest configs.
 | **G5.2** | Import/export settings | P3 | 🟡 Medium | 3h | ⭐⭐ |
 | **I1.3** | Collapsible cards | P3 | 🟡 Medium | 2h | ⭐ |
 
-**Total Estimated Time for P1-P2 items:** ~18-22 hours (2-3 days)  
+**Total Estimated Time for P1-P2 items:** ~18-22 hours (2-3 days)
 **Quick wins (< 2h, high impact):** D2.1, A3.1, A3.2, AI4.1, G5.4, I1.1
 
 ---

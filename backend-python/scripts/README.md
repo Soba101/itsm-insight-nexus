@@ -4,7 +4,7 @@ This directory contains utility scripts for the ITSM Insight Nexus backend.
 
 ## Directory Structure
 
-```
+```text
 scripts/
 ├── performance_eval/          # Model performance benchmarking scripts
 │   ├── run_phase1_benchmarks.py
@@ -144,7 +144,7 @@ When testing multiple embedding models:
    ```bash
    # Test Model A (Gemma)
    docker exec itsm-python-backend python scripts/performance_eval/run_phase1_benchmarks.py > results_gemma.txt
-   
+
    # Switch model in LM Studio
    # Test Model B (Qwen3)
    docker exec itsm-python-backend python scripts/performance_eval/run_phase1_benchmarks.py > results_qwen3.txt
@@ -159,20 +159,20 @@ When testing multiple embedding models:
 
 ## Troubleshooting
 
-**"No tickets with embeddings found"**
+### "No tickets with embeddings found"
 
 - Run `populate_embeddings.py` first to generate embeddings
 
-**"Connection refused to LM Studio"**
+### "Connection refused to LM Studio"
 
 - Ensure LM Studio is running
 - Check `LM_STUDIO_BASE_URL` in environment
 
-**"No parent-child links found"**
+### "No parent-child links found"
 
 - Run `establish_ticket_relationships.py` first
 
-**"Database connection error"**
+### "Database connection error"
 
 - Verify docker containers are running: `docker ps`
 - Check database credentials in `.env`

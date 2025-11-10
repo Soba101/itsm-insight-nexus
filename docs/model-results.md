@@ -1,7 +1,7 @@
 # Embedding Model Performance Results
 
-**Project:** ITSM Insight Nexus  
-**Evaluation Period:** November 2025  
+**Project:** ITSM Insight Nexus
+**Evaluation Period:** November 2025
 **Dataset:** 78 ServiceNow incidents with embeddings
 
 ---
@@ -23,8 +23,8 @@
 
 ## Model 1: EmbeddingGemma-300m-qat
 
-**Test Date:** 10 November 2025, 06:03 UTC  
-**Test Duration:** 6.3 seconds  
+**Test Date:** 10 November 2025, 06:03 UTC
+**Test Duration:** 6.3 seconds
 **Status:** ✅ All benchmarks completed successfully
 
 ### Performance Summary
@@ -79,7 +79,7 @@
 | 20 | 1.2ms ± 0.0ms | 1.2ms | 1.1ms | 1.2ms |
 | 50 | 1.2ms ± 0.0ms | 1.2ms | 1.1ms | 1.2ms |
 
-**Index Status:** ❌ No HNSW index (using sequential scan)  
+**Index Status:** ❌ No HNSW index (using sequential scan)
 **Performance Scaling:** ✅ Sub-linear (ratio: 0.91x from top-5 to top-50)
 
 **Key Findings:**
@@ -304,8 +304,8 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 
 ## Model 2: Qwen3-8B
 
-**Test Date:** 10 November 2025, 07:54 UTC  
-**Test Duration:** 33.5 seconds  
+**Test Date:** 10 November 2025, 07:54 UTC
+**Test Duration:** 33.5 seconds
 **Status:** ⚠️ Partial completion (dimension mismatch error)
 
 **Critical Issue:** 🚨 Model produces **4096-dimensional embeddings**, but database schema expects 768 dimensions. E2E pipeline test failed due to this mismatch.
@@ -364,7 +364,7 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 | 20 | 1.8ms ± 0.5ms | 2.7ms | 1.4ms | 2.8ms | ≈ Same |
 | 50 | 1.2ms ± 0.0ms | 1.2ms | 1.2ms | 1.3ms | ≈ Same |
 
-**Index Status:** ❌ No HNSW index (using sequential scan)  
+**Index Status:** ❌ No HNSW index (using sequential scan)
 **Performance Scaling:** ✅ Sub-linear (ratio: 0.91x)
 
 **Key Findings:**
@@ -588,7 +588,7 @@ Even if dimension issue resolved:
 
 ## Model 2: Qwen3-8B (Pending)
 
-**Status:** 🔄 Not yet tested  
+**Status:** 🔄 Not yet tested
 **Expected test date:** TBD
 
 **Expectations:**
@@ -713,7 +713,7 @@ Even if dimension issue resolved:
 - **EmbeddingGemma-300m:** Fast but fundamentally broken quality
 - **Qwen3-8B:** Slow, incompatible, and unproven quality
 
-**Critical Finding:**  
+**Critical Finding:**
 🚨 The inverted separation gap suggests a **fundamental problem** with either:
 
 1. The models themselves (not suitable for ITSM domain)
@@ -742,11 +742,11 @@ Even if dimension issue resolved:
 - Delay semantic similarity launch until suitable model found
 - Consider commercial embedding APIs (OpenAI, Cohere) as backup
 
-**Sign-off:** **Don** - Engineering Lead  
+**Sign-off:** **Don** - Engineering Lead
 **Status:** **Blocked** - Awaiting alternative model evaluation or data quality fixes
 
 ---
 
-**Document Version:** 2.0  
-**Last Updated:** 10 November 2025, 08:00 UTC  
+**Document Version:** 2.0
+**Last Updated:** 10 November 2025, 08:00 UTC
 **Status:** Both models tested, both rejected, alternatives needed

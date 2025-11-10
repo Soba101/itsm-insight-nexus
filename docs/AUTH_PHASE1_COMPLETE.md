@@ -82,7 +82,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 function MyComponent() {
   const { user, isAuthenticated, signOut } = useAuth();
-  
+
   return (
     <div>
       {isAuthenticated && <p>Welcome, {user?.email}</p>}
@@ -95,13 +95,13 @@ function MyComponent() {
 ### Protected Routes (Already Configured)
 
 ```typescript
-<Route 
-  path="/dashboard" 
+<Route
+  path="/dashboard"
   element={
     <ProtectedRoute>
       <AppLayout><Dashboard /></AppLayout>
     </ProtectedRoute>
-  } 
+  }
 />
 ```
 

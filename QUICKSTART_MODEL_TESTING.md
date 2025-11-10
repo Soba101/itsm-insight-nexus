@@ -1,13 +1,15 @@
 # Model Performance Testing - Quick Start Guide
 
-**Date:** 10 November 2025  
+**Date:** 10 November 2025
 **Models to Test:**
+
 - `text-embedding-embeddinggemma-300m-qat` (baseline, 300M parameters)
 - `text-embedding-qwen3-embedding-8b` (challenger, 8B parameters)
 
 ## ✅ Pre-flight Checklist
 
 ### Status Check
+
 - ✅ LM Studio running at http://localhost:1234
 - ✅ Both models available in LM Studio
 - ⏳ Docker containers status (check needed)
@@ -68,15 +70,19 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
    ```bash
    # Edit docker-compose.yml or .env to set:
    LM_STUDIO_MODEL=text-embedding-qwen3-embedding-8b
-   
+
    # Restart python backend
+
    docker-compose restart python-backend
+
    ```
 
 3. **Run benchmarks and save results:**
    ```bash
+
    conda activate itsm
    docker exec itsm-python-backend python scripts/performance_eval/run_phase1_benchmarks.py | tee results_qwen3_$(date +%Y%m%d_%H%M%S).txt
+
    ```
 
 ## 🔍 What to Look For
@@ -115,37 +121,49 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
 
 First, populate embeddings:
 ```bash
+
 docker exec itsm-python-backend python scripts/populate_embeddings.py --limit 100 --batch-size 10
+
 ```
 
 ### "No parent-child links found"
 
 Generate relationships first:
 ```bash
+
 docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --min-similarity 0.80 --dry-run
+
 # If dry-run looks good, remove --dry-run flag
+
 ```
 
 ### "Connection refused to LM Studio"
 
 1. Verify LM Studio is running:
    ```bash
+
    curl http://localhost:1234/v1/models
+
    ```
 
 2. Check which model is loaded in LM Studio UI
 
 3. Verify `LM_STUDIO_BASE_URL` in docker-compose.yml:
    ```yaml
+
    LM_STUDIO_BASE_URL=http://host.docker.internal:1234/v1
+
    ```
 
 ### Docker containers not running
 
 ```bash
+
 # Start all services
+
 cd /Users/don/DocumentsMac/Codes/itsm-insight-nexus
 docker-compose up -d postgres postgrest python-backend embedding-worker
+
 ```
 
 ## 📝 Decision Framework
@@ -188,34 +206,46 @@ After running benchmarks for both models:
 ## 🎯 Quick Commands Reference
 
 ```bash
+
 # Activate environment
+
 conda activate itsm
 
 # Run all benchmarks
+
 docker exec itsm-python-backend python scripts/performance_eval/run_phase1_benchmarks.py
 
 # Check LM Studio
+
 curl http://localhost:1234/v1/models
 
 # Check docker services
+
 docker ps --filter "name=itsm"
 
 # Populate embeddings
+
 docker exec itsm-python-backend python scripts/populate_embeddings.py --limit 100
 
 # Create relationships
+
 docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --min-similarity 0.80
+
 ```
 
 ## � Results Documentation
 
 Save your results with:
 ```bash
+
 # Create results directory
+
 mkdir -p results/model-performance
 
 # Run with timestamp
+
 docker exec itsm-python-backend python scripts/performance_eval/run_phase1_benchmarks.py | tee results/model-performance/baseline_$(date +%Y%m%d_%H%M%S).txt
+
 ```
 
 **Results are logged in:** `docs/model-results.md`

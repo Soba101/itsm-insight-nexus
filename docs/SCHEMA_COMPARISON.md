@@ -6,7 +6,7 @@ This document compares the simplified Postgres database schema used in this proj
 
 ### Postgres (This Project)
 
-- **Single table:** `tickets` 
+- **Single table:** `tickets`
 - **Type discriminator:** Uses `type` column to distinguish incident/problem/change
 - **Simplified schema:** Focused on analytics and insights
 - **No relationships:** Flattened structure for easier querying

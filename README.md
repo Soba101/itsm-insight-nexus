@@ -28,13 +28,13 @@ AI-powered IT Service Management analytics platform with semantic ticket similar
 
 There are several ways of editing your application.
 
-**Use Lovable**
+### Use Lovable
 
 Simply visit the [Lovable Project](https://lovable.dev/projects/a7dbc2fd-31d6-402a-873b-95b57c9d75b0) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
-**Use your preferred IDE**
+### Use your preferred IDE
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
@@ -56,13 +56,13 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Edit a file directly in GitHub
 
 - Navigate to the desired file(s).
 - Click the "Edit" button (pencil icon) at the top right of the file view.
 - Make your changes and commit the changes.
 
-**Use GitHub Codespaces**
+### Use GitHub Codespaces
 
 - Navigate to the main page of your repository.
 - Click on the "Code" button (green button) near the top right.
@@ -223,7 +223,7 @@ docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
 | PostgreSQL | 15432 | Main database |
 | pgAdmin | 5050 | Database management |
 
-## 📚 Documentation
+## 📚 Documentation & Resources
 
 - **Setup Guide**: `docs/SETUP_GUIDE.md`
 - **Docker Guide**: `docs/DOCKER.md`
@@ -313,8 +313,8 @@ This project uses Lovable for rapid development. Changes can be made via:
 
 Current embedding model: **EmbeddingGemma-300m-qat**
 
-**Speed:** ⭐⭐⭐⭐⭐ Exceptional (26ms avg embedding, 1.2ms search)  
-**Quality:** ⭐☆☆☆☆ Poor (negative separation gap, 38.9% category agreement)  
+**Speed:** ⭐⭐⭐⭐⭐ Exceptional (26ms avg embedding, 1.2ms search)
+**Quality:** ⭐☆☆☆☆ Poor (negative separation gap, 38.9% category agreement)
 **Status:** ⚠️ Not recommended for production
 
 See `docs/model-results.md` for detailed benchmarks and testing Qwen3-8B alternative.

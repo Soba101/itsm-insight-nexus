@@ -70,8 +70,8 @@ If you want to test the graph visualization immediately, you can manually create
 
 ```sql
 -- Connect to database and manually set relationships
-UPDATE servicenow_incidents 
-SET parent_incident = 'INC0000007', similarity_score = 0.85 
+UPDATE servicenow_incidents
+SET parent_incident = 'INC0000007', similarity_score = 0.85
 WHERE incident_number = 'INC0000017';
 
 -- The database trigger will automatically update child_incidents

@@ -1,6 +1,6 @@
 # Settings Page Redesign Proposal
 
-**Date:** 2025-11-09  
+**Date:** 2025-11-09
 **Context:** Integrating with another software, need clear separation between system config and user preferences
 
 ---
@@ -37,7 +37,7 @@ Since this integrates with other software, users need control over **their exper
 
 ## Tab 1: System (Admin/Advanced)
 
-**Audience:** Admins, power users, initial setup  
+**Audience:** Admins, power users, initial setup
 **When to show:** Always visible, or hide if user.role !== 'admin'
 
 **Sections:**
@@ -71,7 +71,7 @@ Since this integrates with other software, users need control over **their exper
       </div>
       <Switch
         checked={settings.aiEnabled}
-        onCheckedChange={(checked) => 
+        onCheckedChange={(checked) =>
           setSettings({ ...settings, aiEnabled: checked })
         }
       />
@@ -93,7 +93,7 @@ Since this integrates with other software, users need control over **their exper
     <Button onClick={testAiConnection} variant="outline" disabled={!settings.aiEnabled}>
       Test Connection
     </Button>
-    
+
     <Button variant="link" asChild>
       <a href="/docs/PHASE1_COMPLETE.md" target="_blank">
         View AI Backend Documentation
@@ -107,7 +107,7 @@ Since this integrates with other software, users need control over **their exper
 
 ## Tab 2: My Preferences (NEW - Primary User Settings)
 
-**Audience:** All users  
+**Audience:** All users
 **Purpose:** Control personal experience, defaults, AI feature usage
 
 ### Section 1: Display & Interface

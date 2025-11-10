@@ -1,8 +1,8 @@
 # Python Backend Implementation - Viability Assessment
 
-**Date:** November 7, 2025  
-**Evaluator:** AI Analysis based on current system architecture  
-**Document:** BACKEND_implementation.md  
+**Date:** November 7, 2025
+**Evaluator:** AI Analysis based on current system architecture
+**Document:** BACKEND_implementation.md
 **Overall Viability:** ✅ **VIABLE with Modifications** (75% feasible with adjustments)
 
 ---
@@ -95,7 +95,7 @@ The proposed Python/FastAPI backend for NLP/RAG capabilities is **technically vi
 
 #### 1. **Service Orchestration Complexity** 🔴 **HIGH RISK**
 
-**Current:** 3 services (Frontend, Node Auth, PostgREST)  
+**Current:** 3 services (Frontend, Node Auth, PostgREST)
 **Proposed:** 4 services (+ Python Backend)
 
 ```
@@ -120,7 +120,7 @@ Frontend (8080)
 
 #### 2. **Authentication Coordination** 🟡 **MEDIUM RISK**
 
-**Proposed:** Simple API key (`x-api-key` header)  
+**Proposed:** Simple API key (`x-api-key` header)
 **Current:** JWT tokens from Node backend
 
 **Conflict:**
@@ -246,15 +246,15 @@ Current UI has placeholders for:
 // src/lib/api.ts
 export const api = {
   // ... existing methods
-  
+
   async getTopics(): Promise<NLPTopic[]> {
     return axios.get('http://localhost:8000/api/ai/topics');
   },
-  
+
   async getDuplicates(): Promise<DuplicateCluster[]> {
     return axios.get('http://localhost:8000/api/ai/duplicates');
   },
-  
+
   async generateSummary(ticketId: string): Promise<Summary> {
     return axios.post('http://localhost:8000/api/ai/summarize', { ticketId });
   }
@@ -263,7 +263,7 @@ export const api = {
 
 #### 2. **ServiceNow Data Enrichment**
 
-Current: Manual scripts fetch raw ServiceNow data  
+Current: Manual scripts fetch raw ServiceNow data
 Proposed: Python backend auto-classifies on sync
 
 ```python
@@ -286,12 +286,12 @@ POST /tickets/ingest {
 
 #### 3. **Knowledge Base for Solutions**
 
-Current: No knowledge base, no solution suggestions  
+Current: No knowledge base, no solution suggestions
 Proposed: RAG-powered answer system
 
 **Use Case:**
-User asks: "How to fix merchant onboarding duplicate location error?"  
-→ Search knowledge base (uploaded docs, past solutions)  
+User asks: "How to fix merchant onboarding duplicate location error?"
+→ Search knowledge base (uploaded docs, past solutions)
 → Return answer with citations
 
 **Value:**
@@ -444,13 +444,13 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 - **Development:**
   - Local: $0 (CPU inference, free models)
   - Cloud GPU (optional, T4): ~$100/mo
-  
+
 - **Production:**
   - Server (4 vCPU, 16GB RAM): ~$80/mo
   - Postgres storage (50GB): ~$10/mo
   - **With GPU (T4):** +$200/mo
   - OpenAI API (RAG, 1M tokens/mo): ~$20/mo
-  
+
 **Total Production:** $110-310/mo depending on GPU usage
 
 ### Open Source Model Strategy (Cost Reduction)
@@ -506,7 +506,7 @@ User asks: "How to fix merchant onboarding duplicate location error?"
                    │  - documents (Python AI)            │
                    │  - chunks (Python AI)               │
                    └─────────────────────────────────────┘
-                   
+
                    ┌─────────────────────────────────────┐
                    │ FAISS Index (Python AI)             │
                    │ Volume: /data/faiss                 │
@@ -520,7 +520,7 @@ services:
   postgres:     # Existing
   postgrest:    # Existing
   pgadmin:      # Existing
-  
+
   python-backend:  # NEW
     build: ./backend-python
     ports:
@@ -588,7 +588,7 @@ interface Settings {
   apiBaseUrl: string;           // Existing (PostgREST)
   authToken?: string;           // Existing
   dataSource: "docker" | "supabase";  // Existing
-  
+
   // NEW:
   aiBackendUrl: string;         // "http://localhost:8000"
   aiEnabled: boolean;           // Toggle AI features on/off
@@ -602,21 +602,21 @@ interface Settings {
 // Add AI methods:
 export const api = {
   // ... existing methods (getTickets, createTicket, etc.)
-  
+
   // NEW AI methods:
   async classifyTicket(text: string): Promise<ClassificationResult> {
     const settings = getSettings();
     if (!settings.aiEnabled) return null;
-    
+
     return axios.post(`${settings.aiBackendUrl}/api/ai/classify`, { text });
   },
-  
+
   async analyzeSentiment(text: string): Promise<SentimentResult> { ... },
-  
+
   async findDuplicates(ticketId: string): Promise<DuplicateCluster[]> { ... },
-  
+
   async searchKnowledgeBase(query: string): Promise<KBResult[]> { ... },
-  
+
   async askRAG(question: string): Promise<RAGAnswer> { ... },
 };
 ```
@@ -701,6 +701,6 @@ Instead of self-hosted Python backend:
 
 ---
 
-**Document Status:** ✅ Ready for Review  
-**Recommendation:** Proceed with Phase 1, re-evaluate after foundation is stable  
+**Document Status:** ✅ Ready for Review
+**Recommendation:** Proceed with Phase 1, re-evaluate after foundation is stable
 **Risk Level:** Medium (manageable with phased approach)

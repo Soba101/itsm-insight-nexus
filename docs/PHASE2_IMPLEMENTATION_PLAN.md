@@ -1,6 +1,6 @@
 # Phase 2 Implementation Plan: Parent-Child Ticket Linking
 
-**Created:** 8 November 2025  
+**Created:** 8 November 2025
 **Goal:** Automatically link child tickets to parent tickets based on semantic similarity (>80%)
 
 ---
@@ -19,7 +19,7 @@
 
 ### ✅ Step 1: Database Setup (pgvector + schema changes)
 
-**Status:** ✅ **COMPLETE**  
+**Status:** ✅ **COMPLETE**
 **Actual Time:** 15 minutes
 
 **Completed Tasks:**
@@ -44,7 +44,7 @@
 
 ### ⏳ Step 2: Python Backend - Embedding Service
 
-**Status:** Not Started  
+**Status:** Not Started
 **Estimated Time:** 1 hour
 
 **Tasks:**
@@ -66,7 +66,7 @@
 
 ### ⏳ Step 3: API Endpoints
 
-**Status:** Not Started  
+**Status:** Not Started
 **Estimated Time:** 1 hour
 
 **Tasks:**
@@ -88,7 +88,7 @@
 
 ### ⏳ Step 4: Batch Processing - Embed Existing Tickets
 
-**Status:** Not Started  
+**Status:** Not Started
 **Estimated Time:** 30 minutes (+ model download time)
 
 **Tasks:**
@@ -110,7 +110,7 @@
 
 ### ⏳ Step 5: Frontend Integration
 
-**Status:** Not Started  
+**Status:** Not Started
 **Estimated Time:** 1.5 hours
 
 **Tasks:**
@@ -132,7 +132,7 @@
 
 ### ⏳ Step 6: Testing & Validation
 
-**Status:** Not Started  
+**Status:** Not Started
 **Estimated Time:** 30 minutes
 
 **Tasks:**
@@ -154,12 +154,12 @@
 
 ## Progress Summary
 
-**Total Steps:** 6  
-**Completed:** 0  
-**In Progress:** 0  
-**Not Started:** 6  
+**Total Steps:** 6
+**Completed:** 0
+**In Progress:** 0
+**Not Started:** 6
 
-**Estimated Total Time:** 5 hours  
+**Estimated Total Time:** 5 hours
 **Actual Time:** TBD
 
 ---

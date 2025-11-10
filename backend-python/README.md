@@ -23,9 +23,9 @@ Python FastAPI backend service providing AI-powered features for the ITSM Insigh
 - **Priority Prediction** - ML model to suggest priority levels
 - **SLA Prediction** - Forecast resolution times
 
-## Architecture
+## System Architecture
 
-```
+```text
 Frontend (port 8080)
         ↓
    [JWT Token]
@@ -72,7 +72,7 @@ docker logs itsm-python-backend
 docker logs itsm-embedding-worker
 ```
 
-The AI backend will be available at **http://localhost:8000**
+The AI backend will be available at <http://localhost:8000>
 
 ### Running Locally (Development)
 
@@ -256,7 +256,7 @@ OPENBLAS_NUM_THREADS=2
 
 ## Embedding System
 
-### Architecture
+### Embedding Architecture
 
 The system uses a **queue-based architecture** for automatic embedding generation:
 
@@ -387,6 +387,7 @@ curl -H "Authorization: Bearer YOUR_TOKEN" \
 1. Login to the application
 2. Open browser console
 3. Run:
+
 ```javascript
 const token = localStorage.getItem('auth-token');
 fetch('http://localhost:8000/api/ai/health', {
@@ -396,7 +397,7 @@ fetch('http://localhost:8000/api/ai/health', {
 .then(console.log);
 ```
 
-## Architecture
+## Project Structure
 
 ### Backend Structure
 

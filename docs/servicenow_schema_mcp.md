@@ -2,8 +2,8 @@
 
 This document describes the incident ticket schema exposed by the ServiceNow Model Context Protocol (MCP) server.
 
-**Generated on:** 6 November 2025  
-**Source:** ServiceNow MCP Tools  
+**Generated on:** 6 November 2025
+**Source:** ServiceNow MCP Tools
 **Updated:** 6 November 2025 - Added REST API comparison
 
 ---

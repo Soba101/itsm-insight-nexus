@@ -1,7 +1,7 @@
 # Embedding Model Performance Evaluation Plan
 
-**Document Created:** 10 November 2025  
-**Current Model:** EmbeddingGemma-300m-qat (768-dimensional, via LM Studio)  
+**Document Created:** 10 November 2025
+**Current Model:** EmbeddingGemma-300m-qat (768-dimensional, via LM Studio)
 **Models Under Test:**
 
 - **text-embedding-qwen3-embedding-8b** (8B parameter model)
@@ -36,7 +36,7 @@ This document outlines a comprehensive plan to measure and evaluate the performa
 - **Separation gap:** Difference between related vs unrelated tickets
 - **Score distribution histogram:** Identify thresholds for duplicate detection
 
-**Implementation Difficulty:** ⭐ **Easy**  
+**Implementation Difficulty:** ⭐ **Easy**
 **Time Estimate:** 2-4 hours
 
 **Implementation:**
@@ -57,7 +57,7 @@ def analyze_similarity_distribution():
     with get_db_connection() as conn:
         register_vector(conn)
         cursor = conn.cursor()
-        
+
         # Get all tickets with embeddings
         cursor.execute("""
             SELECT incident_number, category, priority, embedding
@@ -66,12 +66,12 @@ def analyze_similarity_distribution():
             LIMIT 500  -- Sample for performance
         """)
         tickets = cursor.fetchall()
-        
+
         same_category_scores = []
         diff_category_scores = []
         same_priority_scores = []
         diff_priority_scores = []
-        
+
         # Compare each ticket with 10 random others
         for i, ticket_a in enumerate(tickets[:100]):
             for ticket_b in tickets[i+1:i+11]:
@@ -80,20 +80,20 @@ def analyze_similarity_distribution():
                     SELECT 1 - (embedding <=> %s::vector) AS similarity
                     FROM (SELECT %s::vector AS embedding) AS query
                 """, (ticket_a[3], ticket_b[3]))
-                
+
                 similarity = cursor.fetchone()[0]
-                
+
                 # Categorize
                 if ticket_a[1] == ticket_b[1]:  # Same category
                     same_category_scores.append(similarity)
                 else:
                     diff_category_scores.append(similarity)
-                
+
                 if ticket_a[2] == ticket_b[2]:  # Same priority
                     same_priority_scores.append(similarity)
                 else:
                     diff_priority_scores.append(similarity)
-        
+
         # Statistics
         print("=== Similarity Distribution Analysis ===")
         print(f"\nSame Category:")
@@ -101,13 +101,13 @@ def analyze_similarity_distribution():
         print(f"  Std:  {np.std(same_category_scores):.4f}")
         print(f"  Min:  {np.min(same_category_scores):.4f}")
         print(f"  Max:  {np.max(same_category_scores):.4f}")
-        
+
         print(f"\nDifferent Category:")
         print(f"  Mean: {np.mean(diff_category_scores):.4f}")
         print(f"  Std:  {np.std(diff_category_scores):.4f}")
-        
+
         print(f"\nSeparation Gap: {np.mean(same_category_scores) - np.mean(diff_category_scores):.4f}")
-        
+
         # Histogram
         plt.figure(figsize=(12, 6))
         plt.hist(same_category_scores, bins=30, alpha=0.5, label='Same Category', color='green')
@@ -152,7 +152,7 @@ docker exec itsm-python-backend python scripts/analyze_similarity_distribution.p
 - **Recall@K:** Of all similar tickets, how many are in top K?
 - **Mean Reciprocal Rank (MRR):** Position of first relevant result
 
-**Implementation Difficulty:** ⭐⭐⭐ **Medium** (requires human labeling)  
+**Implementation Difficulty:** ⭐⭐⭐ **Medium** (requires human labeling)
 **Time Estimate:** 8-12 hours (including labeling)
 
 **Process:**
@@ -177,7 +177,7 @@ from pgvector.psycopg2 import register_vector
 def load_ground_truth(filepath: str) -> Dict[str, List[str]]:
     """
     Load manually labeled similar tickets.
-    
+
     Format: {
         "INC0010001": ["INC0010005", "INC0010012", ...],
         "INC0010002": ["INC0010008", ...],
@@ -214,10 +214,10 @@ async def evaluate_precision_at_k(ground_truth_file: str):
     Evaluate model performance using manually labeled data.
     """
     ground_truth = load_ground_truth(ground_truth_file)
-    
+
     with get_db_connection() as conn:
         register_vector(conn)
-        
+
         results = {
             'precision@5': [],
             'precision@10': [],
@@ -225,7 +225,7 @@ async def evaluate_precision_at_k(ground_truth_file: str):
             'recall@10': [],
             'mrr': []
         }
-        
+
         for query_ticket, relevant_tickets in ground_truth.items():
             # Get embedding for query ticket
             cursor = conn.cursor()
@@ -233,28 +233,28 @@ async def evaluate_precision_at_k(ground_truth_file: str):
                 SELECT embedding FROM servicenow_incidents
                 WHERE incident_number = %s
             """, (query_ticket,))
-            
+
             result = cursor.fetchone()
             if not result or not result[0]:
                 print(f"Warning: {query_ticket} has no embedding")
                 continue
-            
+
             query_embedding = result[0]
-            
+
             # Find similar tickets
             similar = await find_similar_tickets(
                 conn, query_embedding, top_k=10, min_similarity=0.0
             )
-            
+
             predicted_ids = [t['incident_number'] for t in similar]
-            
+
             # Calculate metrics
             results['precision@5'].append(precision_at_k(predicted_ids, relevant_tickets, 5))
             results['precision@10'].append(precision_at_k(predicted_ids, relevant_tickets, 10))
             results['recall@5'].append(recall_at_k(predicted_ids, relevant_tickets, 5))
             results['recall@10'].append(recall_at_k(predicted_ids, relevant_tickets, 10))
             results['mrr'].append(mean_reciprocal_rank(predicted_ids, relevant_tickets))
-        
+
         # Print results
         print("=== Precision@K Evaluation ===")
         print(f"Test Set Size: {len(ground_truth)}")
@@ -304,7 +304,7 @@ if __name__ == "__main__":
 - **Davies-Bouldin Index:** Lower is better (tight, well-separated clusters)
 - **Calinski-Harabasz Score:** Higher is better (dense, well-separated clusters)
 
-**Implementation Difficulty:** ⭐⭐ **Easy-Medium**  
+**Implementation Difficulty:** ⭐⭐ **Easy-Medium**
 **Time Estimate:** 3-5 hours
 
 **Implementation:**
@@ -325,7 +325,7 @@ def evaluate_clustering():
     with get_db_connection() as conn:
         register_vector(conn)
         cursor = conn.cursor()
-        
+
         # Fetch embeddings and categories
         cursor.execute("""
             SELECT embedding, category, priority
@@ -333,32 +333,32 @@ def evaluate_clustering():
             WHERE embedding IS NOT NULL
             LIMIT 1000
         """)
-        
+
         data = cursor.fetchall()
         embeddings = np.array([row[0] for row in data])
         categories = [row[1] for row in data]
         priorities = [row[2] for row in data]
-        
+
         # Determine number of clusters (unique categories)
         unique_categories = len(set(categories))
         n_clusters = max(5, unique_categories)
-        
+
         # Perform KMeans clustering
         kmeans = KMeans(n_clusters=n_clusters, random_state=42)
         cluster_labels = kmeans.fit_predict(embeddings)
-        
+
         # Calculate metrics
         silhouette = silhouette_score(embeddings, cluster_labels)
         davies_bouldin = davies_bouldin_score(embeddings, cluster_labels)
         calinski_harabasz = calinski_harabasz_score(embeddings, cluster_labels)
-        
+
         print("=== Clustering Quality Metrics ===")
         print(f"Number of Clusters: {n_clusters}")
         print(f"Number of Samples:  {len(embeddings)}")
         print(f"\nSilhouette Score:        {silhouette:.4f}  (higher is better, range: -1 to 1)")
         print(f"Davies-Bouldin Index:    {davies_bouldin:.4f}  (lower is better)")
         print(f"Calinski-Harabasz Score: {calinski_harabasz:.2f}  (higher is better)")
-        
+
         # Category purity per cluster
         print("\n=== Cluster Purity by Category ===")
         for i in range(n_clusters):
@@ -392,7 +392,7 @@ if __name__ == "__main__":
 - **Batch throughput:** Tickets embedded per minute
 - **Memory usage:** RAM consumed during embedding
 
-**Implementation Difficulty:** ⭐ **Very Easy**  
+**Implementation Difficulty:** ⭐ **Very Easy**
 **Time Estimate:** 1-2 hours
 
 **Implementation:**
@@ -419,9 +419,9 @@ def benchmark_embedding_speed():
             LIMIT 100
         """)
         texts = [row[0] for row in cursor.fetchall()]
-    
+
     print("=== Embedding Generation Benchmark ===")
-    
+
     # Single embedding latency
     single_latencies = []
     for text in texts[:10]:
@@ -431,9 +431,9 @@ def benchmark_embedding_speed():
         single_latencies.append(latency)
         token_count = len(text.split())
         print(f"Tokens: {token_count:4d} | Latency: {latency*1000:.1f}ms | Tokens/sec: {token_count/latency:.1f}")
-    
+
     print(f"\nMean Latency: {np.mean(single_latencies)*1000:.1f}ms ± {np.std(single_latencies)*1000:.1f}ms")
-    
+
     # Batch throughput
     print("\n=== Batch Throughput ===")
     batch_sizes = [1, 4, 8, 16, 32]
@@ -444,7 +444,7 @@ def benchmark_embedding_speed():
         elapsed = time.time() - start
         throughput = batch_size / elapsed
         print(f"Batch Size: {batch_size:2d} | Time: {elapsed:.2f}s | Throughput: {throughput:.1f} tickets/sec")
-    
+
     # Memory usage
     process = psutil.Process()
     memory_mb = process.memory_info().rss / 1024 / 1024
@@ -484,7 +484,7 @@ docker exec itsm-python-backend python scripts/benchmark_embedding_speed.py
 - **Index efficiency:** HNSW vs sequential scan performance
 - **Scalability:** Performance with 1K, 10K, 100K tickets
 
-**Implementation Difficulty:** ⭐ **Very Easy**  
+**Implementation Difficulty:** ⭐ **Very Easy**
 **Time Estimate:** 2-3 hours
 
 **Implementation:**
@@ -504,11 +504,11 @@ def benchmark_similarity_search():
     with get_db_connection() as conn:
         register_vector(conn)
         cursor = conn.cursor()
-        
+
         # Get total count
         cursor.execute("SELECT COUNT(*) FROM servicenow_incidents WHERE embedding IS NOT NULL")
         total_count = cursor.fetchone()[0]
-        
+
         # Get sample embeddings
         cursor.execute("""
             SELECT embedding FROM servicenow_incidents
@@ -516,10 +516,10 @@ def benchmark_similarity_search():
             LIMIT 20
         """)
         sample_embeddings = [row[0] for row in cursor.fetchall()]
-        
+
         print("=== Similarity Search Benchmark ===")
         print(f"Total Tickets with Embeddings: {total_count}")
-        
+
         # Test different K values
         k_values = [5, 10, 20, 50]
         for k in k_values:
@@ -536,23 +536,23 @@ def benchmark_similarity_search():
                 cursor.fetchall()
                 latency = time.time() - start
                 latencies.append(latency)
-            
+
             print(f"Top-{k:2d}: {np.mean(latencies)*1000:.1f}ms ± {np.std(latencies)*1000:.1f}ms")
-        
+
         # Check if HNSW index is being used
         cursor.execute("""
-            EXPLAIN (FORMAT JSON) 
+            EXPLAIN (FORMAT JSON)
             SELECT incident_number, (1 - (embedding <=> %s::vector)) AS similarity
             FROM servicenow_incidents
             WHERE embedding IS NOT NULL
             ORDER BY embedding <=> %s::vector
             LIMIT 10
         """, (sample_embeddings[0], sample_embeddings[0]))
-        
+
         explain_result = cursor.fetchone()[0]
         print("\n=== Query Plan ===")
         print(explain_result)
-        
+
         # Check if index scan is used
         if "Index Scan" in str(explain_result):
             print("\n✅ HNSW index is being used (fast)")
@@ -582,7 +582,7 @@ if __name__ == "__main__":
 - **Time to query:** User requests similar tickets → results displayed
 - **Queue backlog:** Tickets waiting for embedding
 
-**Implementation Difficulty:** ⭐⭐ **Easy-Medium**  
+**Implementation Difficulty:** ⭐⭐ **Easy-Medium**
 **Time Estimate:** 3-4 hours
 
 **Implementation:**
@@ -606,24 +606,24 @@ async def benchmark_e2e_pipeline():
         'short_description': 'Network connectivity issue',
         'description': 'Users unable to access internal servers. Intermittent connection drops observed.'
     }
-    
+
     print("=== End-to-End Pipeline Benchmark ===")
-    
+
     # Step 1: Embed
     start_embed = time.time()
     text = f"{test_ticket['short_description']} {test_ticket['description']}"
     embedding = generate_embedding(text)
     embed_time = time.time() - start_embed
     print(f"1. Embedding Generation: {embed_time*1000:.1f}ms")
-    
+
     # Step 2: Store
     with get_db_connection() as conn:
         register_vector(conn)
         cursor = conn.cursor()
-        
+
         start_store = time.time()
         cursor.execute("""
-            INSERT INTO servicenow_incidents 
+            INSERT INTO servicenow_incidents
             (incident_number, short_description, description, embedding, embedding_model, embedded_at)
             VALUES (%s, %s, %s, %s, %s, %s)
             ON CONFLICT (incident_number) DO UPDATE
@@ -639,21 +639,21 @@ async def benchmark_e2e_pipeline():
         conn.commit()
         store_time = time.time() - start_store
         print(f"2. Database Storage:     {store_time*1000:.1f}ms")
-        
+
         # Step 3: Find Similar
         start_search = time.time()
         similar = await find_similar_tickets(conn, embedding, top_k=10)
         search_time = time.time() - start_search
         print(f"3. Similarity Search:    {search_time*1000:.1f}ms")
-        
+
         # Cleanup
         cursor.execute("DELETE FROM servicenow_incidents WHERE incident_number = %s", (test_ticket['incident_number'],))
         conn.commit()
-    
+
     total_time = embed_time + store_time + search_time
     print(f"\nTotal E2E Time: {total_time*1000:.1f}ms")
     print(f"Target SLA: <2000ms")
-    
+
     if total_time < 2.0:
         print("✅ PASS - Within SLA")
     else:
@@ -684,7 +684,7 @@ if __name__ == "__main__":
 - **False Positive Rate (FPR):** How many non-duplicates were flagged?
 - **Optimal threshold:** What similarity score balances precision/recall?
 
-**Implementation Difficulty:** ⭐⭐⭐ **Medium** (requires labeled duplicates)  
+**Implementation Difficulty:** ⭐⭐⭐ **Medium** (requires labeled duplicates)
 **Time Estimate:** 6-8 hours
 
 **Process:**
@@ -708,7 +708,7 @@ from pgvector.psycopg2 import register_vector
 def evaluate_duplicate_detection(labeled_duplicates_file: str):
     """
     Evaluate duplicate detection performance using labeled data.
-    
+
     Format of labeled_duplicates_file (JSON):
     {
         "duplicates": [
@@ -724,31 +724,31 @@ def evaluate_duplicate_detection(labeled_duplicates_file: str):
     import json
     with open(labeled_duplicates_file, 'r') as f:
         data = json.load(f)
-    
+
     with get_db_connection() as conn:
         register_vector(conn)
         cursor = conn.cursor()
-        
+
         # Calculate similarity scores
         y_true = []
         y_scores = []
-        
+
         # Positive examples (duplicates)
         for pair in data['duplicates']:
             cursor.execute("""
-                SELECT 
+                SELECT
                     a.embedding,
                     b.embedding,
                     1 - (a.embedding <=> b.embedding) AS similarity
                 FROM servicenow_incidents a, servicenow_incidents b
                 WHERE a.incident_number = %s AND b.incident_number = %s
             """, (pair[0], pair[1]))
-            
+
             result = cursor.fetchone()
             if result:
                 y_true.append(1)
                 y_scores.append(result[2])
-        
+
         # Negative examples (non-duplicates)
         for pair in data['non_duplicates']:
             cursor.execute("""
@@ -756,42 +756,42 @@ def evaluate_duplicate_detection(labeled_duplicates_file: str):
                 FROM servicenow_incidents a, servicenow_incidents b
                 WHERE a.incident_number = %s AND b.incident_number = %s
             """, (pair[0], pair[1]))
-            
+
             result = cursor.fetchone()
             if result:
                 y_true.append(0)
                 y_scores.append(result[0])
-        
+
         # Calculate ROC curve
         fpr, tpr, thresholds = roc_curve(y_true, y_scores)
         roc_auc = auc(fpr, tpr)
-        
+
         print("=== Duplicate Detection Evaluation ===")
         print(f"Positive Examples: {sum(y_true)}")
         print(f"Negative Examples: {len(y_true) - sum(y_true)}")
         print(f"ROC AUC: {roc_auc:.4f}")
-        
+
         # Find optimal threshold (Youden's J statistic)
         j_scores = tpr - fpr
         optimal_idx = np.argmax(j_scores)
         optimal_threshold = thresholds[optimal_idx]
-        
+
         print(f"\nOptimal Threshold: {optimal_threshold:.4f}")
         print(f"  TPR at threshold: {tpr[optimal_idx]:.4f}")
         print(f"  FPR at threshold: {fpr[optimal_idx]:.4f}")
-        
+
         # Test common thresholds
         for threshold in [0.75, 0.80, 0.85, 0.90]:
             idx = np.argmin(np.abs(thresholds - threshold))
             print(f"\nAt threshold {threshold:.2f}:")
             print(f"  TPR (Recall): {tpr[idx]:.4f}")
             print(f"  FPR: {fpr[idx]:.4f}")
-        
+
         # Plot ROC curve
         plt.figure(figsize=(8, 6))
         plt.plot(fpr, tpr, label=f'ROC curve (AUC = {roc_auc:.2f})')
         plt.plot([0, 1], [0, 1], 'k--', label='Random')
-        plt.scatter([fpr[optimal_idx]], [tpr[optimal_idx]], c='red', s=100, 
+        plt.scatter([fpr[optimal_idx]], [tpr[optimal_idx]], c='red', s=100,
                    label=f'Optimal ({optimal_threshold:.2f})')
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
@@ -822,7 +822,7 @@ if __name__ == "__main__":
 - **Average similarity of linked tickets:** Are we linking very similar tickets?
 - **Category/priority agreement:** Do linked tickets share same attributes?
 
-**Implementation Difficulty:** ⭐⭐ **Easy-Medium**  
+**Implementation Difficulty:** ⭐⭐ **Easy-Medium**
 **Time Estimate:** 3-4 hours
 
 **Implementation:**
@@ -838,10 +838,10 @@ def evaluate_parent_child_links():
     """
     with get_db_connection() as conn:
         cursor = conn.cursor()
-        
+
         # Get all parent-child pairs
         cursor.execute("""
-            SELECT 
+            SELECT
                 child.incident_number AS child_id,
                 child.category AS child_category,
                 child.priority AS child_priority,
@@ -853,12 +853,12 @@ def evaluate_parent_child_links():
             JOIN servicenow_incidents parent ON child.parent_incident = parent.incident_number
             WHERE child.parent_incident IS NOT NULL
         """)
-        
+
         links = cursor.fetchall()
-        
+
         print("=== Parent-Child Link Quality ===")
         print(f"Total Links: {len(links)}")
-        
+
         # Similarity score distribution
         similarity_scores = [link[6] for link in links if link[6]]
         if similarity_scores:
@@ -868,17 +868,17 @@ def evaluate_parent_child_links():
             print(f"  Std:  {np.std(similarity_scores):.4f}")
             print(f"  Min:  {np.min(similarity_scores):.4f}")
             print(f"  Max:  {np.max(similarity_scores):.4f}")
-        
+
         # Category agreement
         same_category = sum(1 for link in links if link[1] == link[4])
         category_agreement = same_category / len(links) if links else 0
         print(f"\nCategory Agreement: {category_agreement:.2%} ({same_category}/{len(links)})")
-        
+
         # Priority agreement
         same_priority = sum(1 for link in links if link[2] == link[5])
         priority_agreement = same_priority / len(links) if links else 0
         print(f"Priority Agreement: {priority_agreement:.2%} ({same_priority}/{len(links)})")
-        
+
         # Distribution by similarity buckets
         buckets = {
             '0.95-1.00': 0,
@@ -888,7 +888,7 @@ def evaluate_parent_child_links():
             '0.75-0.80': 0,
             '<0.75': 0
         }
-        
+
         for score in similarity_scores:
             if score >= 0.95:
                 buckets['0.95-1.00'] += 1
@@ -902,7 +902,7 @@ def evaluate_parent_child_links():
                 buckets['0.75-0.80'] += 1
             else:
                 buckets['<0.75'] += 1
-        
+
         print("\nSimilarity Distribution:")
         for bucket, count in buckets.items():
             percentage = (count / len(similarity_scores) * 100) if similarity_scores else 0
@@ -934,7 +934,7 @@ if __name__ == "__main__":
 - API response times (p50, p95, p99)
 - Error rates
 
-**Implementation Difficulty:** ⭐⭐⭐⭐ **Hard**  
+**Implementation Difficulty:** ⭐⭐⭐⭐ **Hard**
 **Time Estimate:** 12-16 hours
 
 **Tools:**
@@ -1004,7 +1004,7 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
 - `text-embedding-ada-002` (OpenAI, 1536-dim, cloud API)
 - `bge-large-en-v1.5` (1024-dim, SOTA)
 
-**Implementation Difficulty:** ⭐⭐⭐⭐ **Hard**  
+**Implementation Difficulty:** ⭐⭐⭐⭐ **Hard**
 **Time Estimate:** 16-24 hours (per model comparison)
 
 **Comparison Methodology:**
@@ -1012,7 +1012,7 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
 1. **Parallel Embedding Generation**
    - Generate embeddings for same dataset with both models
    - Store in separate columns: `embedding` (Gemma) vs `embedding_qwen` (Qwen3)
-   
+
 2. **Side-by-Side Metrics**
    - Run all Phase 1 & 2 metrics for both models
    - Compare on identical test sets
@@ -1172,6 +1172,6 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_duplica
 
 ---
 
-**Document Owner:** AI/ML Team  
-**Last Updated:** 10 November 2025  
+**Document Owner:** AI/ML Team
+**Last Updated:** 10 November 2025
 **Next Review:** After Phase 1 completion

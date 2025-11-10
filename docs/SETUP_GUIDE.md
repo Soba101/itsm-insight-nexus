@@ -353,7 +353,7 @@ Use the signup page at http://localhost:8080/signup
 ```sql
 -- Connect to Postgres (pgAdmin or psql)
 -- Password must be bcrypt hashed
-INSERT INTO users (email, password_hash, full_name, role) 
+INSERT INTO users (email, password_hash, full_name, role)
 VALUES (
   'user@example.com',
   '$2a$10$hashed_password_here',

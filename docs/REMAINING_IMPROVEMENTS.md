@@ -1,7 +1,7 @@
 # Remaining UI/UX Improvements
 
-**Date:** 7 November 2025  
-**Status:** Phase 1 Complete - 8/10 Priority Tasks Done  
+**Date:** 7 November 2025
+**Status:** Phase 1 Complete - 8/10 Priority Tasks Done
 **Next Phase:** Advanced Features & Enhancements
 
 ---
@@ -56,29 +56,29 @@ async getKPITrends(filters: Filters): Promise<{ current: KPI; previous: KPI; del
   // Calculate date ranges
   const now = new Date();
   const currentPeriodDays = 30; // Default to last 30 days
-  
+
   // Current period
   const currentStart = new Date(now);
   currentStart.setDate(currentStart.getDate() - currentPeriodDays);
-  
+
   // Previous period (same duration, before current period)
   const previousStart = new Date(currentStart);
   previousStart.setDate(previousStart.getDate() - currentPeriodDays);
-  
+
   const currentFilters = { ...filters, fromDate: currentStart.toISOString(), toDate: now.toISOString() };
   const previousFilters = { ...filters, fromDate: previousStart.toISOString(), toDate: currentStart.toISOString() };
-  
+
   const [current, previous] = await Promise.all([
     this.getKPIs(currentFilters),
     this.getKPIs(previousFilters)
   ]);
-  
+
   // Calculate deltas (percentage change)
   const calculateDelta = (current: number, previous: number) => {
     if (previous === 0) return 0;
     return ((current - previous) / previous) * 100;
   };
-  
+
   const delta = {
     total: calculateDelta(current.total, previous.total),
     open: calculateDelta(current.open, previous.open),
@@ -86,7 +86,7 @@ async getKPITrends(filters: Filters): Promise<{ current: KPI; previous: KPI; del
     sla_compliance: calculateDelta(current.sla_compliance * 100, previous.sla_compliance * 100),
     mttr_hours: calculateDelta(current.mttr_hours, previous.mttr_hours),
   };
-  
+
   return { current, previous, delta };
 }
 ```
@@ -185,7 +185,7 @@ import { useState } from "react";
 
 export default function Tickets() {
   const [selectedTickets, setSelectedTickets] = useState<Set<string>>(new Set());
-  
+
   const handleSelectAll = (checked: boolean) => {
     if (checked && tickets?.data) {
       setSelectedTickets(new Set(tickets.data.map(t => t.ticket_id)));
@@ -193,7 +193,7 @@ export default function Tickets() {
       setSelectedTickets(new Set());
     }
   };
-  
+
   const handleSelectOne = (ticketId: string, checked: boolean) => {
     const newSelected = new Set(selectedTickets);
     if (checked) {
@@ -203,10 +203,10 @@ export default function Tickets() {
     }
     setSelectedTickets(newSelected);
   };
-  
+
   const handleBulkAction = async (action: 'assign' | 'close' | 'export' | 'delete') => {
     const ticketIds = Array.from(selectedTickets);
-    
+
     switch (action) {
       case 'assign':
         // TODO: Show assign dialog
@@ -222,7 +222,7 @@ export default function Tickets() {
         break;
     }
   };
-  
+
   // ... rest of component
 }
 ```
@@ -244,16 +244,16 @@ interface TicketsTableProps {
   onRowClick: (ticket: Ticket) => void;
 }
 
-export function TicketsTable({ 
-  tickets, 
-  selectedTickets, 
-  onSelectAll, 
-  onSelectOne, 
-  onRowClick 
+export function TicketsTable({
+  tickets,
+  selectedTickets,
+  onSelectAll,
+  onSelectOne,
+  onRowClick
 }: TicketsTableProps) {
   const allSelected = tickets.length > 0 && selectedTickets.size === tickets.length;
   const someSelected = selectedTickets.size > 0 && selectedTickets.size < tickets.length;
-  
+
   return (
     <Table>
       <TableHeader>
@@ -271,14 +271,14 @@ export function TicketsTable({
       </TableHeader>
       <TableBody>
         {tickets.map((ticket) => (
-          <TableRow 
+          <TableRow
             key={ticket.ticket_id}
             className="cursor-pointer hover:bg-muted/50"
           >
             <TableCell onClick={(e) => e.stopPropagation()}>
               <Checkbox
                 checked={selectedTickets.has(ticket.ticket_id)}
-                onCheckedChange={(checked) => 
+                onCheckedChange={(checked) =>
                   onSelectOne(ticket.ticket_id, checked as boolean)
                 }
               />
@@ -319,9 +319,9 @@ Add floating action bar component:
               <X className="h-4 w-4" />
             </Button>
           </div>
-          
+
           <Separator orientation="vertical" className="h-8" />
-          
+
           <div className="flex gap-2">
             <Button
               variant="default"
@@ -416,29 +416,29 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
 
 ```tsx
 <div className="flex gap-2 mb-2">
-  <Button 
-    variant={timeRange === '7d' ? 'default' : 'outline'} 
+  <Button
+    variant={timeRange === '7d' ? 'default' : 'outline'}
     size="sm"
     onClick={() => setTimeRange('7d')}
   >
     7D
   </Button>
-  <Button 
-    variant={timeRange === '30d' ? 'default' : 'outline'} 
+  <Button
+    variant={timeRange === '30d' ? 'default' : 'outline'}
     size="sm"
     onClick={() => setTimeRange('30d')}
   >
     30D
   </Button>
-  <Button 
-    variant={timeRange === '90d' ? 'default' : 'outline'} 
+  <Button
+    variant={timeRange === '90d' ? 'default' : 'outline'}
     size="sm"
     onClick={() => setTimeRange('90d')}
   >
     90D
   </Button>
-  <Button 
-    variant={timeRange === 'all' ? 'default' : 'outline'} 
+  <Button
+    variant={timeRange === 'all' ? 'default' : 'outline'}
     size="sm"
     onClick={() => setTimeRange('all')}
   >
@@ -464,8 +464,8 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
     {filters.priority && (
       <Badge variant="secondary" className="gap-1">
         Priority: {filters.priority}
-        <X 
-          className="h-3 w-3 cursor-pointer" 
+        <X
+          className="h-3 w-3 cursor-pointer"
           onClick={() => setFilters({ ...filters, priority: undefined })}
         />
       </Badge>
@@ -473,15 +473,15 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
     {filters.status && (
       <Badge variant="secondary" className="gap-1">
         Status: {filters.status}
-        <X 
-          className="h-3 w-3 cursor-pointer" 
+        <X
+          className="h-3 w-3 cursor-pointer"
           onClick={() => setFilters({ ...filters, status: undefined })}
         />
       </Badge>
     )}
     {/* ... other filters */}
-    <Button 
-      variant="ghost" 
+    <Button
+      variant="ghost"
       size="sm"
       onClick={() => setFilters({})}
     >
@@ -513,33 +513,33 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
     <div className="p-3 border-b space-y-1">
       <p className="text-sm font-medium">Quick ranges</p>
       <div className="grid gap-1">
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className="justify-start"
           onClick={() => setDateRange('today')}
         >
           Today
         </Button>
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className="justify-start"
           onClick={() => setDateRange('week')}
         >
           This Week
         </Button>
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className="justify-start"
           onClick={() => setDateRange('month')}
         >
           Last 30 Days
         </Button>
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className="justify-start"
           onClick={() => setDateRange('quarter')}
         >
@@ -582,16 +582,16 @@ useEffect(() => {
         setConnectionStatus({ status: 'error', message: `HTTP ${response.status}` });
       }
     } catch (error) {
-      setConnectionStatus({ 
-        status: 'error', 
-        message: error.message || 'Connection failed' 
+      setConnectionStatus({
+        status: 'error',
+        message: error.message || 'Connection failed'
       });
     }
   };
-  
+
   checkConnection();
   const interval = setInterval(checkConnection, 30000); // Check every 30s
-  
+
   return () => clearInterval(interval);
 }, [settings.apiBaseUrl]);
 
@@ -705,7 +705,7 @@ Currently handled client-side, but could be optimized with backend aggregation:
 ```sql
 -- Example: Get KPI trends
 WITH current_period AS (
-  SELECT 
+  SELECT
     COUNT(*) as total,
     COUNT(*) FILTER (WHERE state IN ('1', '2', '6')) as open,
     COUNT(*) FILTER (WHERE state IN ('6', '7')) as resolved,
@@ -714,7 +714,7 @@ WITH current_period AS (
   WHERE opened_at >= NOW() - INTERVAL '30 days'
 ),
 previous_period AS (
-  SELECT 
+  SELECT
     COUNT(*) as total,
     COUNT(*) FILTER (WHERE state IN ('1', '2', '6')) as open,
     COUNT(*) FILTER (WHERE state IN ('6', '7')) as resolved,
@@ -723,7 +723,7 @@ previous_period AS (
   WHERE opened_at >= NOW() - INTERVAL '60 days'
     AND opened_at < NOW() - INTERVAL '30 days'
 )
-SELECT 
+SELECT
   c.total as current_total,
   p.total as previous_total,
   ((c.total - p.total)::float / NULLIF(p.total, 0)) * 100 as total_delta
@@ -740,7 +740,7 @@ FROM current_period c, previous_period p;
 - Save multiple dashboard layouts
 - Hide/show widgets
 
-**Effort:** 8-10 hours  
+**Effort:** 8-10 hours
 **Libraries:** `react-grid-layout` or `@dnd-kit/core`
 
 ### 5.2 Saved Filter Sets
@@ -749,7 +749,7 @@ FROM current_period c, previous_period p;
 - Quick-apply saved filters
 - Share filter sets with team
 
-**Effort:** 3-4 hours  
+**Effort:** 3-4 hours
 **Storage:** localStorage or database
 
 ### 5.3 Advanced Filtering
@@ -758,7 +758,7 @@ FROM current_period c, previous_period p;
 - AND/OR logic builder
 - Regex support for descriptions
 
-**Effort:** 6-8 hours  
+**Effort:** 6-8 hours
 **Libraries:** Query builder component
 
 ### 5.4 Export Enhancements
@@ -767,7 +767,7 @@ FROM current_period c, previous_period p;
 - Excel with multiple sheets
 - Scheduled exports via email
 
-**Effort:** 5-6 hours  
+**Effort:** 5-6 hours
 **Libraries:** `jspdf`, `xlsx`, `recharts-to-png`
 
 ### 5.5 Real-time Collaboration
@@ -776,7 +776,7 @@ FROM current_period c, previous_period p;
 - @mentions for team members
 - Activity feed with WebSocket
 
-**Effort:** 10-15 hours  
+**Effort:** 10-15 hours
 **Backend:** WebSocket server, comments table
 
 ---
@@ -906,8 +906,8 @@ Track these metrics to measure improvement impact:
 
 ---
 
-**Last Updated:** 7 November 2025  
-**Author:** AI Assistant  
+**Last Updated:** 7 November 2025
+**Author:** AI Assistant
 **Related Documents:**
 
 - [UI/UX Improvement Plan](./UI_UX_IMPROVEMENT_PLAN.md)
