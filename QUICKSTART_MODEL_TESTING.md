@@ -10,7 +10,7 @@
 
 ### Status Check
 
-- ✅ LM Studio running at http://localhost:1234
+- ✅ LM Studio running at <http://localhost:1234>
 - ✅ Both models available in LM Studio
 - ⏳ Docker containers status (check needed)
 - ⏳ Database has tickets with embeddings (check needed)
@@ -57,6 +57,7 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
 1. **Select model in LM Studio**: `text-embedding-embeddinggemma-300m-qat`
 
 2. **Run benchmarks and save results:**
+
    ```bash
    conda activate itsm
    docker exec itsm-python-backend python scripts/performance_eval/run_phase1_benchmarks.py | tee results_gemma_$(date +%Y%m%d_%H%M%S).txt
@@ -67,6 +68,7 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
 1. **Switch model in LM Studio**: `text-embedding-qwen3-embedding-8b`
 
 2. **Update environment variable (if needed):**
+
    ```bash
    # Edit docker-compose.yml or .env to set:
    LM_STUDIO_MODEL=text-embedding-qwen3-embedding-8b
@@ -78,6 +80,7 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
    ```
 
 3. **Run benchmarks and save results:**
+
    ```bash
 
    conda activate itsm
@@ -90,6 +93,7 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
 ### Success Criteria - Phase 1
 
 **Computational Performance:**
+
 - ✅ Mean embedding latency <500ms per ticket
 - ✅ Batch throughput >5 tickets/sec
 - ✅ Similarity search <100ms (p95)
@@ -97,6 +101,7 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
 - ✅ Memory usage <2GB
 
 **Quality Metrics:**
+
 - ✅ Same category mean similarity >0.60
 - ✅ Different category mean similarity <0.50
 - ✅ Separation gap >0.10
@@ -106,11 +111,13 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
 ### Expected Trade-offs
 
 **EmbeddingGemma-300m:**
+
 - 🚀 Faster (150-300ms per ticket)
 - 💾 Less memory (~500MB)
 - 📊 Potentially lower accuracy
 
 **Qwen3-8B:**
+
 - 🐌 Slower (300-800ms per ticket)
 - 💾 More memory (~2-4GB)
 - 📊 Potentially higher accuracy
@@ -120,6 +127,7 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_parent_
 ### "No tickets with embeddings found"
 
 First, populate embeddings:
+
 ```bash
 
 docker exec itsm-python-backend python scripts/populate_embeddings.py --limit 100 --batch-size 10
@@ -129,6 +137,7 @@ docker exec itsm-python-backend python scripts/populate_embeddings.py --limit 10
 ### "No parent-child links found"
 
 Generate relationships first:
+
 ```bash
 
 docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --min-similarity 0.80 --dry-run
@@ -140,15 +149,17 @@ docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
 ### "Connection refused to LM Studio"
 
 1. Verify LM Studio is running:
-   ```bash
+
+```bash
 
    curl http://localhost:1234/v1/models
 
    ```
 
-2. Check which model is loaded in LM Studio UI
+2 Check which model is loaded in LM Studio UI
 
-3. Verify `LM_STUDIO_BASE_URL` in docker-compose.yml:
+3 Verify `LM_STUDIO_BASE_URL` in docker-compose.yml:
+
    ```yaml
 
    LM_STUDIO_BASE_URL=http://host.docker.internal:1234/v1
@@ -171,16 +182,19 @@ docker-compose up -d postgres postgrest python-backend embedding-worker
 After running benchmarks for both models:
 
 **Switch to Qwen3-8B if:**
+
 - Precision@5 improves by >10%
 - Latency remains <1s per ticket
 - Memory usage is acceptable for your hardware
 
 **Keep EmbeddingGemma-300m if:**
+
 - Quality improvement <5%
 - Latency >2s per ticket impacts UX
 - Memory constraints are an issue
 
 **Hybrid Approach if:**
+
 - Qwen3 is more accurate but slower
 - Use Gemma for real-time similarity searches
 - Use Qwen3 for batch embedding generation overnight
@@ -236,6 +250,7 @@ docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
 ## � Results Documentation
 
 Save your results with:
+
 ```bash
 
 # Create results directory
@@ -251,6 +266,7 @@ docker exec itsm-python-backend python scripts/performance_eval/run_phase1_bench
 **Results are logged in:** `docs/model-results.md`
 
 This document tracks:
+
 - Complete benchmark results for each model
 - Performance vs quality trade-offs
 - Success criteria evaluations

@@ -19,7 +19,7 @@ The proposed Python/FastAPI backend for NLP/RAG capabilities is **technically vi
 
 ### Existing Services
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ Frontend (Vite + React + TS)          Port: 8080            │
 └─────────────────────────────────────────────────────────────┘
@@ -480,7 +480,7 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 
 ### Proposed Enhanced Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │ Frontend (Vite + React + TS)          Port: 8080            │
 │ - Settings: add AI backend URL                              │
@@ -632,7 +632,7 @@ export const api = {
 
 ## Final Recommendations
 
-### ✅ **PROCEED** with Conditions:
+### ✅ **PROCEED** with Conditions
 
 1. **Start Small:** Implement Phase 1 (foundation) first, validate integration
 2. **Shared Auth:** Use JWT tokens, not API keys
