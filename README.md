@@ -20,25 +20,7 @@ AI-powered IT Service Management analytics platform with semantic ticket similar
 - 📦 **Batch & Benchmark Scripts** - Populate embeddings, establish relationships, and compare models
 - 🎯 **LM Studio Integration** - Local embeddings with switchable models (Gemma ↔ Qwen3)
 
-## Project info
-
-**URL**: <https://lovable.dev/projects/a7dbc2fd-31d6-402a-873b-95b57c9d75b0>
-
 ## How can I edit this code?
-
-There are several ways of editing your application.
-
-### Use Lovable
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/a7dbc2fd-31d6-402a-873b-95b57c9d75b0) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-### Use your preferred IDE
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 Follow these steps:
 
