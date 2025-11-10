@@ -6,19 +6,19 @@ AI-powered IT Service Management analytics platform with semantic ticket similar
 
 ### Core Functionality
 
-- 📊 **Real-time Dashboard** - KPIs, trends, and ticket distribution
-- 🎫 **Ticket Management** - Advanced filtering and search
-- 📈 **Analytics & Insights** - Priority breakdown, state analysis
-- 🔐 **JWT Authentication** - Secure user management
-- 🌓 **Dark/Light Mode** - System preference aware
+- 📊 **Real-time Dashboard** - KPIs, backlog trends, and ticket distribution
+- 🎫 **Ticket Management** - Advanced filtering, pagination, and saved defaults
+- 🧭 **Configurable Settings** - Tabbed System/My Preferences/Account experience with connection tests
+- 🔐 **JWT Authentication** - Secure user management with password reset
+- 🌓 **Dark/Light Mode** - System preference aware and user-overridable
 
 ### AI-Powered Features (NEW)
 
-- 🤖 **Semantic Similarity Search** - Find related tickets using 768-dim embeddings
-- 🔗 **Automatic Parent-Child Linking** - Duplicate detection with 0.8+ similarity threshold
-- ⚡ **Background Embedding Worker** - Automatic queue-based processing
-- 📦 **Batch Processing** - Efficient bulk embedding generation
-- 🎯 **LM Studio Integration** - Local embeddings (no external API costs)
+- 🤖 **Semantic Similarity Search** - Qwen3-4096 (default) or Gemma-768 embeddings selectable per request
+- 🔗 **Ticket Family Graphs** - Automatic parent/child/grandchild linking with similarity scores
+- ⚡ **Background Embedding Worker** - Queue-driven processing with dual-column support
+- 📦 **Batch & Benchmark Scripts** - Populate embeddings, establish relationships, and compare models
+- 🎯 **LM Studio Integration** - Local embeddings with switchable models (Gemma ↔ Qwen3)
 
 ## Project info
 
@@ -91,9 +91,9 @@ This project is built with:
 
 ### AI/ML Stack
 
-- **Embeddings**: LM Studio + EmbeddingGemma-300m-qat (768 dimensions)
-- **Vector Search**: pgvector with HNSW indexing
-- **Similarity**: Cosine distance with 0.8 threshold
+- **Embeddings**: LM Studio + `text-embedding-qwen3-embedding-8b` (4096-dim default) with optional `text-embedding-embeddinggemma-300m-qat`
+- **Vector Search**: pgvector (HNSW on 768-dim column, brute-force on 4096-dim)
+- **Similarity**: Cosine distance with configurable threshold (defaults to 0.8)
 - **Queue System**: PostgreSQL triggers + Python worker
 
 ## 🏗️ Architecture
@@ -151,9 +151,10 @@ npm install
 ### 2. Setup LM Studio (for AI features)
 
 1. Download and install [LM Studio](https://lmstudio.ai)
-2. Download model: `text-embedding-embeddinggemma-300m-qat` (768-dim)
-3. Start local server on port 1234
-4. Verify: `curl http://localhost:1234/v1/models`
+2. Load the **recommended** model `text-embedding-qwen3-embedding-8b` (4096-dim)
+3. Optional: also download `text-embedding-embeddinggemma-300m-qat` (768-dim) for A/B testing
+4. Start the local server on port `1234` and keep LM Studio running before hitting AI endpoints
+5. Verify models are exposed: `curl http://localhost:1234/v1/models`
 
 ### 3. Start All Services
 
@@ -169,6 +170,8 @@ docker logs itsm-postgres
 docker logs itsm-python-backend
 docker logs itsm-embedding-worker
 ```
+
+`docker-compose.yml` defaults `LM_STUDIO_MODEL` to `text-embedding-qwen3-embedding-8b`; adjust it (and restart backend + worker) if you switch models in LM Studio.
 
 ### 4. Setup Authentication Backend
 
@@ -198,17 +201,22 @@ npm run dev
 # Default login: admin@itsm.local / admin123
 ```
 
+After logging in, open **Settings → System** to confirm API endpoints, test connections, and adjust My Preferences (theme, default page, similarity threshold, etc.).
+
 ### 6. Initialize AI Features (First Time)
 
 ```bash
-# Generate embeddings for existing tickets
-docker exec itsm-python-backend python scripts/populate_embeddings.py
+# Generate embeddings for existing tickets (auto-detects model dimension)
+docker exec itsm-python-backend python scripts/populate_embeddings.py --batch-size 8
 
-# Establish parent-child relationships
+# Establish parent-child relationships (dry run recommended first)
 docker exec itsm-python-backend python scripts/establish_ticket_relationships.py --dry-run
 docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
 
-# The embedding worker will automatically process new tickets going forward
+# (Optional) Compare Gemma vs Qwen3 quality metrics
+docker exec itsm-python-backend python scripts/performance_eval/compare_models.py
+
+# The embedding worker will automatically process new/updated tickets going forward
 ```
 
 ### Services Overview
@@ -222,6 +230,14 @@ docker exec itsm-python-backend python scripts/establish_ticket_relationships.py
 | LM Studio | 1234 | Embedding generation |
 | PostgreSQL | 15432 | Main database |
 | pgAdmin | 5050 | Database management |
+
+## ⚙️ Settings & Data Sources
+
+- Tabbed Settings page (System, My Preferences, Account) persists to `localStorage` keys `itsm-settings` and `itsm-user-preferences` until backend APIs land.
+- System tab manages data sources (`docker` PostgREST vs `supabase`) with confirmation dialog and automatic reload after save.
+- Connection test buttons verify Data Source, Auth API, and AI Backend; badges reflect latest status and require LM Studio/backends to be running.
+- My Preferences tab controls theme, default dashboard page, ticket filters, page size, similarity threshold, and feature toggles for duplicates/graphs.
+- Import/export buttons allow JSON backups of settings and preferences; `Cmd/Ctrl+S` saves changes, and Reset restores defaults.
 
 ## 📚 Documentation & Resources
 
@@ -244,6 +260,7 @@ curl -X POST http://localhost:8000/api/ai/similarity/search \
   -H "Content-Type: application/json" \
   -d '{
     "incident_number": "INC0010048",
+    "model": "qwen3",  # or "gemma"
     "top_k": 5,
     "min_similarity": 0.7
   }'
@@ -251,6 +268,10 @@ curl -X POST http://localhost:8000/api/ai/similarity/search \
 # Get ticket family (parent + children)
 curl -H "Authorization: Bearer $TOKEN" \
   http://localhost:8000/api/ai/similarity/tickets/INC0010048/family
+```
+
+> ℹ️ Omit `model` to default to **qwen3** (`embedding_4096`). Specify `"gemma"` to query the 768-dimension column.
+
 ```
 
 ## 🔧 Troubleshooting
@@ -290,7 +311,9 @@ curl http://localhost:1234/v1/models
 # Check if model is loaded
 curl -X POST http://localhost:1234/v1/embeddings \
   -H "Content-Type: application/json" \
-  -d '{"model": "text-embedding-embeddinggemma-300m-qat", "input": "test"}'
+  -d '{"model": "text-embedding-qwen3-embedding-8b", "input": "test"}'
+
+# Swap the model name to `text-embedding-embeddinggemma-300m-qat` if you are testing the 768-dimension baseline.
 ```
 
 ## 🤝 Contributing
@@ -311,10 +334,16 @@ This project uses Lovable for rapid development. Changes can be made via:
 
 ## 📊 Model Performance
 
-Current embedding model: **EmbeddingGemma-300m-qat**
+Current recommended embedding model: **text-embedding-qwen3-embedding-8b** (4096 dim)
 
-**Speed:** ⭐⭐⭐⭐⭐ Exceptional (26ms avg embedding, 1.2ms search)
-**Quality:** ⭐☆☆☆☆ Poor (negative separation gap, 38.9% category agreement)
-**Status:** ⚠️ Not recommended for production
+| Metric | Gemma-768 | Qwen3-4096 |
+| --- | --- | --- |
+| Separation gap | +0.0326 (weak) | **+0.0947 (good)** |
+| Same-category similarity | 0.496 | **0.591** |
+| Different-category similarity | 0.464 | 0.497 |
+| Embedding latency | **~26 ms** | ~436 ms |
+| Search latency | **<1 ms (HNSW)** | ~5–10 ms (brute force) |
 
-See `docs/model-results.md` for detailed benchmarks and testing Qwen3-8B alternative.
+Use Gemma when you need rapid embedding generation with indexed search; use Qwen3 for materially better quality. Run `docker exec itsm-python-backend python scripts/performance_eval/compare_models.py` after changing LM Studio models to validate on your dataset.
+
+See `docs/model-results.md` and `docs/DUAL_MODEL_SETUP_COMPLETE.md` for detailed benchmarks.
