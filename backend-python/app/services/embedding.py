@@ -12,16 +12,42 @@ from openai import OpenAI
 
 logger = logging.getLogger(__name__)
 
-# Global client instance
+# LM Studio configuration (defaults align with docker-compose configuration)
+LM_STUDIO_BASE_URL_PRIMARY = os.getenv("LM_STUDIO_BASE_URL")
+LM_STUDIO_BASE_URL_FALLBACK = os.getenv("LM_STUDIO_BASE_URL_FALLBACK")
+LM_STUDIO_MODEL = os.getenv("LM_STUDIO_MODEL", "text-embedding-qwen3-embedding-8b")
+
+# Build ordered list of candidate base URLs (primary first, then fallback if distinct)
+LM_STUDIO_BASE_URLS: List[str] = [LM_STUDIO_BASE_URL_PRIMARY]
+if LM_STUDIO_BASE_URL_FALLBACK and LM_STUDIO_BASE_URL_FALLBACK not in LM_STUDIO_BASE_URLS:
+    LM_STUDIO_BASE_URLS.append(LM_STUDIO_BASE_URL_FALLBACK)
+
+# Global client state
 _client: Optional[OpenAI] = None
 _embedding_dimension: Optional[int] = None
+_current_base_index: int = 0
 
-# LM Studio configuration
-LM_STUDIO_BASE_URL = os.getenv("LM_STUDIO_BASE_URL", "http://host.docker.internal:1234/v1")
-LM_STUDIO_MODEL = os.getenv("LM_STUDIO_MODEL", "text-embedding-embeddinggemma-300m-qat")
 
-LM_STUDIO_BASE_URL = os.getenv("LM_STUDIO_BASE_URL", "http://host.docker.internal:1234/v1")
-LM_STUDIO_MODEL = os.getenv("LM_STUDIO_MODEL", "text-embedding-embeddinggemma-300m-qat")
+def _current_base_url() -> str:
+    return LM_STUDIO_BASE_URLS[_current_base_index]
+
+
+def _reset_client_state():
+    global _client, _embedding_dimension
+    _client = None
+    _embedding_dimension = None
+
+
+def _switch_to_next_base_url() -> bool:
+    """Advance to the next configured base URL, if available."""
+    global _current_base_index
+    if _current_base_index + 1 >= len(LM_STUDIO_BASE_URLS):
+        return False
+    _current_base_index += 1
+    new_url = _current_base_url()
+    logger.warning(f"Switching LM Studio client to fallback base URL: {new_url}")
+    _reset_client_state()
+    return True
 
 
 def get_embedding_client() -> OpenAI:
@@ -34,14 +60,42 @@ def get_embedding_client() -> OpenAI:
     global _client
     
     if _client is None:
-        logger.info(f"Initializing LM Studio client: {LM_STUDIO_BASE_URL}")
+        base_url = _current_base_url()
+        logger.info(f"Initializing LM Studio client: {base_url}")
         _client = OpenAI(
-            base_url=LM_STUDIO_BASE_URL,
+            base_url=base_url,
             api_key="not-needed"  # LM Studio doesn't require API key
         )
         logger.info(f"LM Studio client initialized. Model: {LM_STUDIO_MODEL}")
     
     return _client
+
+
+def _perform_embedding_request(input_payload: Any) -> Any:
+    """Invoke the LM Studio embedding endpoint with automatic fallback across base URLs."""
+    attempts = 0
+    last_error: Optional[Exception] = None
+
+    while attempts < len(LM_STUDIO_BASE_URLS):
+        client = get_embedding_client()
+        base_url = _current_base_url()
+        try:
+            return client.embeddings.create(
+                model=LM_STUDIO_MODEL,
+                input=input_payload
+            )
+        except Exception as exc:
+            last_error = exc
+            logger.warning("Embedding request failed via %s: %s", base_url, exc)
+            if not _switch_to_next_base_url():
+                break
+            attempts += 1
+            continue
+
+    logger.error("All LM Studio base URLs failed for model %s", LM_STUDIO_MODEL)
+    if last_error:
+        raise last_error
+    raise RuntimeError("Embedding request failed without specific error")
 
 
 def get_embedding_dimension() -> int:
@@ -55,12 +109,8 @@ def get_embedding_dimension() -> int:
     
     if _embedding_dimension is None:
         # Test with a sample to get dimension
-        client = get_embedding_client()
         try:
-            response = client.embeddings.create(
-                model=LM_STUDIO_MODEL,
-                input="test"
-            )
+            response = _perform_embedding_request("test")
             _embedding_dimension = len(response.data[0].embedding)
             logger.info(f"Embedding dimension detected: {_embedding_dimension}")
         except Exception as e:
@@ -87,14 +137,9 @@ def generate_embedding(text: str) -> List[float]:
         raise ValueError("Text cannot be empty")
     
     try:
-        client = get_embedding_client()
-        
         logger.debug(f"Generating embedding for text (length: {len(text)})")
-        
-        response = client.embeddings.create(
-            model=LM_STUDIO_MODEL,
-            input=text
-        )
+
+        response = _perform_embedding_request(text)
 
         raw_embedding = response.data[0].embedding
         logger.debug(f"Generated embedding with dimension: {len(raw_embedding)}")
@@ -131,16 +176,11 @@ def generate_embeddings_batch(texts: List[str], batch_size: int = 16) -> List[Li
     embeddings = []
     
     try:
-        client = get_embedding_client()
-        
         for i in range(0, len(texts), batch_size):
             batch = texts[i:i + batch_size]
             logger.debug(f"Processing batch {i // batch_size + 1} ({len(batch)} texts)")
             
-            response = client.embeddings.create(
-                model=LM_STUDIO_MODEL,
-                input=batch
-            )
+            response = _perform_embedding_request(batch)
             
             for item in response.data:
                 # Normalize to plain Python floats for downstream database adapters
@@ -198,7 +238,7 @@ def get_model_info() -> Dict[str, Any]:
     """
     return {
         "provider": "LM Studio",
-        "base_url": LM_STUDIO_BASE_URL,
+        "base_url": _current_base_url(),
         "model_name": LM_STUDIO_MODEL,
         "embedding_dimension": get_embedding_dimension(),
         "max_batch_size": 16

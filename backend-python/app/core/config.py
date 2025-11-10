@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     embed_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     combine_weight: float = 0.65
 
+    # LM Studio configuration
+    lm_studio_base_url: str = "http://host.docker.internal:1234/v1"
+    lm_studio_base_url_fallback: Optional[str] = "http://169.254.83.107:1234/v1"
+    lm_studio_model: str = "text-embedding-qwen3-embedding-8b"
+
     # Optional CORS overrides (comma-separated list)
     additional_cors_origins: Optional[str] = None
     

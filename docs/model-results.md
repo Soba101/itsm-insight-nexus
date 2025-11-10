@@ -9,11 +9,13 @@
 ## Test Configuration
 
 **Hardware:**
+
 - Platform: Docker on macOS (ARM64)
 - LM Studio: http://localhost:1234
 - Database: PostgreSQL 15 + pgvector
 
 **Models Evaluated:**
+
 1. `text-embedding-embeddinggemma-300m-qat` (300M parameters, baseline)
 2. `text-embedding-qwen3-embedding-8b` (8B parameters, challenger) - *Pending*
 
@@ -61,6 +63,7 @@
 **Memory Usage:** ⚠️ Not measured (psutil unavailable)
 
 **Key Findings:**
+
 - ⭐ **Extremely fast** embedding generation
 - ⭐ Batch processing scales well (optimal at batch size 4-16)
 - ⭐ Consistent low latency across ticket sizes
@@ -80,6 +83,7 @@
 **Performance Scaling:** ✅ Sub-linear (ratio: 0.91x from top-5 to top-50)
 
 **Key Findings:**
+
 - ⭐ **Exceptional** query performance even without index
 - ⭐ Performance scales very well with larger K values
 - 💡 HNSW index would further optimize but not critical
@@ -99,11 +103,13 @@
 **Performance Tier:** ⭐⭐⭐ **EXCEPTIONAL** (<500ms)
 
 **Test Ticket Results:**
+
 - Top-1: INC0000003 (similarity: 0.6151)
 - Top-2: INC0000036 (similarity: 0.5892)
 - Top-3: INC0000002 (similarity: 0.5486)
 
 **Key Findings:**
+
 - ⭐ Complete workflow under 70ms is outstanding
 - ⚠️ Bottleneck is embedding generation (86% of time)
 - ⭐ Database operations are negligible overhead
@@ -146,6 +152,7 @@ The model shows **negative separation** - tickets with different categories are 
 3. **Quality is inadequate** for production use despite excellent speed
 
 **Potential Causes:**
+
 - Model not fine-tuned for ITSM/technical support domain
 - Category definitions too broad or inconsistent
 - Insufficient training data for this use case
@@ -186,6 +193,7 @@ The model shows **negative separation** - tickets with different categories are 
 | <0.75 | **18** | **100.0%** |
 
 **Top Categories:**
+
 1. Inquiry / Help: 12 links (66.7%)
 2. Software: 3 links (16.7%)
 3. Hardware: 2 links (11.1%)
@@ -202,6 +210,7 @@ The model shows **negative separation** - tickets with different categories are 
 **Overall Link Quality:** ⚠️ **NEEDS IMPROVEMENT**
 
 **Key Findings:**
+
 - 🚨 **All relationships are weak** (no links >0.75 similarity)
 - ❌ Poor category coherence in relationships
 - ⚠️ Current threshold (0.80) is too high for this model
@@ -220,6 +229,7 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 ```
 
 #### Pros ✅
+
 - Extremely fast embedding generation (26ms avg)
 - Excellent batch throughput (65+ tickets/sec)
 - Sub-millisecond similarity search
@@ -228,6 +238,7 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 - Scales well with batch sizes
 
 #### Cons ❌
+
 - **Cannot distinguish similar vs dissimilar tickets** (inverted separation)
 - **Weak semantic understanding** of ITSM domain
 - All parent-child links are low quality (<0.75)
@@ -240,23 +251,28 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 ### 4. Recommendations
 
 #### Immediate Actions:
+
 1. ✅ **Test Qwen3-8B model** - Larger model may capture semantics better
 2. ⚠️ **Do NOT use for production** - Quality is inadequate
 3. 💡 **Lower relationship threshold** to 0.50-0.60 (though still problematic)
 4. 📊 **Investigate category definitions** - May be too inconsistent
 
 #### Model Selection Criteria:
+
 **EmbeddingGemma-300m should be replaced if:**
+
 - Qwen3-8B shows positive separation gap (>0.10)
 - Category agreement improves to >60%
 - Mean similarity for same-category >0.60
 
 **Keep EmbeddingGemma-300m only if:**
+
 - Speed is critical and quality can be compromised
 - Use case doesn't require semantic similarity
 - Alternative uses (e.g., simple text matching)
 
 #### Further Investigation:
+
 1. **Data quality audit** - Review category assignments
 2. **Domain mismatch analysis** - Model may not understand ITSM terminology
 3. **Alternative models** - Consider domain-specific or fine-tuned models
@@ -267,6 +283,7 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 ### 5. Benchmark Execution Details
 
 **Environment:**
+
 - Container: `itsm-python-backend` (healthy)
 - Python: 3.11
 - pgvector: 0.2.3
@@ -274,6 +291,7 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 - Dataset size: 78 incidents
 
 **Benchmark Scripts:**
+
 - `benchmark_embedding_speed.py` - 1.6s ✅
 - `benchmark_similarity_search.py` - 0.2s ✅
 - `benchmark_e2e_pipeline.py` - 0.3s ✅
@@ -328,6 +346,7 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 **Embedding Dimension:** 4096 (vs Gemma: 768) - **5.3x larger vectors**
 
 **Key Findings:**
+
 - 🔴 **Significantly slower** than Gemma (16-21x slower single ticket)
 - 🔴 **Poor batch throughput** - fails target by 40%
 - ⚠️ Still passes <500ms target but barely
@@ -349,6 +368,7 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 **Performance Scaling:** ✅ Sub-linear (ratio: 0.91x)
 
 **Key Findings:**
+
 - ⭐ Search performance equivalent to Gemma despite 5.3x larger vectors
 - ⭐ Small dataset (78 tickets) masks performance difference
 - ⚠️ Likely to show degradation on larger datasets
@@ -370,6 +390,7 @@ Overall:  ⭐⭐☆☆☆ (2/5) - Not Production Ready
 **Error:** `psycopg2.errors.DataException: expected 768 dimensions, not 4096`
 
 **Key Findings:**
+
 - 🔴 **11.3x slower** embedding generation vs Gemma
 - 🚨 **Incompatible with current schema** - requires database migration
 - ⚠️ Would fail production deployment without schema changes
@@ -430,11 +451,13 @@ Overall:  ❌❌❌❌❌ (0/5) - Not Compatible
 ```
 
 #### Pros ✅
+
 - Passes <500ms embedding target (barely)
 - Larger model *should* capture more semantic information (untested)
 - Search performance comparable to Gemma on small dataset
 
 #### Cons ❌
+
 - **16-21x slower** embedding generation
 - **Fails batch throughput target** (2.9 vs 5.0 required)
 - **Incompatible dimensions** with current database schema
@@ -452,6 +475,7 @@ Overall:  ❌❌❌❌❌ (0/5) - Not Compatible
 **Problem:** Qwen3-8B produces 4096-dimensional embeddings, database schema is fixed at 768 dimensions.
 
 **Required Changes:**
+
 1. Alter database schema: `ALTER TABLE servicenow_incidents ALTER COLUMN embedding TYPE vector(4096);`
 2. Re-embed all existing tickets with Qwen3
 3. Update all similarity thresholds (different dimensionality)
@@ -459,6 +483,7 @@ Overall:  ❌❌❌❌❌ (0/5) - Not Compatible
 5. Test quality metrics with new embeddings
 
 **Impact:**
+
 - ~2-3 hours migration time for 78 tickets
 - Weeks for full production dataset
 - Breaking change - requires downtime
@@ -467,6 +492,7 @@ Overall:  ❌❌❌❌❌ (0/5) - Not Compatible
 #### Performance Concerns 🔴
 
 Even if dimension issue resolved:
+
 - **16x slower** embedding generation unacceptable for real-time use
 - **Fails throughput target** by 40%
 - **Larger vectors** = more storage, memory, compute
@@ -479,6 +505,7 @@ Even if dimension issue resolved:
 #### ❌ Do NOT Use Qwen3-8B
 
 **Reasons:**
+
 1. 🚨 **Incompatible** with current infrastructure
 2. 🔴 **Too slow** for production use (16x slower)
 3. ❌ **Fails performance targets**
@@ -489,6 +516,7 @@ Even if dimension issue resolved:
 #### ❌ Do NOT Use EmbeddingGemma-300m Either
 
 **Reasons:**
+
 1. 🚨 **Inverted separation gap** - fundamentally broken
 2. ❌ **Cannot distinguish** similar vs dissimilar
 3. ❌ **Poor quality** across all metrics
@@ -522,6 +550,7 @@ Even if dimension issue resolved:
 #### Model Selection Criteria Updated:
 
 **Must Have:**
+
 - Positive separation gap (>0.10)
 - Same-category similarity >0.60
 - Dimensions ≤1024 (for reasonable performance)
@@ -529,6 +558,7 @@ Even if dimension issue resolved:
 - Batch throughput >10 tickets/sec
 
 **Nice to Have:**
+
 - <100ms embedding latency
 - Pre-trained on technical/support domain
 - Active development/community
@@ -538,12 +568,14 @@ Even if dimension issue resolved:
 ### 7. Benchmark Execution Details
 
 **Environment:**
+
 - Container: `itsm-python-backend` (healthy)
 - Python: 3.11
 - Model: Qwen3-8B (4096 dimensions)
 - Dataset size: 78 incidents
 
 **Benchmark Scripts:**
+
 - `benchmark_embedding_speed.py` - 28.1s ✅
 - `benchmark_similarity_search.py` - 0.2s ✅
 - `benchmark_e2e_pipeline.py` - Failed ❌ (dimension mismatch)
@@ -560,6 +592,7 @@ Even if dimension issue resolved:
 **Expected test date:** TBD
 
 **Expectations:**
+
 - Slower embedding speed (300-800ms estimate)
 - Higher memory usage (~2-4GB)
 - Potentially better quality metrics
@@ -597,12 +630,14 @@ Even if dimension issue resolved:
 ### Score Breakdown
 
 **EmbeddingGemma-300m:**
+
 - Speed: 5/5 ⭐⭐⭐⭐⭐
 - Quality: 0/5 ☆☆☆☆☆
 - Compatibility: 5/5 ⭐⭐⭐⭐⭐
 - **Total: 10/15 (67%)** - Fast but useless
 
 **Qwen3-8B:**
+
 - Speed: 2/5 ⭐⭐☆☆☆
 - Quality: 0/5 ❓❓❓❓❓ (untestable)
 - Compatibility: 0/5 ❌❌❌❌❌
@@ -633,12 +668,14 @@ Even if dimension issue resolved:
 **Decision:** Do not deploy EmbeddingGemma-300m to production
 
 **Rationale:**
+
 1. Quality metrics fail all success criteria
 2. Inverted separation gap is a critical flaw
 3. Model cannot distinguish similar/dissimilar content
 4. Speed advantage is irrelevant if quality is poor
 
 **Next Steps:**
+
 1. ✅ Test Qwen3-8B model
 2. Compare results
 3. Make final model selection
@@ -651,6 +688,7 @@ Even if dimension issue resolved:
 **Decision:** Do NOT deploy Qwen3-8B to production
 
 **Rationale:**
+
 1. 🚨 **Incompatible dimensions** (4096 vs 768) - requires major migration
 2. 🔴 **16-21x slower** than Gemma - unacceptable performance
 3. ❌ **Fails throughput target** by 40%
@@ -659,6 +697,7 @@ Even if dimension issue resolved:
 6. 🔧 **Migration effort** not justified without proven quality gains
 
 **Performance Comparison:**
+
 - Gemma: 26ms/ticket, 65.9 tix/sec, 768-dim
 - Qwen3: 436ms/ticket, 2.9 tix/sec, 4096-dim
 - **Verdict:** Qwen3 worse in every measurable way
@@ -670,16 +709,19 @@ Even if dimension issue resolved:
 **Decision:** ❌ REJECT both models for production use
 
 **Summary:**
+
 - **EmbeddingGemma-300m:** Fast but fundamentally broken quality
 - **Qwen3-8B:** Slow, incompatible, and unproven quality
 
 **Critical Finding:**  
 🚨 The inverted separation gap suggests a **fundamental problem** with either:
+
 1. The models themselves (not suitable for ITSM domain)
 2. The data quality (inconsistent categorization)
 3. The evaluation methodology (wrong similarity metrics)
 
 **Required Actions:**
+
 1. 🔍 **Audit data quality** - Review category assignments for consistency
 2. 🎯 **Test domain-appropriate models:**
    - `all-MiniLM-L6-v2` (384-dim, fast, general purpose)
@@ -689,11 +731,13 @@ Even if dimension issue resolved:
 4. 📊 **Validate categories** - Ensure tickets are labeled correctly
 
 **Timeline:**
+
 - Data audit: 2-3 days
 - Alternative model testing: 1 week
 - Fine-tuning exploration: 2-4 weeks
 
 **Budget Impact:**
+
 - Continue using keyword search (no AI features)
 - Delay semantic similarity launch until suitable model found
 - Consider commercial embedding APIs (OpenAI, Cohere) as backup

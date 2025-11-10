@@ -9,6 +9,7 @@
 ## 📊 Completion Status
 
 ### ✅ Completed (8 items)
+
 - Fix Category & Assignment chart data (P0)
 - Remove/disable AI Summary button (P0)
 - Add interactive chart tooltips (P1)
@@ -19,9 +20,11 @@
 - Add value labels to bar charts (P2)
 
 ### 🔄 In Progress (1 item)
+
 - Add trend indicators to KPI cards (P1)
 
 ### ⏳ Pending (1 item)
+
 - Implement bulk selection in tickets table (P1)
 
 ---
@@ -29,11 +32,13 @@
 ## 1. Add Trend Indicators to KPI Cards (P1) 🔄
 
 ### Current State
+
 - KPI cards show current values only
 - No comparison to previous period
 - `KpiCard` component already supports `delta` prop but not being used
 
 ### Requirements
+
 - Calculate percentage change vs previous period (e.g., last 7/30 days)
 - Show trend arrow (up/down) with color coding
 - Display delta percentage next to main value
@@ -145,6 +150,7 @@ The component already has delta support. Verify it's displaying correctly:
 ```
 
 ### Estimated Effort
+
 - **Time:** 2-3 hours
 - **Complexity:** Medium
 - **Dependencies:** None
@@ -154,11 +160,13 @@ The component already has delta support. Verify it's displaying correctly:
 ## 2. Implement Bulk Selection in Tickets Table (P1) ⏳
 
 ### Current State
+
 - Individual ticket selection via row click (opens drawer)
 - No multi-select capability
 - No bulk actions available
 
 ### Requirements
+
 - Add checkbox column to ticket table
 - Select all/none functionality
 - Floating action bar when items selected
@@ -391,6 +399,7 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
 ```
 
 ### Estimated Effort
+
 - **Time:** 4-6 hours
 - **Complexity:** High
 - **Dependencies:** Backend API endpoints for bulk operations
@@ -404,6 +413,7 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
 **Location:** Dashboard > Tickets Over Time chart
 
 **Implementation:**
+
 ```tsx
 <div className="flex gap-2 mb-2">
   <Button 
@@ -446,6 +456,7 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
 **Location:** Tickets page > Filter bar
 
 **Implementation:**
+
 ```tsx
 {Object.entries(filters).filter(([_, v]) => v).length > 0 && (
   <div className="flex items-center gap-2 flex-wrap">
@@ -489,6 +500,7 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
 **Location:** Tickets page & Dashboard > Date pickers
 
 **Implementation:**
+
 ```tsx
 <Popover>
   <PopoverTrigger asChild>
@@ -553,6 +565,7 @@ async bulkDeleteTickets(ticketIds: string[]): Promise<void> {
 **Location:** Settings page
 
 **Implementation:**
+
 ```tsx
 const [connectionStatus, setConnectionStatus] = useState<{
   status: 'checking' | 'connected' | 'error';
@@ -614,6 +627,7 @@ useEffect(() => {
 **Location:** AppLayout component
 
 **Implementation:**
+
 ```tsx
 // Mobile: Sheet (drawer) sidebar
 // Desktop: Fixed sidebar
@@ -647,6 +661,7 @@ const [sidebarOpen, setSidebarOpen] = useState(false);
 **Location:** Tickets table > Description column
 
 **Implementation:**
+
 ```tsx
 <TableCell className="max-w-xs">
   <TooltipProvider>
@@ -720,6 +735,7 @@ FROM current_period c, previous_period p;
 ## 5. Future Enhancements (P3 - Low Priority)
 
 ### 5.1 Dashboard Customization
+
 - Drag-and-drop widget reordering
 - Save multiple dashboard layouts
 - Hide/show widgets
@@ -728,6 +744,7 @@ FROM current_period c, previous_period p;
 **Libraries:** `react-grid-layout` or `@dnd-kit/core`
 
 ### 5.2 Saved Filter Sets
+
 - Save frequently used filter combinations
 - Quick-apply saved filters
 - Share filter sets with team
@@ -736,6 +753,7 @@ FROM current_period c, previous_period p;
 **Storage:** localStorage or database
 
 ### 5.3 Advanced Filtering
+
 - Natural language search
 - AND/OR logic builder
 - Regex support for descriptions
@@ -744,6 +762,7 @@ FROM current_period c, previous_period p;
 **Libraries:** Query builder component
 
 ### 5.4 Export Enhancements
+
 - PDF reports with charts
 - Excel with multiple sheets
 - Scheduled exports via email
@@ -752,6 +771,7 @@ FROM current_period c, previous_period p;
 **Libraries:** `jspdf`, `xlsx`, `recharts-to-png`
 
 ### 5.5 Real-time Collaboration
+
 - Comments on tickets
 - @mentions for team members
 - Activity feed with WebSocket
@@ -764,22 +784,26 @@ FROM current_period c, previous_period p;
 ## 6. Implementation Priority Order
 
 ### Immediate Next Steps (This Week)
+
 1. ✅ **Add trend indicators to KPI cards** (P1) - 2-3 hours
 2. ✅ **Implement bulk selection** (P1) - 4-6 hours
 
 ### Short Term (Next 2 Weeks)
+
 3. Time range selector for charts (P2) - 1-2 hours
 4. Active filter badges (P2) - 2 hours
 5. Quick date ranges (P2) - 2-3 hours
 6. Responsive sidebar (P1) - 2-3 hours
 
 ### Medium Term (Next Month)
+
 7. Connection status indicator (P2) - 1-2 hours
 8. Description tooltips (P2) - 30 minutes
 9. Saved filter sets (P3) - 3-4 hours
 10. Export enhancements (P3) - 5-6 hours
 
 ### Long Term (Future Sprints)
+
 11. Dashboard customization (P3) - 8-10 hours
 12. Advanced filtering (P3) - 6-8 hours
 13. Real-time collaboration (P3) - 10-15 hours
@@ -789,6 +813,7 @@ FROM current_period c, previous_period p;
 ## 7. Testing Checklist
 
 ### For Each Feature
+
 - [ ] Works with Docker Postgres data source
 - [ ] Works with Supabase data source (if applicable)
 - [ ] Handles empty/null data gracefully
@@ -800,6 +825,7 @@ FROM current_period c, previous_period p;
 - [ ] Error states handled
 
 ### Specific Tests
+
 - [ ] Bulk selection: Select all, select individual, deselect
 - [ ] Bulk actions: Success, error, partial failure
 - [ ] Trend indicators: Positive, negative, zero change
@@ -812,18 +838,21 @@ FROM current_period c, previous_period p;
 ## 8. Notes
 
 ### Design Decisions
+
 - All improvements maintain shadcn/ui component library consistency
 - Color schemes follow existing chart palette
 - Icons use lucide-react library
 - Animations use Tailwind CSS utilities
 
 ### Performance Considerations
+
 - Bulk operations should be batched (max 50 tickets at a time)
 - Trend calculations cached for 5 minutes
 - Table virtualization if dataset exceeds 1000 rows
 - Lazy loading for heavy components
 
 ### Accessibility
+
 - All interactive elements have ARIA labels
 - Keyboard shortcuts for bulk actions (Ctrl+A for select all)
 - Focus management in modals and drawers
@@ -834,7 +863,9 @@ FROM current_period c, previous_period p;
 ## 9. Dependencies
 
 ### No New Libraries Required
+
 All remaining improvements can be implemented using existing dependencies:
+
 - `@tanstack/react-query` - Data fetching
 - `recharts` - Charts
 - `lucide-react` - Icons
@@ -842,6 +873,7 @@ All remaining improvements can be implemented using existing dependencies:
 - `tailwindcss` - Styling
 
 ### Optional Libraries (for Future)
+
 - `react-grid-layout` - Dashboard customization
 - `@dnd-kit/core` - Drag and drop
 - `jspdf` - PDF generation
@@ -855,16 +887,19 @@ All remaining improvements can be implemented using existing dependencies:
 Track these metrics to measure improvement impact:
 
 ### User Efficiency
+
 - **Time to find ticket:** Target <20s (baseline: 45s)
 - **Actions per session:** Target >10 (baseline: ~5)
 - **Filter usage rate:** Target >60% (baseline: 30%)
 
 ### Technical Performance
+
 - **Dashboard load time:** Target <1s (baseline: 2s)
 - **API response time:** Target <200ms (baseline: varies)
 - **Error rate:** Target <1% (baseline: unknown)
 
 ### User Satisfaction
+
 - **Task completion rate:** Target >95%
 - **Feature adoption:** Track usage of new features
 - **User feedback score:** Target NPS >40
@@ -874,6 +909,7 @@ Track these metrics to measure improvement impact:
 **Last Updated:** 7 November 2025  
 **Author:** AI Assistant  
 **Related Documents:**
+
 - [UI/UX Improvement Plan](./UI_UX_IMPROVEMENT_PLAN.md)
 - [Setup Guide](./SETUP_GUIDE.md)
 - [Backend Integration Guide](./INTEGRATION_BACKEND_GUIDE.md)

@@ -114,9 +114,11 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 **Tool:** `mcp_servicenow_create_incident`
 
 **Required Fields:**
+
 - `short_description` (string)
 
 **Optional Fields:**
+
 - `description` (string)
 - `caller_id` (string)
 - `assigned_to` (string)
@@ -128,6 +130,7 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 - `priority` (string)
 
 **Example:**
+
 ```json
 {
   "short_description": "Cannot access email",
@@ -147,9 +150,11 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 **Tool:** `mcp_servicenow_update_incident`
 
 **Required Fields:**
+
 - `incident_id` (string) - Incident ID or sys_id
 
 **Optional Fields:**
+
 - `short_description` (string)
 - `description` (string)
 - `assigned_to` (string)
@@ -165,6 +170,7 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 - `close_code` (string)
 
 **Example:**
+
 ```json
 {
   "incident_id": "INC0001234",
@@ -181,9 +187,11 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 **Tool:** `mcp_servicenow_get_incident_by_number`
 
 **Required Fields:**
+
 - `incident_number` (string) - The number of the incident to fetch
 
 **Example:**
+
 ```json
 {
   "incident_number": "INC0001234"
@@ -197,6 +205,7 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 **Tool:** `mcp_servicenow_list_incidents`
 
 **Optional Fields:**
+
 - `query` (string) - Search query for incidents
 - `state` (string) - Filter by incident state
 - `assigned_to` (string) - Filter by assigned user
@@ -205,6 +214,7 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 - `offset` (integer, default: 0) - Offset for pagination
 
 **Example:**
+
 ```json
 {
   "state": "In Progress",
@@ -221,11 +231,13 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 **Tool:** `mcp_servicenow_resolve_incident`
 
 **Required Fields:**
+
 - `incident_id` (string) - Incident ID or sys_id
 - `resolution_code` (string) - Resolution code for the incident
 - `resolution_notes` (string) - Resolution notes for the incident
 
 **Example:**
+
 ```json
 {
   "incident_id": "INC0001234",
@@ -241,13 +253,16 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 **Tool:** `mcp_servicenow_add_comment`
 
 **Required Fields:**
+
 - `incident_id` (string) - Incident ID or sys_id
 - `comment` (string) - Comment to add to the incident
 
 **Optional Fields:**
+
 - `is_work_note` (boolean, default: false) - Whether the comment is a work note
 
 **Example:**
+
 ```json
 {
   "incident_id": "INC0001234",
@@ -261,7 +276,9 @@ The ServiceNow MCP provides a set of tools for managing incidents in ServiceNow.
 ## Field Value Guidelines
 
 ### Priority Values
+
 Typically represented as numeric strings:
+
 - `1` - Critical
 - `2` - High
 - `3` - Moderate
@@ -269,19 +286,25 @@ Typically represented as numeric strings:
 - `5` - Planning
 
 ### Impact Values
+
 Typically represented as numeric strings:
+
 - `1` - High
 - `2` - Medium
 - `3` - Low
 
 ### Urgency Values
+
 Typically represented as numeric strings:
+
 - `1` - High
 - `2` - Medium
 - `3` - Low
 
 ### State Values
+
 Common state values (may vary by ServiceNow configuration):
+
 - `New`
 - `In Progress`
 - `On Hold`
@@ -308,6 +331,7 @@ Common state values (may vary by ServiceNow configuration):
 ## Integration with ITSM Insight Nexus
 
 This schema can be used to:
+
 - Map ServiceNow incident fields to the application's internal data model
 - Design API adapters for ServiceNow integration
 - Create forms and UI components that match ServiceNow's data structure
@@ -320,11 +344,13 @@ This schema can be used to:
 We have implemented complete data fetching using ServiceNow REST API instead of MCP:
 
 **Scripts:**
+
 - `scripts/fetch_servicenow_incidents.py` - Fetches incidents via REST API with ALL fields
 - `scripts/insert_servicenow_incidents.py` - Inserts complete data into PostgreSQL
 - `scripts/test_servicenow_api.sh` - Test REST API connectivity
 
 **Database:**
+
 - Table: `servicenow_incidents` (Docker Postgres)
 - **76 incidents** loaded with complete fields:
   - ✅ caller_id (76/76)
@@ -334,11 +360,13 @@ We have implemented complete data fetching using ServiceNow REST API instead of 
   - ✅ All other ServiceNow fields
 
 **Data Source:**
+
 - ServiceNow Instance: `https://dev355928.service-now.com`
 - API: Table API (`/api/now/table/incident`)
 - Authentication: Basic Auth
 
 See also:
+
 - `docs/SCHEMA_COMPARISON.md` - Comparison of different ITSM schemas
 - `src/lib/types.ts` - Application data types
 - `src/lib/api.ts` - API integration layer

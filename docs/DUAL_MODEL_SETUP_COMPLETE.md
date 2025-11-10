@@ -7,11 +7,13 @@ Successfully implemented **dual-column architecture** for A/B testing between Ge
 ## What Was Done
 
 ### 1. Database Migration
+
 - ✅ Added `embedding_4096` column (vector(4096)) to `servicenow_incidents` table
 - ✅ Documented pgvector limitation: indexes limited to 2000 dimensions (no index on 4096-dim column)
 - ✅ Brute-force search acceptable for <10K tickets (queries in 5-10ms)
 
 ### 2. Code Updates
+
 - ✅ Updated `embedding_worker.py` to auto-detect dimensions and route to correct column
   - 768-dim → `embedding`
   - 4096-dim → `embedding_4096`
@@ -21,10 +23,12 @@ Successfully implemented **dual-column architecture** for A/B testing between Ge
 - ✅ Created `compare_models.py` script for side-by-side quality comparison
 
 ### 3. Configuration
+
 - ✅ Updated `docker-compose.yml` with `LM_STUDIO_MODEL` env var for both backend and worker
 - ✅ Currently set to `text-embedding-qwen3-embedding-8b` for testing
 
 ### 4. Initial Results (20 tickets)
+
 - ✅ Populated 20 tickets with Qwen3 embeddings
 - ✅ Ran comparison showing **Qwen3 significantly better quality**:
   - **Gemma-768**: Separation gap +0.0326 (WEAK)
@@ -48,6 +52,7 @@ Successfully implemented **dual-column architecture** for A/B testing between Ge
 ### Switch Between Models
 
 **Option A: Use Qwen3 (current configuration)**
+
 ```bash
 # docker-compose.yml already configured
 # LM_STUDIO_MODEL=text-embedding-qwen3-embedding-8b
@@ -58,6 +63,7 @@ curl -X POST http://localhost:8000/api/ai/similarity/search \
 ```
 
 **Option B: Switch back to Gemma**
+
 ```yaml
 # Edit docker-compose.yml
 LM_STUDIO_MODEL=text-embedding-embeddinggemma-300m-qat

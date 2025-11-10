@@ -18,10 +18,12 @@
 ## Implementation Steps
 
 ### ✅ Step 1: Database Setup (pgvector + schema changes)
+
 **Status:** ✅ **COMPLETE**  
 **Actual Time:** 15 minutes
 
 **Completed Tasks:**
+
 - [x] Updated docker-compose.yml to use pgvector/pgvector:pg15 image
 - [x] Created migration 002_add_ticket_relationships.sql
 - [x] Added pgvector extension (version 0.8.1)
@@ -32,6 +34,7 @@
 - [x] Verified migration applied successfully
 
 **Deliverables:**
+
 - ✅ `docker-compose.yml` updated
 - ✅ `docker/migrations/002_add_ticket_relationships.sql` created
 - ✅ Database schema updated with vector support
@@ -40,10 +43,12 @@
 ---
 
 ### ⏳ Step 2: Python Backend - Embedding Service
+
 **Status:** Not Started  
 **Estimated Time:** 1 hour
 
 **Tasks:**
+
 - [ ] Update requirements.txt (sentence-transformers, pgvector, torch)
 - [ ] Create `app/services/embedding.py` - Embedding generation
 - [ ] Create `app/services/similarity.py` - Similarity search
@@ -52,6 +57,7 @@
 - [ ] Test embedding generation locally
 
 **Deliverables:**
+
 - ML models downloaded and cached
 - Embedding service functional
 - Database connection with vector support
@@ -59,10 +65,12 @@
 ---
 
 ### ⏳ Step 3: API Endpoints
+
 **Status:** Not Started  
 **Estimated Time:** 1 hour
 
 **Tasks:**
+
 - [ ] Create `app/api/similarity.py` router
 - [ ] Implement `POST /api/ai/find-similar-tickets`
 - [ ] Implement `POST /api/ai/link-tickets` (automatic linking)
@@ -72,16 +80,19 @@
 - [ ] Test with curl/httpx
 
 **Deliverables:**
+
 - 4 new API endpoints functional
 - OpenAPI docs updated at /docs
 
 ---
 
 ### ⏳ Step 4: Batch Processing - Embed Existing Tickets
+
 **Status:** Not Started  
 **Estimated Time:** 30 minutes (+ model download time)
 
 **Tasks:**
+
 - [ ] Query all servicenow_incidents from database
 - [ ] Generate embeddings for each ticket (description + short_description)
 - [ ] Store embeddings in database
@@ -90,6 +101,7 @@
 - [ ] Log results (total processed, linked, errors)
 
 **Deliverables:**
+
 - All existing tickets embedded
 - Parent-child relationships established
 - Processing report
@@ -97,10 +109,12 @@
 ---
 
 ### ⏳ Step 5: Frontend Integration
+
 **Status:** Not Started  
 **Estimated Time:** 1.5 hours
 
 **Tasks:**
+
 - [ ] Update `src/lib/api.ts` - Add AI similarity methods
 - [ ] Update `src/lib/types.ts` - Add ParentChild types
 - [ ] Create `src/components/SimilarTicketsPanel.tsx`
@@ -109,6 +123,7 @@
 - [ ] Test in browser
 
 **Deliverables:**
+
 - UI shows parent-child relationships
 - Similar tickets panel functional
 - Visual indicators for linked tickets
@@ -116,10 +131,12 @@
 ---
 
 ### ⏳ Step 6: Testing & Validation
+
 **Status:** Not Started  
 **Estimated Time:** 30 minutes
 
 **Tasks:**
+
 - [ ] Test with sample tickets
 - [ ] Verify automatic linking works
 - [ ] Check similarity scores
@@ -128,6 +145,7 @@
 - [ ] Document API usage
 
 **Deliverables:**
+
 - All endpoints tested
 - Performance metrics documented
 - API examples in README
@@ -149,6 +167,7 @@
 ## Dependencies
 
 ### Python Packages
+
 ```txt
 sentence-transformers==2.2.2
 torch==2.1.0
@@ -157,9 +176,11 @@ pgvector==0.2.3
 ```
 
 ### Docker Changes
+
 - Postgres image: `postgres:15-alpine` → `pgvector/pgvector:pg15`
 
 ### Database Extensions
+
 - pgvector (for vector similarity search)
 
 ---

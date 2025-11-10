@@ -18,6 +18,7 @@ The proposed Python/FastAPI backend for NLP/RAG capabilities is **technically vi
 ## Current System Architecture Analysis
 
 ### Existing Services
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Frontend (Vite + React + TS)          Port: 8080            │
@@ -44,11 +45,13 @@ The proposed Python/FastAPI backend for NLP/RAG capabilities is **technically vi
 ```
 
 ### Data Layer Complexity
+
 - **Dual-mode data source:** Docker PostgREST OR Supabase (legacy)
 - **Settings-driven:** `localStorage` "itsm-settings" controls which backend to use
 - **ServiceNow integration:** Python scripts manually sync data to Postgres
 
 ### Key Files
+
 - **Frontend API:** `src/lib/api.ts` (453 lines, dual-mode logic)
 - **Types:** `src/lib/types.ts` (Ticket ↔ ServiceNowIncident mapping)
 - **Auth:** `backend/server.js` (Node/Express, JWT auth)
@@ -61,23 +64,27 @@ The proposed Python/FastAPI backend for NLP/RAG capabilities is **technically vi
 ### ✅ Strengths
 
 #### 1. **Technology Stack Match**
+
 - **Python 3.11:** Already in use for ServiceNow scripts (`scripts/`)
 - **Conda environment:** `itsm` env already set up
 - **Docker integration:** Aligns with existing `docker-compose.yml` pattern
 - **FastAPI:** Modern, async-first, well-documented
 
 #### 2. **Clear Use Cases**
+
 - **Ticket Classification:** Auto-categorize incidents (currently manual/missing)
 - **Sentiment Analysis:** Understand caller tone from descriptions
 - **Duplicate Detection:** Identify similar tickets (UI has empty panel for this)
 - **RAG Knowledge Base:** Answer questions from docs (high value)
 
 #### 3. **Database Compatibility**
+
 - **Same Postgres DB:** Can reuse existing `itsm_db` database
 - **Schema extensions:** Can add new tables without disrupting current schema
 - **PostgREST coexistence:** Python backend can query Postgres directly
 
 #### 4. **Frontend Integration Points**
+
 - **Settings page exists:** Can add AI backend URL to existing settings
 - **API layer ready:** `src/lib/api.ts` already has dual-mode pattern
 - **UI placeholders:** "Generate AI Summary" button already exists (disabled)
@@ -99,12 +106,14 @@ Frontend (8080)
 ```
 
 **Issues:**
+
 - Startup order dependencies increase
 - Auth coordination: Python backend needs to validate JWT tokens from Node backend
 - CORS configuration multiplies
 - Developer workflow: "Must start 4 services in order"
 
 **Mitigation:**
+
 - Use `docker-compose` to orchestrate all services
 - Add `depends_on` and health checks
 - Provide single `npm run start:all` script
@@ -115,11 +124,13 @@ Frontend (8080)
 **Current:** JWT tokens from Node backend
 
 **Conflict:**
+
 - Frontend already has JWT auth flow
 - Users expect single login, not separate API keys
 - API key model doesn't integrate with existing user roles
 
 **Solutions:**
+
 - **Option A:** Python backend validates same JWT tokens (requires shared `JWT_SECRET`)
 - **Option B:** Node backend proxies Python backend requests (adds latency)
 - **Option C:** API key only for internal/admin features (separate from user auth)
@@ -129,6 +140,7 @@ Frontend (8080)
 #### 3. **Database Schema Evolution** 🟡 **MEDIUM RISK**
 
 **Current Schema:**
+
 ```sql
 servicenow_incidents (50+ fields) ← primary data
 tickets (legacy, separate schema)
@@ -136,6 +148,7 @@ users (auth only)
 ```
 
 **Proposed Additions:**
+
 ```sql
 documents (knowledge base)
 chunks (document embeddings)
@@ -143,11 +156,13 @@ api_keys (new auth model)
 ```
 
 **Concerns:**
+
 - Migration complexity
 - Backward compatibility with PostgREST
 - Alembic vs existing SQL migration pattern
 
 **Mitigation:**
+
 - Use numbered SQL migrations (existing pattern: `docker/migrations/001_*.sql`)
 - Test migrations against existing data
 - Version all schema changes
@@ -155,6 +170,7 @@ api_keys (new auth model)
 #### 4. **Resource Requirements** 🔴 **HIGH RISK**
 
 **ML Models Proposed:**
+
 - Sentence transformers (embeddings): ~120MB
 - Classification model: ~500MB (Hugging Face)
 - Sentiment model: ~400MB
@@ -163,16 +179,19 @@ api_keys (new auth model)
 **Total:** ~1GB+ in models + indices
 
 **Hardware:**
+
 - **CPU:** Model inference without GPU is SLOW (2-5s per ticket)
 - **Memory:** 4GB+ RAM minimum for models in memory
 - **Storage:** Local FAISS + BM25 indices need persistent volume
 
 **Developer Impact:**
+
 - Local development requires downloading models
 - First-time setup: 10-15 minutes to download models
 - CI/CD: Build times increase significantly
 
 **Solutions:**
+
 - Use smaller models initially (all-MiniLM-L6-v2 is good choice, 80MB)
 - Lazy load models (don't load until first use)
 - Cache model downloads in Docker volume
@@ -181,6 +200,7 @@ api_keys (new auth model)
 #### 5. **API Design Conflicts** 🟡 **MEDIUM RISK**
 
 **Proposed:**
+
 ```
 POST /tickets/ingest → {ticket_id, predicted_category, ...}
 POST /nlp/classify
@@ -188,6 +208,7 @@ POST /rag/answer
 ```
 
 **Current Frontend Patterns:**
+
 ```typescript
 api.getTickets(filters) → TicketsResponse
 api.createTicket(ticket) → Ticket
@@ -195,11 +216,13 @@ api.updateTicket(id, ticket) → Ticket
 ```
 
 **Issues:**
+
 - `/tickets/ingest` overlaps with CRUD operations in PostgREST
 - Frontend expects specific response shapes (`TicketsResponse`, `Ticket`)
 - No clear separation between "data API" (PostgREST) and "AI API" (Python)
 
 **Solutions:**
+
 - Namespace AI endpoints: `/api/ai/classify`, `/api/ai/sentiment`, `/api/ai/rag`
 - Python backend is **read-only** for tickets (no CRUD)
 - Python backend **augments** existing tickets with predictions
@@ -210,12 +233,15 @@ api.updateTicket(id, ticket) → Ticket
 ### 🟢 Opportunities
 
 #### 1. **Fill Empty UI Components**
+
 Current UI has placeholders for:
+
 - "Top Topics (NLP Analysis)" panel (empty)
 - "Duplicate Clusters" panel (empty)
 - "Generate AI Summary" button (disabled)
 
 **Python backend enables:**
+
 ```typescript
 // src/lib/api.ts
 export const api = {
@@ -236,6 +262,7 @@ export const api = {
 ```
 
 #### 2. **ServiceNow Data Enrichment**
+
 Current: Manual scripts fetch raw ServiceNow data  
 Proposed: Python backend auto-classifies on sync
 
@@ -258,6 +285,7 @@ POST /tickets/ingest {
 ```
 
 #### 3. **Knowledge Base for Solutions**
+
 Current: No knowledge base, no solution suggestions  
 Proposed: RAG-powered answer system
 
@@ -267,6 +295,7 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 → Return answer with citations
 
 **Value:**
+
 - Reduce ticket resolution time
 - Self-service for common issues
 - Learn from historical tickets
@@ -291,16 +320,19 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 ## Implementation Complexity Assessment
 
 ### High Complexity (3-5 weeks effort)
+
 1. **RAG System** - Hybrid retrieval, embeddings, vector DB, generator
 2. **Document Management** - Upload, chunking, indexing, persistence
 3. **Model Training/Fine-tuning** - Custom classifiers for ITSM domain
 
 ### Medium Complexity (1-2 weeks effort)
+
 4. **Ticket Classification** - Using pre-trained models with simple categories
 5. **Sentiment Analysis** - Off-the-shelf transformers
 6. **API Integration** - Frontend ↔ Python backend communication
 
 ### Low Complexity (2-5 days effort)
+
 7. **Docker Setup** - Add service to docker-compose
 8. **Health Checks** - Basic monitoring endpoints
 9. **Database Schema** - New tables for documents/chunks
@@ -310,9 +342,11 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 ## Recommended Phased Approach
 
 ### **Phase 1: Foundation (Week 1-2)** 🟢 Start Here
+
 **Goal:** Get Python backend running with minimal features
 
 **Deliverables:**
+
 - [ ] FastAPI service in `backend-python/` folder
 - [ ] Docker container + `docker-compose.yml` integration
 - [ ] Shared JWT auth validation (same secret as Node backend)
@@ -321,6 +355,7 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 - [ ] Basic CI/CD (lint, type check)
 
 **Success Criteria:**
+
 - `docker compose up` starts all 4 services
 - Frontend can call `/api/ai/health` successfully
 - JWT tokens work across both backends
@@ -328,9 +363,11 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 ---
 
 ### **Phase 2: NLP Features (Week 3-4)** 🟡 High Value
+
 **Goal:** Enable ticket classification and sentiment
 
 **Deliverables:**
+
 - [ ] Ticket classifier: `POST /api/ai/classify`
 - [ ] Sentiment analyzer: `POST /api/ai/sentiment`
 - [ ] Auto-enrich on ServiceNow sync (optional)
@@ -338,10 +375,12 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 - [ ] Frontend integration: show sentiment badge
 
 **Models:**
+
 - Classification: `distilbert-base-uncased` fine-tuned on ITSM categories
 - Sentiment: `cardiffnlp/twitter-roberta-base-sentiment`
 
 **Success Criteria:**
+
 - User opens ticket → sees AI-predicted category
 - Sentiment displayed as badge (Positive/Neutral/Negative)
 - Response time < 2s per ticket
@@ -349,24 +388,29 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 ---
 
 ### **Phase 3: Duplicate Detection (Week 5)** 🟡 Medium Value
+
 **Goal:** Fill "Duplicate Clusters" panel
 
 **Deliverables:**
+
 - [ ] Embedding-based similarity search
 - [ ] `GET /api/ai/duplicates` endpoint
 - [ ] Frontend: populate DuplicatesPanel component
 - [ ] Batch processing for existing tickets
 
 **Success Criteria:**
+
 - Insights page shows groups of similar tickets
 - User can click to view cluster details
 
 ---
 
 ### **Phase 4: RAG Knowledge Base (Week 6-8)** 🔴 Complex
+
 **Goal:** Enable knowledge base Q&A
 
 **Deliverables:**
+
 - [ ] Document upload: `POST /api/ai/kb/documents`
 - [ ] Hybrid search (BM25 + FAISS): `GET /api/ai/kb/search`
 - [ ] RAG answer: `POST /api/ai/rag/answer`
@@ -374,10 +418,12 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 - [ ] Frontend: Q&A widget or chat interface
 
 **Models:**
+
 - Embeddings: `sentence-transformers/all-MiniLM-L6-v2`
 - Generator: OpenAI API (gpt-3.5-turbo) or local Llama
 
 **Success Criteria:**
+
 - Admin can upload PDF/text knowledge base docs
 - User asks question → gets answer with citations
 - Answer includes doc source + confidence score
@@ -387,12 +433,14 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 ## Resource & Cost Analysis
 
 ### Development Resources
+
 - **Backend Developer (Python/FastAPI):** 6-8 weeks
 - **ML Engineer (model selection/tuning):** 2-3 weeks (part-time)
 - **Frontend Developer (integration):** 2-3 weeks
 - **DevOps (Docker/deployment):** 1 week
 
 ### Infrastructure Costs (Monthly Estimates)
+
 - **Development:**
   - Local: $0 (CPU inference, free models)
   - Cloud GPU (optional, T4): ~$100/mo
@@ -406,6 +454,7 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 **Total Production:** $110-310/mo depending on GPU usage
 
 ### Open Source Model Strategy (Cost Reduction)
+
 - Use local models instead of OpenAI → Save $20/mo
 - CPU-only inference acceptable for <1000 tickets/day
 - GPU only needed for high-volume (>5000 tickets/day)
@@ -430,6 +479,7 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 ## Architecture Integration Plan
 
 ### Proposed Enhanced Architecture
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Frontend (Vite + React + TS)          Port: 8080            │
@@ -464,6 +514,7 @@ User asks: "How to fix merchant onboarding duplicate location error?"
 ```
 
 ### Updated docker-compose.yml Structure
+
 ```yaml
 services:
   postgres:     # Existing
@@ -499,6 +550,7 @@ volumes:
 ### Adjusted from Original Proposal
 
 #### ❌ **Remove/Defer:**
+
 1. **API Key Auth:** Use shared JWT instead
 2. **Rate Limiting:** Defer to Phase 5 (not critical for internal use)
 3. **Prometheus Metrics:** Defer to Phase 5 (start with basic logging)
@@ -506,6 +558,7 @@ volumes:
 5. **>80% Test Coverage:** Start with >60%, increase gradually
 
 #### ✅ **Keep as Specified:**
+
 1. FastAPI framework
 2. Hybrid retrieval (BM25 + FAISS)
 3. Docker + docker-compose
@@ -515,6 +568,7 @@ volumes:
 7. OpenAPI docs at `/docs`
 
 #### ➕ **Add:**
+
 1. **JWT validation middleware** (integrate with Node backend)
 2. **Conda environment export** (`environment.yml`)
 3. **Model download script** (`scripts/download_models.py`)
@@ -527,6 +581,7 @@ volumes:
 ## Frontend Integration Checklist
 
 ### Settings Page (`src/pages/Settings.tsx`)
+
 ```typescript
 // Add new setting fields:
 interface Settings {
@@ -542,6 +597,7 @@ interface Settings {
 ```
 
 ### API Client (`src/lib/api.ts`)
+
 ```typescript
 // Add AI methods:
 export const api = {
@@ -566,6 +622,7 @@ export const api = {
 ```
 
 ### UI Components
+
 - **TicketDrawer:** Add AI predictions section
 - **TopicsPanel:** Connect to `/api/ai/topics`
 - **DuplicatesPanel:** Connect to `/api/ai/duplicates`
@@ -620,18 +677,22 @@ export const api = {
 ## Appendix: Alternative Approaches
 
 ### Option B: Serverless AI (Lower Complexity)
+
 Instead of self-hosted Python backend:
+
 - Use OpenAI API directly from frontend/Node backend
 - Pros: No ML infrastructure, faster to market
 - Cons: Ongoing API costs, less customization, data privacy concerns
 
 ### Option C: Hybrid (Recommended for MVP)
+
 - **Simple NLP:** OpenAI API (classification, sentiment)
 - **Complex RAG:** Self-hosted Python backend (knowledge base)
 - Pros: Faster initial delivery, lower infrastructure needs
 - Cons: Split AI logic across two systems
 
 ### Option D: All-Node Backend
+
 - Implement AI features in Node.js using TensorFlow.js or ONNX
 - Pros: Single language, no Python dependency
 - Cons: Limited model support, performance issues, immature ecosystem

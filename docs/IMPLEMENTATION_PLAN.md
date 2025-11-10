@@ -1,17 +1,20 @@
 # Implementation Plan: Topics, Duplicates & Graph Features
 
 ## Overview
+
 This document outlines the implementation plan to enable Topics Panel (NLP analysis), Duplicates Panel (similarity detection), and Graph Viewer (relationship mapping) using the Docker Postgres database.
 
 ## Current State
 
 ### ✅ Working Features
+
 - Tickets listing (all 10 tickets from Docker Postgres)
 - KPIs (calculated from ticket data)
 - Trend charts (ticket creation over time)
 - Breakdown charts (priority, category, assignment group)
 
 ### ⚠️ Not Yet Implemented
+
 - **Topics Panel** - Returns empty array `[]`
 - **Duplicates Panel** - Returns empty array `[]`
 - **Graph Viewer** - Returns empty graph `{ nodes: [], edges: [] }`
@@ -19,50 +22,62 @@ This document outlines the implementation plan to enable Topics Panel (NLP analy
 ## Architecture Options
 
 ### Option A: Python Backend API (Recommended)
+
 **Pros:**
+
 - Full control over ML/NLP processing
 - Can use established libraries (scikit-learn, spaCy, NetworkX)
 - Easy to add new features
 - RESTful API integrates seamlessly with existing PostgREST
 
 **Cons:**
+
 - Requires additional service in Docker
 - More complex deployment
 
 **Tech Stack:**
+
 - FastAPI or Flask
 - scikit-learn (TF-IDF, clustering)
 - spaCy (NLP)
 - NetworkX (graph analysis)
 
 ### Option B: PostgreSQL Functions + PostgREST
+
 **Pros:**
+
 - No additional services needed
 - Leverages existing PostgreSQL extensions
 - PostgREST automatically exposes functions
 
 **Cons:**
+
 - Limited ML capabilities
 - Complex SQL for advanced analysis
 - Harder to maintain
 
 **Tech Stack:**
+
 - PostgreSQL with pg_trgm extension (similarity)
 - Custom PL/pgSQL functions
 - PostgREST RPC calls
 
 ### Option C: Pre-computed Results in Database
+
 **Pros:**
+
 - Fastest query performance
 - Simple to implement initially
 - Good for demos/testing
 
 **Cons:**
+
 - Requires background jobs to update
 - Not real-time
 - More database storage
 
 **Tech Stack:**
+
 - New tables: `nlp_topics`, `duplicate_clusters`, `ticket_relationships`
 - Scheduled jobs (cron or task queue)
 - Same API endpoints, different data source
@@ -72,12 +87,14 @@ This document outlines the implementation plan to enable Topics Panel (NLP analy
 ## Recommended Approach: Option A + C Hybrid
 
 **Phase 1: Pre-computed Results (Quick Win)**
+
 - Add database tables for pre-computed results
 - Populate with sample/initial data
 - Update API to query these tables
 - Timeline: 1-2 hours
 
 **Phase 2: Python Backend Service**
+
 - Build FastAPI service for ML processing
 - Implement actual NLP and similarity algorithms
 - Add background jobs to populate tables
@@ -374,23 +391,28 @@ async def scheduled_analysis():
 ## Implementation Steps
 
 ### Step 1: Add Schema (15 min)
+
 1. Create `docker/add_nlp_tables.sql`
 2. Run: `docker exec -i itsm-postgres psql -U postgres -d itsm_db < docker/add_nlp_tables.sql`
 
 ### Step 2: Add Sample Data (10 min)
+
 1. Create `docker/populate_nlp_data.sql`
 2. Run: `docker exec -i itsm-postgres psql -U postgres -d itsm_db < docker/populate_nlp_data.sql`
 
 ### Step 3: Update API (30 min)
+
 1. Update `src/lib/api.ts` - implement `getTopics()`, `getDuplicates()`, `getGraphLinks()`
 2. Test with PostgREST: `curl http://localhost:3000/nlp_topics`
 
 ### Step 4: Verify in UI (5 min)
+
 1. Restart dev server
 2. Check Dashboard - Topics and Duplicates panels should show data
 3. Test Graph Viewer with ticket IDs: INC001, INC002, etc.
 
 ### Step 5: (Optional) Python ML Service (4-8 hours)
+
 1. Create `ml-service/` directory
 2. Implement FastAPI endpoints
 3. Add to docker-compose.yml
@@ -401,6 +423,7 @@ async def scheduled_analysis():
 ## Testing Plan
 
 ### Manual Testing
+
 1. **Topics Panel**
    - Should show 5 topics
    - Click on topic to see sample tickets
@@ -416,6 +439,7 @@ async def scheduled_analysis():
    - Verify nodes are clickable
 
 ### API Testing
+
 ```bash
 # Test topics endpoint
 curl http://localhost:3000/nlp_topics

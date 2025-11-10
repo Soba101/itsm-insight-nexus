@@ -3,6 +3,7 @@
 ## What Was Built
 
 ✅ **Python FastAPI Backend** (`backend-python/`)
+
 - JWT authentication (validates tokens from Node backend)
 - Health check endpoint: `GET /api/ai/health`
 - Protected status endpoint: `GET /api/ai/status`
@@ -10,17 +11,20 @@
 - Docker containerized with health checks
 
 ✅ **Frontend Integration**
+
 - Settings page updated with AI backend configuration
 - AI feature toggle (enable/disable)
 - Connection test button
 - TypeScript types updated
 
 ✅ **Docker Orchestration**
+
 - Python backend service added to docker-compose.yml
 - Model cache volume for future ML models
 - Health checks and dependencies configured
 
 ✅ **Testing**
+
 - Test script created: `backend-python/test_backend.sh`
 - Frontend can test connection via Settings page
 
@@ -66,12 +70,14 @@ cd ..
 ### 4. Test the Backend
 
 #### Option A: Using Test Script
+
 ```bash
 cd backend-python
 ./test_backend.sh
 ```
 
 #### Option B: Manual curl Tests
+
 ```bash
 # Test 1: Unauthenticated health check
 curl http://localhost:8000/api/ai/health
@@ -81,6 +87,7 @@ curl http://localhost:8000/api/ai/health
 ```
 
 #### Option C: Test from Frontend
+
 1. Start frontend: `npm run dev`
 2. Login to http://localhost:8080
 3. Go to Settings page
@@ -122,12 +129,14 @@ curl -H "Authorization: Bearer $TOKEN" \
 ## Troubleshooting
 
 ### Docker command not found
+
 ```bash
 # Use full path:
 /Applications/Docker.app/Contents/Resources/bin/docker compose up -d
 ```
 
 ### Port 8000 already in use
+
 ```bash
 # Find what's using it:
 lsof -i :8000
@@ -136,6 +145,7 @@ lsof -i :8000
 ```
 
 ### Python backend won't start
+
 ```bash
 # Check logs:
 /Applications/Docker.app/Contents/Resources/bin/docker logs itsm-python-backend
@@ -147,12 +157,14 @@ lsof -i :8000
 ```
 
 ### "Connection Failed" in frontend
+
 1. Verify backend is running: `curl http://localhost:8000/api/ai/health`
 2. Check CORS settings in `backend-python/app/main.py`
 3. Check browser console for errors
 4. Verify AI backend URL is correct in Settings (http://localhost:8000)
 
 ### JWT validation fails
+
 1. Ensure `JWT_SECRET` is identical in:
    - `backend/.env`
    - `backend-python/.env`
@@ -164,6 +176,7 @@ lsof -i :8000
 ## API Documentation
 
 Once running, view interactive API docs:
+
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 

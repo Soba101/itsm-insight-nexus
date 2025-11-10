@@ -5,12 +5,14 @@ This document compares the simplified Postgres database schema used in this proj
 ## Architecture Differences
 
 ### Postgres (This Project)
+
 - **Single table:** `tickets` 
 - **Type discriminator:** Uses `type` column to distinguish incident/problem/change
 - **Simplified schema:** Focused on analytics and insights
 - **No relationships:** Flattened structure for easier querying
 
 ### ServiceNow
+
 - **Multiple tables:** Separate tables for each record type
   - `incident` (extends `task`)
   - `problem` (extends `task`)
@@ -43,6 +45,7 @@ This document compares the simplified Postgres database schema used in this proj
 ### ❌ ServiceNow Fields Missing in Our Schema
 
 **User/Ownership Fields:**
+
 - `caller_id` - Person who reported the issue
 - `assigned_to` - Individual assigned (we only have group)
 - `opened_by` - User who opened the record
@@ -50,12 +53,14 @@ This document compares the simplified Postgres database schema used in this proj
 - `closed_by` - User who closed
 
 **CMDB Integration:**
+
 - `cmdb_ci` - Configuration Item affected
 - `ci_class` - CI class/type
 - `impact` - Business impact (separate from priority)
 - `urgency` - Urgency level (combines with impact for priority)
 
 **Workflow & Approval:**
+
 - `approval` - Approval state
 - `approval_set` - Approval set timestamp
 - `approval_history` - Related approvals
@@ -63,12 +68,14 @@ This document compares the simplified Postgres database schema used in this proj
 - `comments` - Customer-facing comments
 
 **SLA Fields:**
+
 - `sla_due` - SLA breach time
 - `business_duration` - Time in business hours
 - `calendar_duration` - Actual elapsed time
 - `time_worked` - Actual work time logged
 
 **Change-Specific (for change_request):**
+
 - `start_date` - Planned start
 - `end_date` - Planned end
 - `implementation_plan` - How to implement
@@ -80,12 +87,14 @@ This document compares the simplified Postgres database schema used in this proj
 - `cab_date` - CAB meeting date
 
 **Problem-Specific (for problem):**
+
 - `root_cause` - Root cause description
 - `workaround` - Temporary fix
 - `known_error` - Related known error
 - `fix_notes` - Resolution notes
 
 **Incident-Specific (for incident):**
+
 - `severity` - Severity level (different from priority)
 - `hold_reason` - Why on hold
 - `close_code` - Resolution code
@@ -94,6 +103,7 @@ This document compares the simplified Postgres database schema used in this proj
 - `child_incidents` - Related child incidents
 
 **Audit & System Fields:**
+
 - `sys_id` - Universal unique identifier (UUID)
 - `sys_created_by` - Username who created
 - `sys_updated_by` - Username who last updated
@@ -102,11 +112,13 @@ This document compares the simplified Postgres database schema used in this proj
 - `sys_class_name` - Table name
 
 **Communication:**
+
 - `contact_type` - How reported (phone, email, self-service)
 - `notify` - Notification level
 - `comments_and_work_notes` - Combined field
 
 **Location & Organization:**
+
 - `location` - Physical location
 - `company` - Company/organization
 - `department` - Department
@@ -122,6 +134,7 @@ This document compares the simplified Postgres database schema used in this proj
 ### 🔄 Data Type & Constraint Differences
 
 **Our Postgres:**
+
 ```sql
 type TEXT CHECK (type IN ('incident', 'problem', 'change'))
 priority TEXT CHECK (priority IN ('P1', 'P2', 'P3', 'P4'))
@@ -129,6 +142,7 @@ status TEXT CHECK (status IN ('Open', 'In Progress', 'Resolved', 'Closed'))
 ```
 
 **ServiceNow:**
+
 - Uses integer choice fields (1-5) with display values
 - `state` values differ by table:
   - Incident: 1=New, 2=In Progress, 6=Resolved, 7=Closed, 8=Canceled
@@ -139,7 +153,9 @@ status TEXT CHECK (status IN ('Open', 'In Progress', 'Resolved', 'Closed'))
 ## Use Case Differences
 
 ### Our Postgres Schema
+
 **Optimized for:**
+
 - Analytics and reporting
 - Fast aggregations across all ticket types
 - Simplified data model for dashboards
@@ -147,6 +163,7 @@ status TEXT CHECK (status IN ('Open', 'In Progress', 'Resolved', 'Closed'))
 - Time-series analysis
 
 **Trade-offs:**
+
 - No workflow enforcement
 - Limited auditability
 - No user/role management
@@ -154,7 +171,9 @@ status TEXT CHECK (status IN ('Open', 'In Progress', 'Resolved', 'Closed'))
 - Simplified relationships
 
 ### ServiceNow Schema
+
 **Optimized for:**
+
 - Full ITSM workflow management
 - Compliance and audit trails
 - Complex approvals and routing
@@ -163,6 +182,7 @@ status TEXT CHECK (status IN ('Open', 'In Progress', 'Resolved', 'Closed'))
 - Business rules and automation
 
 **Trade-offs:**
+
 - More complex queries
 - Heavier database structure
 - Requires ServiceNow platform
@@ -179,6 +199,7 @@ If you need to sync data from ServiceNow to our Postgres database, you would:
 6. **Handle types:** Filter by table name and map to our `type` field
 
 Example mapping:
+
 ```javascript
 // ServiceNow -> Postgres
 {
@@ -195,6 +216,7 @@ Example mapping:
 ## Summary
 
 Our Postgres schema is a **simplified, analytics-focused subset** of ServiceNow's full ITSM tables. It captures the essential fields needed for:
+
 - Ticket tracking and metrics
 - Trend analysis
 - Performance reporting (MTTR, SLA compliance)

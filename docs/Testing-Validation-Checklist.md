@@ -20,10 +20,12 @@
 ## 1. Authentication & Authorization Testing
 
 ### 1.1 JWT Token Lifecycle
+
 **Priority:** 🔴 **P0 - Critical**  
 **Difficulty:** ⭐⭐ Easy-Medium | **Time:** 4-6 hours
 
 **What to Test:**
+
 - ✅ Token generation on successful login
 - ✅ Token includes correct user claims (id, email, role)
 - ✅ Token expiration (7 days default)
@@ -165,12 +167,14 @@ describe('Authentication API', () => {
 ```
 
 **Setup Required:**
+
 ```bash
 cd backend-auth
 npm install --save-dev jest supertest @jest/globals
 ```
 
 **package.json additions:**
+
 ```json
 {
   "scripts": {
@@ -189,10 +193,12 @@ npm install --save-dev jest supertest @jest/globals
 ---
 
 ### 1.2 Role-Based Access Control (RBAC)
+
 **Priority:** 🟡 **P1 - High** (Once implemented)  
 **Difficulty:** ⭐⭐ Easy-Medium | **Time:** 3-4 hours
 
 **What to Test:**
+
 - ✅ Admin can access all endpoints
 - ✅ Analyst can access read/write ticket endpoints
 - ✅ Viewer can only read, no modifications
@@ -200,6 +206,7 @@ npm install --save-dev jest supertest @jest/globals
 - ✅ Unauthorized role rejection (403)
 
 **Test Cases:**
+
 ```javascript
 describe('Role-Based Access Control', () => {
   let adminToken, analystToken, viewerToken;
@@ -240,10 +247,12 @@ describe('Role-Based Access Control', () => {
 ## 2. API Endpoint Testing
 
 ### 2.1 Python AI Backend Endpoints
+
 **Priority:** 🔴 **P0 - Critical**  
 **Difficulty:** ⭐⭐ Easy-Medium | **Time:** 8-12 hours
 
 **What to Test:**
+
 - ✅ Health check endpoint (authenticated & unauthenticated)
 - ✅ Similarity search endpoint (POST /api/ai/similarity/search)
 - ✅ Ticket family endpoint (GET /api/ai/similarity/tickets/:id/family)
@@ -397,12 +406,14 @@ class TestEmbeddingGeneration:
 ```
 
 **Setup:**
+
 ```bash
 cd backend-python
 pip install pytest pytest-asyncio httpx
 ```
 
 **pytest.ini:**
+
 ```ini
 [pytest]
 testpaths = tests
@@ -414,10 +425,12 @@ python_functions = test_*
 ---
 
 ### 2.2 PostgREST API Validation
+
 **Priority:** 🟡 **P1 - High**  
 **Difficulty:** ⭐⭐ Easy-Medium | **Time:** 4-6 hours
 
 **What to Test:**
+
 - ✅ GET /servicenow_incidents returns tickets
 - ✅ Filtering works (priority, state, category)
 - ✅ Pagination parameters (offset, limit)
@@ -502,10 +515,12 @@ class TestPostgRESTAPI:
 ## 3. Database Testing
 
 ### 3.1 Database Migrations
+
 **Priority:** 🔴 **P0 - Critical**  
 **Difficulty:** ⭐⭐ Easy-Medium | **Time:** 4-6 hours
 
 **What to Test:**
+
 - ✅ All migrations apply cleanly on fresh database
 - ✅ Migrations are idempotent (can run multiple times)
 - ✅ Foreign key constraints work correctly
@@ -562,10 +577,12 @@ docker exec itsm-postgres psql -U postgres -c "DROP DATABASE itsm_test;"
 ---
 
 ### 3.2 Database Triggers
+
 **Priority:** 🟡 **P1 - High**  
 **Difficulty:** ⭐⭐⭐ Medium | **Time:** 6-8 hours
 
 **What to Test:**
+
 - ✅ Embedding queue trigger fires on INSERT/UPDATE
 - ✅ Child incidents array updates when parent is assigned
 - ✅ Trigger doesn't create infinite loops
@@ -631,10 +648,12 @@ ROLLBACK;
 ## 4. Frontend Testing
 
 ### 4.1 Component Unit Tests
+
 **Priority:** 🟡 **P1 - High**  
 **Difficulty:** ⭐⭐⭐ Medium | **Time:** 12-16 hours
 
 **What to Test:**
+
 - ✅ Components render without crashing
 - ✅ Props are passed correctly
 - ✅ User interactions trigger handlers
@@ -678,11 +697,13 @@ describe('KpiCard', () => {
 ```
 
 **Setup:**
+
 ```bash
 npm install --save-dev vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event
 ```
 
 **vite.config.ts additions:**
+
 ```typescript
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
@@ -700,10 +721,12 @@ export default defineConfig({
 ---
 
 ### 4.2 Integration Tests
+
 **Priority:** 🟡 **P1 - High**  
 **Difficulty:** ⭐⭐⭐⭐ Hard | **Time:** 16-24 hours
 
 **What to Test:**
+
 - ✅ Login flow end-to-end
 - ✅ Data fetching and display
 - ✅ Filtering updates URL and results
@@ -801,10 +824,12 @@ describe('Tickets Page Integration', () => {
 ## 5. End-to-End (E2E) Testing
 
 ### 5.1 Critical User Flows
+
 **Priority:** 🟡 **P1 - High**  
 **Difficulty:** ⭐⭐⭐⭐ Hard | **Time:** 20-30 hours
 
 **What to Test:**
+
 - ✅ Complete login → dashboard → tickets flow
 - ✅ Ticket search and filtering
 - ✅ Similar tickets workflow
@@ -903,12 +928,14 @@ test.describe('Ticket Management', () => {
 ```
 
 **Setup:**
+
 ```bash
 npm install --save-dev @playwright/test
 npx playwright install
 ```
 
 **playwright.config.ts:**
+
 ```typescript
 import { defineConfig, devices } from '@playwright/test';
 
@@ -942,10 +969,12 @@ export default defineConfig({
 ## 6. Performance Testing
 
 ### 6.1 Load Testing
+
 **Priority:** 🟡 **P2 - Medium**  
 **Difficulty:** ⭐⭐⭐ Medium | **Time:** 8-12 hours
 
 **What to Test:**
+
 - ✅ API response times under load (100, 500, 1000 concurrent users)
 - ✅ Database connection pool behavior
 - ✅ Memory leaks under sustained load
@@ -996,6 +1025,7 @@ export default function () {
 ```
 
 **Run:**
+
 ```bash
 k6 run tests/load/api-load-test.js
 ```
@@ -1005,10 +1035,12 @@ k6 run tests/load/api-load-test.js
 ## 7. Security Testing
 
 ### 7.1 Vulnerability Scanning
+
 **Priority:** 🔴 **P0 - Critical**  
 **Difficulty:** ⭐ Very Easy | **Time:** 1-2 hours
 
 **What to Test:**
+
 - ✅ SQL injection vulnerabilities
 - ✅ XSS vulnerabilities
 - ✅ Authentication bypass attempts
@@ -1043,6 +1075,7 @@ python3 -c "import jwt; jwt.decode('YOUR_TOKEN', verify=False)"
 ---
 
 ### 7.2 Penetration Testing Checklist
+
 **Priority:** 🟡 **P1 - High**  
 **Difficulty:** ⭐⭐⭐ Medium | **Time:** 4-8 hours
 
@@ -1084,10 +1117,12 @@ curl -H "Authorization: Bearer ANALYST_TOKEN" \
 ## 8. Data Integrity Testing
 
 ### 8.1 Schema Validation
+
 **Priority:** 🟡 **P1 - High**  
 **Difficulty:** ⭐⭐ Easy-Medium | **Time:** 4-6 hours
 
 **What to Test:**
+
 - ✅ All required fields are NOT NULL
 - ✅ Foreign key constraints enforced
 - ✅ Enum values validated
@@ -1132,6 +1167,7 @@ WHERE child.parent_incident IS NOT NULL
 ## 9. Implementation Priority & Roadmap
 
 ### Phase 1: Critical Tests (2-3 weeks)
+
 **Must-have before production**
 
 1. ✅ Authentication tests (JWT, login/logout) - 6 hours
@@ -1145,6 +1181,7 @@ WHERE child.parent_incident IS NOT NULL
 ---
 
 ### Phase 2: Quality Assurance (3-4 weeks)
+
 **Important for stability**
 
 6. ✅ Component unit tests (major components) - 16 hours
@@ -1158,6 +1195,7 @@ WHERE child.parent_incident IS NOT NULL
 ---
 
 ### Phase 3: Comprehensive Coverage (4-6 weeks)
+
 **Nice-to-have for excellence**
 
 11. ✅ Full E2E test suite - 20 hours
@@ -1173,6 +1211,7 @@ WHERE child.parent_incident IS NOT NULL
 ## 10. CI/CD Pipeline Setup
 
 ### 10.1 GitHub Actions Workflow
+
 **Priority:** 🟡 **P1 - High**  
 **Difficulty:** ⭐⭐ Easy-Medium | **Time:** 6-8 hours
 

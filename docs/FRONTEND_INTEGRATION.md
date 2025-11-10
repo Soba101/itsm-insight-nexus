@@ -18,6 +18,7 @@
 ### Why Medium Difficulty?
 
 **Advantages (makes it easier):**
+
 - ✅ Backend API fully implemented and tested
 - ✅ React Query infrastructure already in place
 - ✅ Existing UI components to build upon
@@ -25,6 +26,7 @@
 - ✅ shadcn-ui components available
 
 **Challenges (makes it harder):**
+
 - ⚠️ Multiple components need updates
 - ⚠️ Need to handle parent-child relationships in UI
 - ⚠️ UX considerations for displaying similarity scores
@@ -290,6 +292,7 @@ async getDuplicates(filters: Filters): Promise<DuplicateCluster[]> {
 ```
 
 **Files to Edit:**
+
 - `src/lib/types.ts` - Add new types
 - `src/lib/api.ts` - Add methods and update getDuplicates()
 
@@ -551,10 +554,12 @@ import { TicketFamilyCard } from "./TicketFamilyCard";
 ```
 
 **Files to Create:**
+
 - `src/components/SimilarTicketsCard.tsx`
 - `src/components/TicketFamilyCard.tsx`
 
 **Files to Edit:**
+
 - `src/components/TicketDrawer.tsx`
 
 ---
@@ -624,9 +629,11 @@ export function SimilarTicketsModal({
 ```
 
 **Files to Create:**
+
 - `src/components/SimilarTicketsModal.tsx`
 
 **Files to Edit:**
+
 - `src/components/TicketsTable.tsx`
 
 ---
@@ -658,6 +665,7 @@ const { data: duplicates } = useQuery({
 ```
 
 **Files to Edit:**
+
 - `src/components/DuplicatesPanel.tsx`
 - `src/pages/Dashboard.tsx`
 - `src/pages/Insights.tsx`
@@ -691,6 +699,7 @@ export interface Settings {
 ```
 
 **Files to Edit:**
+
 - `src/pages/Settings.tsx`
 - `src/lib/types.ts` (Settings interface)
 
@@ -787,9 +796,11 @@ useEffect(() => {
 ```
 
 **Files to Create:**
+
 - `src/components/DuplicateWarningBanner.tsx`
 
 **Files to Edit:**
+
 - Ticket creation form component (if exists, or note for future implementation)
 
 ---
@@ -916,18 +927,21 @@ describe("Similarity Search Flow", () => {
 ## 🔄 Rollout Plan
 
 ### Phase 1: Soft Launch (Week 1)
+
 - Deploy to staging
 - Test with small user group (5-10 users)
 - Gather feedback on UI/UX
 - Monitor performance metrics
 
 ### Phase 2: Limited Release (Week 2)
+
 - Deploy to 25% of users
 - Monitor error rates
 - Collect usage analytics
 - Adjust thresholds if needed
 
 ### Phase 3: Full Deployment (Week 3)
+
 - Deploy to all users
 - Announce feature via in-app notification
 - Provide documentation/training
@@ -958,17 +972,20 @@ describe("Similarity Search Flow", () => {
 ## 📚 Resources
 
 ### Documentation
+
 - Backend API docs: <http://localhost:8000/docs>
 - React Query docs: <https://tanstack.com/query/latest>
 - shadcn-ui components: <https://ui.shadcn.com>
 
 ### Code References
+
 - Backend implementation: `backend-python/README.md`
 - API layer: `src/lib/api.ts`
 - Types: `src/lib/types.ts`
 - Components: `src/components/`
 
 ### Testing
+
 - Component examples: `src/components/TicketsTable.tsx`
 - Query patterns: `src/pages/Dashboard.tsx`
 - Auth handling: `src/contexts/AuthContext.tsx`
@@ -978,6 +995,7 @@ describe("Similarity Search Flow", () => {
 ## ✅ Checklist
 
 ### Pre-Implementation
+
 - [ ] Review backend API endpoints
 - [ ] Test endpoints with curl/Postman
 - [ ] Verify all tickets have embeddings
@@ -985,6 +1003,7 @@ describe("Similarity Search Flow", () => {
 - [ ] Confirm JWT authentication works
 
 ### Implementation
+
 - [ ] Phase 1: API Layer complete
 - [ ] Phase 2: Ticket Detail enhancements complete
 - [ ] Phase 3: Table enhancements complete
@@ -993,6 +1012,7 @@ describe("Similarity Search Flow", () => {
 - [ ] Phase 6: Duplicate warning implemented
 
 ### Testing
+
 - [ ] Unit tests written and passing
 - [ ] Integration tests complete
 - [ ] Manual testing checklist verified
@@ -1000,6 +1020,7 @@ describe("Similarity Search Flow", () => {
 - [ ] Error handling tested
 
 ### Deployment
+
 - [ ] Code reviewed
 - [ ] Documentation updated
 - [ ] Staging deployment successful

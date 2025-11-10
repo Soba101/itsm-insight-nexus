@@ -9,12 +9,14 @@
 ## Phase 1: Tabbed Architecture + Critical UX (1-1.5 days)
 
 ### 1.1 Core Structure
+
 - [x] Create TypeScript types (`UserPreferences`, updated `Settings`)
 - [x] Add shadcn Tabs component
 - [x] Implement 3-tab layout (System, My Preferences, Account)
 - [x] Migrate existing cards to "System" tab
 
 ### 1.2 Critical UX Fixes
+
 - [x] **SYS-1:** Add confirmation dialog for data source switch
 - [x] **SYS-2:** URL validation with error messages
 - [x] **SYS-3:** Fix "always enabled" AI Backend messaging
@@ -29,12 +31,14 @@
 ## Phase 2: User Preferences + Connection Testing (1.5-2 days)
 
 ### 2.1 My Preferences Tab - Core Controls
+
 - [x] Theme selector (light/dark/system)
 - [x] Default page after login
 - [x] Tickets per page selector
 - [x] Date format preference
 
 ### 2.2 AI Feature Controls
+
 - [x] Similarity threshold slider (0.5-0.95)
 - [x] Enable similar tickets toggle
 - [x] Enable duplicate detection toggle
@@ -42,12 +46,14 @@
 - [x] Feature availability check
 
 ### 2.3 Default Filters
+
 - [x] Default date range selector (7d/30d/90d/all)
 - [x] Default status filter (multi-select badges)
 - [x] Default priority filter (multi-select badges)
 - [ ] Favorite assignment groups
 
 ### 2.4 Connection Testing
+
 - [x] **D2.2:** Test data source connection button
 - [x] **A3.3:** Test API connection button (Auth Backend)
 - [x] **G5.5:** Real-time connection status badges
@@ -62,6 +68,7 @@
 ## Phase 3: Polish & Optional Features (0.75-1.25 days)
 
 ### 3.1 Quick Wins
+
 - [x] **A3.2:** Auth token show/hide toggle (already implemented)
 - [x] **G5.3:** Reset to defaults button
 - [x] **D2.3:** Prerequisites guidance (added to AI Backend card)
@@ -69,6 +76,7 @@
 - [x] **AI4.4:** Link to documentation (prerequisites section)
 
 ### 3.2 Nice-to-Have
+
 - [x] **G5.1:** Keyboard shortcuts (Ctrl/Cmd+S to save)
 - [x] **G5.2:** Import/export settings (JSON format)
 - [ ] **I1.3:** Collapsible cards (deferred - not needed with current layout)
@@ -82,12 +90,14 @@
 ## Phase 4: Backend Integration (1-2 days)
 
 ### 4.1 API Development
+
 - [ ] Create user preferences endpoints (GET, PUT)
 - [ ] Add preferences table migration
 - [ ] Implement JWT validation for preferences routes
 - [ ] Add default preferences on user creation
 
 ### 4.2 Frontend Integration
+
 - [ ] Replace localStorage with API calls
 - [ ] Add React Query mutations for preferences
 - [ ] Handle loading/error states
@@ -101,22 +111,26 @@
 ## Testing Checklist
 
 ### Unit Tests
+
 - [ ] URL validation function
 - [ ] UserPreferences default values
 - [ ] Settings merge logic
 
 ### Integration Tests
+
 - [ ] Connection test functions
 - [ ] LocalStorage persistence
 - [ ] Tab navigation
 
 ### E2E Tests
+
 - [ ] Data source switch with confirmation
 - [ ] Save with unsaved changes warning
 - [ ] Connection test flows
 - [ ] User preferences save/load
 
 ### Manual QA
+
 - [ ] Invalid URL handling
 - [ ] Data source switch mid-session
 - [ ] All connection tests
@@ -131,6 +145,7 @@
 ## Progress Log
 
 ### 2025-11-09
+
 - ✅ Created comprehensive settings-findings.md
 - ✅ Defined architecture and implementation roadmap
 - ✅ **Phase 1 Complete:** Implemented tabbed Settings layout with 3 tabs

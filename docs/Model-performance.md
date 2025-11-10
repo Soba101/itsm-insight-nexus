@@ -3,6 +3,7 @@
 **Document Created:** 10 November 2025  
 **Current Model:** EmbeddingGemma-300m-qat (768-dimensional, via LM Studio)  
 **Models Under Test:**
+
 - **text-embedding-qwen3-embedding-8b** (8B parameter model)
 - **text-embedding-embeddinggemma-300m-qat** (300M parameter quantized model, baseline)
 
@@ -15,6 +16,7 @@
 This document outlines a comprehensive plan to measure and evaluate the performance of embedding models used for ticket similarity detection. We will compare two models head-to-head: the larger Qwen3-8B model against the current EmbeddingGemma-300m baseline. Performance evaluation covers three dimensions: **Quality Metrics** (how accurate are the embeddings), **Computational Metrics** (how fast/efficient), and **Business Metrics** (real-world impact).
 
 **Recommended Priority:**
+
 1. **Phase 1 (Quick Wins):** Computational metrics - Easy to implement, immediate insights
 2. **Phase 2 (Validation):** Quality metrics with manual labels - Medium effort, validates accuracy
 3. **Phase 3 (Advanced):** Business metrics and A/B testing - Requires production data
@@ -28,6 +30,7 @@ This document outlines a comprehensive plan to measure and evaluate the performa
 **Goal:** Understand how well the model distinguishes between similar and dissimilar tickets.
 
 **Metrics:**
+
 - **Mean similarity score** for tickets with same category
 - **Mean similarity score** for tickets with different categories
 - **Separation gap:** Difference between related vs unrelated tickets
@@ -121,15 +124,18 @@ if __name__ == "__main__":
 ```
 
 **Usage:**
+
 ```bash
 docker exec itsm-python-backend python scripts/analyze_similarity_distribution.py
 ```
 
 **Expected Output:**
+
 - Separation gap >0.10 indicates good discrimination
 - Histogram shows clear bimodal distribution
 
 **Success Criteria:**
+
 - ✅ Same category mean similarity >0.60
 - ✅ Different category mean similarity <0.50
 - ✅ Separation gap >0.10
@@ -141,6 +147,7 @@ docker exec itsm-python-backend python scripts/analyze_similarity_distribution.p
 **Goal:** Measure how many of the top-K similar tickets are actually relevant (human-validated).
 
 **Metrics:**
+
 - **Precision@K:** Of top K results, how many are truly similar?
 - **Recall@K:** Of all similar tickets, how many are in top K?
 - **Mean Reciprocal Rank (MRR):** Position of first relevant result
@@ -149,6 +156,7 @@ docker exec itsm-python-backend python scripts/analyze_similarity_distribution.p
 **Time Estimate:** 8-12 hours (including labeling)
 
 **Process:**
+
 1. **Sample Selection:** Pick 50-100 representative tickets
 2. **Ground Truth Creation:** For each ticket, manually label 5-10 truly similar tickets
 3. **Model Prediction:** Get top-10 similar tickets from model
@@ -262,6 +270,7 @@ if __name__ == "__main__":
 ```
 
 **Ground Truth File Example:**
+
 ```json
 {
   "INC0010001": ["INC0010005", "INC0010012", "INC0010023"],
@@ -271,12 +280,14 @@ if __name__ == "__main__":
 ```
 
 **Labeling Process:**
+
 1. Export 50 tickets: `SELECT incident_number, short_description, description FROM servicenow_incidents LIMIT 50`
 2. For each ticket, read description and find 3-5 similar tickets from the dataset
 3. Record in JSON format
 4. Run evaluation script
 
 **Success Criteria:**
+
 - ✅ Precision@5 >0.60 (60% of top 5 are relevant)
 - ✅ Precision@10 >0.40
 - ✅ MRR >0.70 (first relevant in top 3 on average)
@@ -288,6 +299,7 @@ if __name__ == "__main__":
 **Goal:** Measure how well embeddings cluster similar tickets together.
 
 **Metrics:**
+
 - **Silhouette Score:** How well-separated are clusters? (range: -1 to 1, higher is better)
 - **Davies-Bouldin Index:** Lower is better (tight, well-separated clusters)
 - **Calinski-Harabasz Score:** Higher is better (dense, well-separated clusters)
@@ -361,6 +373,7 @@ if __name__ == "__main__":
 ```
 
 **Success Criteria:**
+
 - ✅ Silhouette Score >0.30 (acceptable clustering)
 - ✅ Cluster purity >0.60 (most tickets in cluster share same category)
 
@@ -373,6 +386,7 @@ if __name__ == "__main__":
 **Goal:** Measure how fast embeddings are generated.
 
 **Metrics:**
+
 - **Tokens per second:** Throughput of LM Studio
 - **Latency per ticket:** Time to embed one ticket description
 - **Batch throughput:** Tickets embedded per minute
@@ -441,16 +455,19 @@ if __name__ == "__main__":
 ```
 
 **Usage:**
+
 ```bash
 docker exec itsm-python-backend python scripts/benchmark_embedding_speed.py
 ```
 
 **Expected Baseline (LM Studio on M1 Mac):**
+
 - Latency: 150-300ms per ticket
 - Throughput: 3-6 tickets/second (single thread)
 - Memory: ~500MB for model
 
 **Success Criteria:**
+
 - ✅ Mean latency <500ms per ticket
 - ✅ Batch throughput >5 tickets/second
 - ✅ Memory usage <2GB
@@ -462,6 +479,7 @@ docker exec itsm-python-backend python scripts/benchmark_embedding_speed.py
 **Goal:** Measure how fast pgvector can search for similar tickets.
 
 **Metrics:**
+
 - **Query latency:** Time to find top-10 similar tickets
 - **Index efficiency:** HNSW vs sequential scan performance
 - **Scalability:** Performance with 1K, 10K, 100K tickets
@@ -546,6 +564,7 @@ if __name__ == "__main__":
 ```
 
 **Success Criteria:**
+
 - ✅ Top-10 search <50ms (with HNSW index)
 - ✅ HNSW index is active
 - ✅ Performance scales sub-linearly with dataset size
@@ -557,6 +576,7 @@ if __name__ == "__main__":
 **Goal:** Measure total time from ticket creation to similarity results.
 
 **Metrics:**
+
 - **Time to embed:** New ticket → embedding stored
 - **Time to link:** Embedding → parent assigned
 - **Time to query:** User requests similar tickets → results displayed
@@ -645,6 +665,7 @@ if __name__ == "__main__":
 ```
 
 **Success Criteria:**
+
 - ✅ Total E2E <2 seconds
 - ✅ Embedding <500ms
 - ✅ Search <100ms
@@ -658,6 +679,7 @@ if __name__ == "__main__":
 **Goal:** Measure how well the model identifies actual duplicate tickets.
 
 **Metrics:**
+
 - **True Positive Rate (TPR):** Of actual duplicates, how many were caught?
 - **False Positive Rate (FPR):** How many non-duplicates were flagged?
 - **Optimal threshold:** What similarity score balances precision/recall?
@@ -666,6 +688,7 @@ if __name__ == "__main__":
 **Time Estimate:** 6-8 hours
 
 **Process:**
+
 1. Export known duplicate tickets (if available from ServiceNow)
 2. Calculate similarity scores for known duplicates
 3. Calculate similarity scores for random non-duplicate pairs
@@ -782,6 +805,7 @@ if __name__ == "__main__":
 ```
 
 **Success Criteria:**
+
 - ✅ ROC AUC >0.85
 - ✅ TPR >0.80 at threshold 0.80
 - ✅ FPR <0.10 at optimal threshold
@@ -793,6 +817,7 @@ if __name__ == "__main__":
 **Goal:** Measure accuracy of automatic parent-child assignments.
 
 **Metrics:**
+
 - **Link acceptance rate:** How many auto-links are kept by users?
 - **Average similarity of linked tickets:** Are we linking very similar tickets?
 - **Category/priority agreement:** Do linked tickets share same attributes?
@@ -888,6 +913,7 @@ if __name__ == "__main__":
 ```
 
 **Success Criteria:**
+
 - ✅ Mean similarity >0.80 for linked tickets
 - ✅ Category agreement >70%
 - ✅ Most links in 0.80-0.95 range (not too strict, not too loose)
@@ -901,6 +927,7 @@ if __name__ == "__main__":
 **Goal:** Continuous monitoring of model performance in production.
 
 **Metrics to Track:**
+
 - Embedding generation rate (tickets/hour)
 - Average similarity score of similar ticket queries
 - Queue backlog size
@@ -911,11 +938,13 @@ if __name__ == "__main__":
 **Time Estimate:** 12-16 hours
 
 **Tools:**
+
 - Prometheus for metrics collection
 - Grafana for visualization
 - Custom Python exporters
 
 **Dashboard Panels:**
+
 1. **Embedding Pipeline Health**
    - Tickets embedded per hour
    - Queue size over time
@@ -961,6 +990,7 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
 **Goal:** Evaluate alternative embedding models against current baseline.
 
 **Primary Comparison:**
+
 - **Model A (Baseline):** `text-embedding-embeddinggemma-300m-qat` (768-dim, 300M parameters, quantized)
   - Smaller, faster, lower resource requirements
   - Current production model
@@ -969,6 +999,7 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
   - Higher computational cost
 
 **Additional Candidates for Future Testing:**
+
 - `all-MiniLM-L6-v2` (384-dim, smaller/faster)
 - `text-embedding-ada-002` (OpenAI, 1536-dim, cloud API)
 - `bge-large-en-v1.5` (1024-dim, SOTA)
@@ -994,6 +1025,7 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
    - **Cost:** Compute time per 1000 tickets
 
 **Process:**
+
 1. Generate embeddings with alternative model
 2. Store in separate column (`embedding_model_b`)
 3. Run all quality metrics for both models
@@ -1001,10 +1033,12 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
 5. Measure computational cost difference
 
 **Expected Trade-offs:**
+
 - **Qwen3-8B:** Higher accuracy, slower inference, more memory (~16GB)
 - **EmbeddingGemma-300m:** Faster inference, lower memory (~2GB), potentially lower accuracy
 
 **Decision Criteria:**
+
 - If Qwen3 improves Precision@5 by >10% and latency <1s per ticket → **Switch to Qwen3**
 - If Qwen3 improves Precision@5 by <5% or latency >2s per ticket → **Keep Gemma**
 - If mixed results → **Hybrid approach** (Gemma for real-time, Qwen3 for batch jobs)
@@ -1014,9 +1048,11 @@ model_memory_mb = Gauge('model_memory_mb', 'Model memory usage in MB')
 ## Implementation Roadmap
 
 ### Phase 1: Quick Wins (Week 1-2)
+
 **Difficulty:** ⭐ Easy | **Time:** 8-12 hours
 
 Priority tasks that give immediate insights:
+
 1. ✅ Similarity distribution analysis (1.1)
 2. ✅ Embedding speed benchmark (2.1)
 3. ✅ Similarity search benchmark (2.2)
@@ -1024,6 +1060,7 @@ Priority tasks that give immediate insights:
 5. ✅ Parent-child link quality (3.2)
 
 **Deliverables:**
+
 - Baseline performance numbers documented
 - Bottlenecks identified
 - Optimization opportunities clear
@@ -1031,15 +1068,18 @@ Priority tasks that give immediate insights:
 ---
 
 ### Phase 2: Quality Validation (Week 3-4)
+
 **Difficulty:** ⭐⭐⭐ Medium | **Time:** 12-16 hours
 
 Deeper evaluation requiring manual work:
+
 1. ✅ Create ground truth dataset (50-100 tickets)
 2. ✅ Precision@K evaluation (1.2)
 3. ✅ Clustering metrics (1.3)
 4. ✅ Duplicate detection evaluation (3.1)
 
 **Deliverables:**
+
 - Confidence in model accuracy
 - Optimal similarity thresholds
 - Known failure modes documented
@@ -1047,15 +1087,18 @@ Deeper evaluation requiring manual work:
 ---
 
 ### Phase 3: Production Readiness (Week 5-8)
+
 **Difficulty:** ⭐⭐⭐⭐ Hard | **Time:** 20-30 hours
 
 Long-term monitoring and optimization:
+
 1. ✅ Prometheus metrics integration (4.1)
 2. ✅ Grafana dashboard (4.1)
 3. ✅ Alerting rules (4.1)
 4. ⏳ A/B test framework (5.1)
 
 **Deliverables:**
+
 - Production monitoring dashboard
 - Automated performance alerts
 - Model comparison framework ready
@@ -1065,6 +1108,7 @@ Long-term monitoring and optimization:
 ## Success Criteria Summary
 
 ### Minimum Viable Performance (MVP)
+
 - ✅ Similarity search <100ms (p95)
 - ✅ Embedding generation <500ms per ticket
 - ✅ Precision@5 >0.50
@@ -1072,6 +1116,7 @@ Long-term monitoring and optimization:
 - ✅ Category agreement >60%
 
 ### Production-Ready Performance
+
 - ✅ Similarity search <50ms (p95)
 - ✅ Embedding generation <300ms per ticket
 - ✅ Precision@5 >0.60, Precision@10 >0.40
@@ -1080,6 +1125,7 @@ Long-term monitoring and optimization:
 - ✅ ROC AUC >0.85 for duplicate detection
 
 ### Exceptional Performance
+
 - ✅ Similarity search <30ms (p95)
 - ✅ Embedding generation <200ms per ticket
 - ✅ Precision@5 >0.70, Precision@10 >0.50
@@ -1118,6 +1164,7 @@ docker exec itsm-python-backend python scripts/performance_eval/evaluate_duplica
 4. **This Month:** Set up Prometheus/Grafana monitoring
 
 **Estimated Total Effort:**
+
 - Phase 1: 8-12 hours
 - Phase 2: 12-16 hours
 - Phase 3: 20-30 hours

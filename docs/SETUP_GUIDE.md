@@ -205,6 +205,7 @@ LOG_LEVEL=INFO
 ```
 
 **Important Notes:**
+
 - `JWT_SECRET` must be identical in both backend-auth and backend-python
 - Backend-auth uses `DB_HOST=localhost` and `DB_PORT=15432` (external)
 - Python backend uses `DB_HOST=postgres` and `DB_PORT=5432` (Docker network)
@@ -244,6 +245,7 @@ LOG_LEVEL=INFO
 ## Database Schema
 
 ### `users` table
+
 ```sql
 - id (UUID, PK)
 - email (VARCHAR, UNIQUE)
@@ -256,6 +258,7 @@ LOG_LEVEL=INFO
 ```
 
 ### `password_reset_tokens` table
+
 ```sql
 - id (UUID, PK)
 - user_id (UUID, FK -> users.id)
@@ -304,21 +307,25 @@ docker-compose down
 ## Troubleshooting
 
 ### "Connection refused" errors
+
 - Make sure Docker is running: `docker ps`
 - Check if PostgreSQL is up: `docker-compose ps`
 - Verify port 15432 is not in use
 
 ### "Password authentication failed"
+
 - Check `backend/.env` has correct credentials
 - Default: user=postgres, password=postgres
 - Restart backend after changing .env
 
 ### Backend won't start
+
 - Check if port 3001 is available
 - Make sure you ran `node run-migration.js` first
 - Check `backend/.env` exists
 
 ### Can't log in
+
 - Make sure backend is running on port 3001
 - Check browser console for API errors
 - Verify test user exists:
@@ -328,6 +335,7 @@ docker-compose down
   ```
 
 ### Frontend shows "Access token required"
+
 - Clear localStorage: Browser DevTools → Application → Local Storage → Clear
 - Sign out and sign in again
 - Check backend is running
@@ -337,9 +345,11 @@ docker-compose down
 ## Creating New Users
 
 ### Via API (Recommended)
+
 Use the signup page at http://localhost:8080/signup
 
 ### Via Database (Admin)
+
 ```sql
 -- Connect to Postgres (pgAdmin or psql)
 -- Password must be bcrypt hashed
@@ -353,6 +363,7 @@ VALUES (
 ```
 
 To generate a bcrypt hash:
+
 ```javascript
 // In backend directory
 node -e "const bcrypt = require('bcryptjs'); console.log(bcrypt.hashSync('your-password', 10));"
