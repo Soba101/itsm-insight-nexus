@@ -136,6 +136,95 @@ def evaluate_parent_child_links():
                 other_pct = (other_count / len(links) * 100) if links else 0
                 print(f"  {'Other':30s}: {other_count:4d} ({other_pct:5.1f}%)")
             
+            # Classification Metrics (Precision, Recall, F1)
+            # Since we don't have ground truth labels, we use heuristics:
+            # - High-quality link: same category AND similarity >= 0.80
+            # - All established links are "predicted positives"
+            # - We estimate "actual positives" based on category matching potential
+            print("\n" + "="*60)
+            print("📊 CLASSIFICATION METRICS (Heuristic-Based)")
+            print("="*60)
+            
+            if similarity_scores:
+                # True Positives: Same category AND high similarity (>=0.80)
+                true_positives = sum(
+                    1 for link in links 
+                    if link[1] == link[4] and link[6] is not None and link[6] >= 0.80
+                )
+                
+                # False Positives: Different category OR low similarity (<0.80)
+                false_positives = sum(
+                    1 for link in links
+                    if (link[1] != link[4]) or (link[6] is not None and link[6] < 0.80)
+                )
+                
+                # Estimate False Negatives using category distribution
+                # Get total tickets per category that could form relationships
+                cursor.execute("""
+                    SELECT category, COUNT(*) as count
+                    FROM servicenow_incidents
+                    WHERE category IS NOT NULL
+                    GROUP BY category
+                    HAVING COUNT(*) > 1
+                """)
+                category_counts_raw = cursor.fetchall()
+                
+                # Estimate potential relationships (tickets in same category that could link)
+                potential_relationships = sum(
+                    count * (count - 1) // 2  # combinations within each category
+                    for _, count in category_counts_raw
+                    if count > 1
+                )
+                
+                # False Negatives: potential relationships minus those we found
+                # This is a rough estimate - actual FN would need ground truth
+                estimated_false_negatives = max(0, min(
+                    potential_relationships - true_positives,
+                    true_positives * 2  # cap at 2x TP to avoid unrealistic estimates
+                ))
+                
+                # Calculate metrics
+                precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0
+                recall = true_positives / (true_positives + estimated_false_negatives) if (true_positives + estimated_false_negatives) > 0 else 0
+                f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+                
+                print("\n" + "-"*60)
+                print("Heuristic Criteria:")
+                print("  ✓ True Positive:  Same category AND similarity ≥0.80")
+                print("  ✗ False Positive: Different category OR similarity <0.80")
+                print("  ? False Negative: Estimated from category distribution")
+                print("-"*60)
+                
+                print(f"\nTrue Positives:  {true_positives:4d} links")
+                print(f"False Positives: {false_positives:4d} links")
+                print(f"False Negatives: ~{estimated_false_negatives:4d} links (estimated)")
+                
+                print(f"\n📈 Precision: {precision:.4f} ({precision*100:.2f}%)")
+                print(f"   → Of all predicted links, {precision*100:.1f}% are high-quality")
+                
+                print(f"\n📈 Recall:    {recall:.4f} ({recall*100:.2f}%)")
+                print(f"   → Of all potential links, {recall*100:.1f}% were identified")
+                
+                print(f"\n📈 F1 Score:  {f1_score:.4f} ({f1_score*100:.2f}%)")
+                print(f"   → Harmonic mean of precision and recall")
+                
+                # Interpretation
+                print("\n" + "-"*60)
+                print("Interpretation:")
+                if precision >= 0.80 and recall >= 0.50:
+                    print("  ✅ EXCELLENT - High precision and good recall")
+                elif precision >= 0.70 and recall >= 0.40:
+                    print("  ✓ GOOD - Solid precision, acceptable recall")
+                elif precision >= 0.60 and recall >= 0.30:
+                    print("  ⚠️  FAIR - Moderate quality, room for improvement")
+                else:
+                    print("  ❌ POOR - Low precision or recall, needs improvement")
+                
+                print("\nNote: Metrics are heuristic-based estimates.")
+                print("For accurate evaluation, labeled ground truth data is needed.")
+            else:
+                print("\n⚠️  Cannot calculate classification metrics without similarity scores")
+            
             # Success criteria
             print("\n" + "="*60)
             print("SUCCESS CRITERIA EVALUATION")

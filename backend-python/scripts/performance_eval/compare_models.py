@@ -74,9 +74,15 @@ def analyze_model_quality(embedding_column: str, model_name: str):
             
             logger.info(f"Sampled {len(tickets)} tickets for comparison")
             
-            # Calculate pairwise similarities
+            # Calculate pairwise similarities and classification metrics
             same_category_scores = []
             different_category_scores = []
+            
+            # For classification metrics (using 0.80 threshold)
+            true_positives = 0   # Same category AND similarity >= 0.80
+            false_positives = 0  # Different category AND similarity >= 0.80
+            true_negatives = 0   # Different category AND similarity < 0.80
+            false_negatives = 0  # Same category AND similarity < 0.80
             
             for i, (ticket1_id, cat1, emb1) in enumerate(tickets):
                 for ticket2_id, cat2, emb2 in tickets[i+1:]:
@@ -88,8 +94,16 @@ def analyze_model_quality(embedding_column: str, model_name: str):
                     
                     if cat1 == cat2:
                         same_category_scores.append(similarity)
+                        if similarity >= 0.80:
+                            true_positives += 1
+                        else:
+                            false_negatives += 1
                     else:
                         different_category_scores.append(similarity)
+                        if similarity >= 0.80:
+                            false_positives += 1
+                        else:
+                            true_negatives += 1
             
             cursor.close()
             
@@ -99,6 +113,11 @@ def analyze_model_quality(embedding_column: str, model_name: str):
             diff_mean = np.mean(different_category_scores) if different_category_scores else 0.0
             diff_std = np.std(different_category_scores) if different_category_scores else 0.0
             separation_gap = same_mean - diff_mean
+            
+            # Calculate classification metrics
+            precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0.0
+            recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0.0
+            f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
             
             # Print results
             print(f"\n📊 Quality Metrics for {model_name}:")
@@ -116,6 +135,19 @@ def analyze_model_quality(embedding_column: str, model_name: str):
             print(f"  Std:  {diff_std:.4f}")
             print()
             print(f"Separation Gap: {separation_gap:+.4f}")
+            
+            # Print classification metrics
+            print()
+            print("Classification Metrics (threshold=0.80):")
+            print("-" * 60)
+            print(f"  True Positives:  {true_positives:5d} (same category, sim ≥0.80)")
+            print(f"  False Positives: {false_positives:5d} (diff category, sim ≥0.80)")
+            print(f"  True Negatives:  {true_negatives:5d} (diff category, sim <0.80)")
+            print(f"  False Negatives: {false_negatives:5d} (same category, sim <0.80)")
+            print()
+            print(f"  Precision: {precision:.4f} ({precision*100:.2f}%)")
+            print(f"  Recall:    {recall:.4f} ({recall*100:.2f}%)")
+            print(f"  F1 Score:  {f1_score:.4f} ({f1_score*100:.2f}%)")
             
             # Verdict
             if separation_gap > 0.10:
@@ -143,6 +175,13 @@ def analyze_model_quality(embedding_column: str, model_name: str):
                 "different_category_mean": diff_mean,
                 "different_category_std": diff_std,
                 "separation_gap": separation_gap,
+                "precision": precision,
+                "recall": recall,
+                "f1_score": f1_score,
+                "true_positives": true_positives,
+                "false_positives": false_positives,
+                "true_negatives": true_negatives,
+                "false_negatives": false_negatives,
                 "verdict": verdict
             }
             
@@ -182,7 +221,10 @@ def main():
     else:
         print(f"\nGemma-768:")
         print(f"  Separation Gap: {gemma_results['separation_gap']:+.4f}")
-        print(f"  Status: {gemma_results['status']}")
+        print(f"  Precision:      {gemma_results['precision']:.4f}")
+        print(f"  Recall:         {gemma_results['recall']:.4f}")
+        print(f"  F1 Score:       {gemma_results['f1_score']:.4f}")
+        print(f"  Status:         {gemma_results['status']}")
     
     if qwen3_results.get("status") == "NO_EMBEDDINGS":
         print("\n⚠️  Qwen3: No embeddings found - run populate_embeddings.py with LM_STUDIO_MODEL=text-embedding-qwen3-embedding-8b")
@@ -191,7 +233,10 @@ def main():
     else:
         print(f"\nQwen3-4096:")
         print(f"  Separation Gap: {qwen3_results['separation_gap']:+.4f}")
-        print(f"  Status: {qwen3_results['status']}")
+        print(f"  Precision:      {qwen3_results['precision']:.4f}")
+        print(f"  Recall:         {qwen3_results['recall']:.4f}")
+        print(f"  F1 Score:       {qwen3_results['f1_score']:.4f}")
+        print(f"  Status:         {qwen3_results['status']}")
     
     # Determine winner
     if (gemma_results.get("status") in ["PASS", "WARN", "FAIL"] and 
@@ -199,21 +244,32 @@ def main():
         
         gemma_gap = gemma_results['separation_gap']
         qwen3_gap = qwen3_results['separation_gap']
+        gemma_f1 = gemma_results.get('f1_score', 0)
+        qwen3_f1 = qwen3_results.get('f1_score', 0)
         
         print("\n" + "="*60)
         print("🏆 RECOMMENDATION:")
         print("-" * 60)
         
-        if qwen3_gap > gemma_gap and qwen3_gap > 0.05:
-            print("✅ Use Qwen3-4096 - Better quality despite slower speed")
+        # Consider both separation gap and F1 score for recommendation
+        if qwen3_gap > gemma_gap and qwen3_f1 > gemma_f1 and qwen3_gap > 0.05:
+            print("✅ Use Qwen3-4096 - Better separation and F1 score")
             print(f"   Gap improvement: {qwen3_gap - gemma_gap:+.4f}")
-        elif gemma_gap > qwen3_gap and gemma_gap > 0.05:
-            print("✅ Use Gemma-768 - Better quality and faster")
+            print(f"   F1 improvement:  {qwen3_f1 - gemma_f1:+.4f}")
+        elif gemma_gap > qwen3_gap and gemma_f1 > qwen3_f1 and gemma_gap > 0.05:
+            print("✅ Use Gemma-768 - Better separation, F1, and faster")
             print(f"   Gap improvement: {gemma_gap - qwen3_gap:+.4f}")
+            print(f"   F1 improvement:  {gemma_f1 - qwen3_f1:+.4f}")
+        elif gemma_f1 > qwen3_f1 and gemma_gap > 0.05:
+            print("✅ Use Gemma-768 - Better F1 score and faster")
+            print(f"   F1 improvement:  {gemma_f1 - qwen3_f1:+.4f}")
+        elif qwen3_f1 > gemma_f1 and qwen3_gap > 0.05:
+            print("⚠️  Use Qwen3-4096 - Better F1 despite slower speed")
+            print(f"   F1 improvement:  {qwen3_f1 - gemma_f1:+.4f}")
         elif gemma_gap > 0.05:
-            print("⚠️  Use Gemma-768 - Both poor, but Gemma is faster")
+            print("⚠️  Use Gemma-768 - Both similar, but Gemma is faster")
         elif qwen3_gap > 0.05:
-            print("⚠️  Use Qwen3-4096 - Both poor, but Qwen3 slightly better")
+            print("⚠️  Use Qwen3-4096 - Both similar, slight edge to Qwen3")
         else:
             print("❌ Neither model acceptable - both show poor separation")
             print("   Consider alternative models or data preprocessing")
