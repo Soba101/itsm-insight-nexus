@@ -1,0 +1,2910 @@
+{
+  "positive_pairs": [
+    {
+      "text1": "Title: Need access to sales DB for the West Description: I have to analyze all US data in the SFA system, but am unable to get to see the data from the west coast.",
+      "text2": "Title: Need Oracle 10GR2 installed Description: Currently running 10GR1 and need to upgrade to 10GR2.",
+      "label": 1,
+      "category1": "Database",
+      "category2": "Database",
+      "ticket1_id": "INC0000007",
+      "ticket2_id": "INC0000010"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000016"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000025"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000026"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000041"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0000025"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0000026"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0000041"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0000026"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0000041"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0000041"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0000041"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000050",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000050",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000050",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: The USB port on my PC stopped working",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000601",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: The USB port on my PC stopped working",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000601",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 1,
+      "category1": "Hardware",
+      "category2": "Hardware",
+      "ticket1_id": "INC0007001",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Issue with a web page on wiki Description: The landing page for our internal wiki isn't loading. I've refreshed it multiple times and it keeps timing out.",
+      "text2": "Title: Equipment selection not saved for new location Description: During the onboarding process for an additional location, the Sales Agent received an error message stating 'Location already exists' even though it's a new location being added. This issue caused confusion and delays in completing the merchant setup.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000024",
+      "ticket2_id": "INC0010054"
+    },
+    {
+      "text1": "Title: JavaScript error on hiring page of corporate website Description: Seeing JavaScript error message on hiring page on Explorer and Firefox.",
+      "text2": "Title: Issue with email Description: Can't connect to email from my laptop.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000040",
+      "ticket2_id": "INC0000047"
+    },
+    {
+      "text1": "Title: Issue with a web page on wiki Description: The landing page for our internal wiki isn't loading. I've refreshed it multiple times and it keeps timing out.",
+      "text2": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000024",
+      "ticket2_id": "INC0001990"
+    },
+    {
+      "text1": "Title: Issue with networking Description: Experiencing connection issues. Unable to create connection to data source.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000036",
+      "ticket2_id": "INC0010046"
+    },
+    {
+      "text1": "Title: I can't get my weather report Description: WeatherBug icon has disappeared from my desktop. Unable to get my weather report.",
+      "text2": "Title: Merchant data displaying incorrectly Description: During the data upload process for a new merchant, the API endpoint consistently returns a 500 error, preventing sales agents from successfully onboarding the merchant.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000029",
+      "ticket2_id": "INC0010049"
+    },
+    {
+      "text1": "Title: Issue with a web page on wiki Description: The landing page for our internal wiki isn't loading. I've refreshed it multiple times and it keeps timing out.",
+      "text2": "Title: ATF:TEST2",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000024",
+      "ticket2_id": "INC0008001"
+    },
+    {
+      "text1": "Title: My disk is still having issues. Can't delete a file Description: Hard drive is still making grinding and clicking noises and now I can't delete a file. I've tried to delete it 3 times.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000028",
+      "ticket2_id": "INC0010048"
+    },
+    {
+      "text1": "Title: Unable to access team file share Description: I can access my personal folder but can't access my team's folder on our file share.",
+      "text2": "Title: Merchant data displaying incorrectly Description: During the data upload process for a new merchant, the API endpoint consistently returns a 500 error, preventing sales agents from successfully onboarding the merchant.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000059",
+      "ticket2_id": "INC0010049"
+    },
+    {
+      "text1": "Title: I need a replacement iPhone, please Description: I lost my work-issued iPhone 7 while traveling last week and need a replacement device. I've erased the phone remotely and have called my carrier to shut off service to it.",
+      "text2": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000020",
+      "ticket2_id": "INC0000031"
+    },
+    {
+      "text1": "Title: File Server is 80% full - Needs upgrade Description: 2tb file server has less than 400gb free.",
+      "text2": "Title: Assessment :  ATF Assessor",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000033",
+      "ticket2_id": "INC0008112"
+    },
+    {
+      "text1": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0001990",
+      "ticket2_id": "INC0010046"
+    },
+    {
+      "text1": "Title: Missing my home directory Description: Logged in and didn't see my home directory. Logged out and back in again and it's still not appearing. I'm completely blocked until this is resolved.",
+      "text2": "Title: email server down",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000014",
+      "ticket2_id": "INC0010001"
+    },
+    {
+      "text1": "Title: New employee hire Description: We have a new hire starting on Monday. She will need to be set up with a desk, laptop, phone, email account, and systems access.",
+      "text2": "Title: ATF : Test1",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000021",
+      "ticket2_id": "INC0008111"
+    },
+    {
+      "text1": "Title: Request for a new service Description: Need to place order for a new machine. Will need help with installation also.",
+      "text2": "Title: ATF : Test1",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000037",
+      "ticket2_id": "INC0008111"
+    },
+    {
+      "text1": "Title: EMAIL Server Down Again Description: Multiple employees have reported that they are unable to send/receive email.",
+      "text2": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000032",
+      "ticket2_id": "INC0010051"
+    },
+    {
+      "text1": "Title: Missing my home directory Description: Logged in and didn't see my home directory. Logged out and back in again and it's still not appearing. I'm completely blocked until this is resolved.",
+      "text2": "Title: Issue with networking Description: Experiencing connection issues. Unable to create connection to data source.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000014",
+      "ticket2_id": "INC0000036"
+    },
+    {
+      "text1": "Title: How do I create a sub-folder Description: I need to organize my inbox in my email program. However I can't create a sub-folder. I didn't seen an option to create a new folder when right clicking.",
+      "text2": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000017",
+      "ticket2_id": "INC0010051"
+    },
+    {
+      "text1": "Title: Request for a new service Description: Need to place order for a new machine. Will need help with installation also.",
+      "text2": "Title: Touchscreen malfunction on Merchant's device for e-signing Description: Merchants facing frequent network timeout errors while submitting data, leading to delays in onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000037",
+      "ticket2_id": "INC0010050"
+    },
+    {
+      "text1": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "text2": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000009",
+      "ticket2_id": "INC0001990"
+    },
+    {
+      "text1": "Title: Unable to connect to email Description: I am unable to connect to the email server. It appears to be down.",
+      "text2": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000060",
+      "ticket2_id": "INC0010051"
+    },
+    {
+      "text1": "Title: Need new Blackberry set up Description: I'm replacing my old phone with a Blackberry and require assistance to get it set up. I'd like to get the files and contacts transferred to the new phone and need help getting the two factor authentication app set up on it.",
+      "text2": "Title: Reset my password Description: Forgot password and unable to log in. Can you reset or resend my password?",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000011",
+      "ticket2_id": "INC0000035"
+    },
+    {
+      "text1": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "text2": "Title: ATF : Test1",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000031",
+      "ticket2_id": "INC0008111"
+    },
+    {
+      "text1": "Title: Issue with networking Description: Experiencing connection issues. Unable to create connection to data source.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000036",
+      "ticket2_id": "INC0010048"
+    },
+    {
+      "text1": "Title: Issue with a web page on wiki Description: The landing page for our internal wiki isn't loading. I've refreshed it multiple times and it keeps timing out.",
+      "text2": "Title: Unable to post content on a Wiki page Description: I am not able to edit a wiki page.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000024",
+      "ticket2_id": "INC0009001"
+    },
+    {
+      "text1": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "text2": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0001990",
+      "ticket2_id": "INC0009003"
+    },
+    {
+      "text1": "Title: Request for a new service Description: Need to place order for a new machine. Will need help with installation also.",
+      "text2": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000037",
+      "ticket2_id": "INC0001990"
+    },
+    {
+      "text1": "Title: Performance problems with email Description: Taking a really long time to send emails. Last email took almost a minute for sending to complete and there wasn't even an attachment.",
+      "text2": "Title: email server down",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000058",
+      "ticket2_id": "INC0010001"
+    },
+    {
+      "text1": "Title: Performance problems with email Description: Taking a really long time to send emails. Last email took almost a minute for sending to complete and there wasn't even an attachment.",
+      "text2": "Title: Merchant unable to submit e-signed agreement Description: A Sales Agent's access to configure service fees for a merchant is restricted erroneously, preventing them from finalizing the onboarding process. Merchant onboarding delayed.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000058",
+      "ticket2_id": "INC0010053"
+    },
+    {
+      "text1": "Title: Need new Blackberry set up Description: I'm replacing my old phone with a Blackberry and require assistance to get it set up. I'd like to get the files and contacts transferred to the new phone and need help getting the two factor authentication app set up on it.",
+      "text2": "Title: How do I create a sub-folder Description: I need to organize my inbox in my email program. However I can't create a sub-folder. I didn't seen an option to create a new folder when right clicking.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000011",
+      "ticket2_id": "INC0000017"
+    },
+    {
+      "text1": "Title: I can't get my weather report Description: WeatherBug icon has disappeared from my desktop. Unable to get my weather report.",
+      "text2": "Title: Unable to access the shared folder. Description: Unable to access the shared folder. Please provide access.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000029",
+      "ticket2_id": "INC0009009"
+    },
+    {
+      "text1": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "text2": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0010048",
+      "ticket2_id": "INC0010051"
+    },
+    {
+      "text1": "Title: Unable to connect to email Description: I am unable to connect to the email server. It appears to be down.",
+      "text2": "Title: Merchant unable to submit e-signed agreement Description: A Sales Agent's access to configure service fees for a merchant is restricted erroneously, preventing them from finalizing the onboarding process. Merchant onboarding delayed.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000060",
+      "ticket2_id": "INC0010053"
+    },
+    {
+      "text1": "Title: EMAIL Server Down Again Description: Multiple employees have reported that they are unable to send/receive email.",
+      "text2": "Title: ATF:TEST2",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000032",
+      "ticket2_id": "INC0008001"
+    },
+    {
+      "text1": "Title: Issue with networking Description: Experiencing connection issues. Unable to create connection to data source.",
+      "text2": "Title: Performance problems with email Description: Taking a really long time to send emails. Last email took almost a minute for sending to complete and there wasn't even an attachment.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000036",
+      "ticket2_id": "INC0000058"
+    },
+    {
+      "text1": "Title: Need new Blackberry set up Description: I'm replacing my old phone with a Blackberry and require assistance to get it set up. I'd like to get the files and contacts transferred to the new phone and need help getting the two factor authentication app set up on it.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000011",
+      "ticket2_id": "INC0010046"
+    },
+    {
+      "text1": "Title: ATF : Test1",
+      "text2": "Title: Merchant data displaying incorrectly Description: During the data upload process for a new merchant, the API endpoint consistently returns a 500 error, preventing sales agents from successfully onboarding the merchant.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0008111",
+      "ticket2_id": "INC0010049"
+    },
+    {
+      "text1": "Title: My disk is still having issues. Can't delete a file Description: Hard drive is still making grinding and clicking noises and now I can't delete a file. I've tried to delete it 3 times.",
+      "text2": "Title: Merchant data displaying incorrectly Description: During the data upload process for a new merchant, the API endpoint consistently returns a 500 error, preventing sales agents from successfully onboarding the merchant.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000028",
+      "ticket2_id": "INC0010049"
+    },
+    {
+      "text1": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "text2": "Title: Equipment selection not saved for new location Description: During the onboarding process for an additional location, the Sales Agent received an error message stating 'Location already exists' even though it's a new location being added. This issue caused confusion and delays in completing the merchant setup.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000009",
+      "ticket2_id": "INC0010054"
+    },
+    {
+      "text1": "Title: Missing my home directory Description: Logged in and didn't see my home directory. Logged out and back in again and it's still not appearing. I'm completely blocked until this is resolved.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000014",
+      "ticket2_id": "INC0010046"
+    },
+    {
+      "text1": "Title: How do I create a sub-folder Description: I need to organize my inbox in my email program. However I can't create a sub-folder. I didn't seen an option to create a new folder when right clicking.",
+      "text2": "Title: I can't get my weather report Description: WeatherBug icon has disappeared from my desktop. Unable to get my weather report.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000017",
+      "ticket2_id": "INC0000029"
+    },
+    {
+      "text1": "Title: Performance problems with email Description: Taking a really long time to send emails. Last email took almost a minute for sending to complete and there wasn't even an attachment.",
+      "text2": "Title: Merchant data displaying incorrectly Description: During the data upload process for a new merchant, the API endpoint consistently returns a 500 error, preventing sales agents from successfully onboarding the merchant.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000058",
+      "ticket2_id": "INC0010049"
+    },
+    {
+      "text1": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "text2": "Title: Unable to post content on a Wiki page Description: I am not able to edit a wiki page.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000031",
+      "ticket2_id": "INC0009001"
+    },
+    {
+      "text1": "Title: How do I create a sub-folder Description: I need to organize my inbox in my email program. However I can't create a sub-folder. I didn't seen an option to create a new folder when right clicking.",
+      "text2": "Title: The SAP HR application is not accessible Description: I've been trying to access the SAP HR application for the last few hours. Each time I go into the application, nothing loads.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000017",
+      "ticket2_id": "INC0000053"
+    },
+    {
+      "text1": "Title: How do I create a sub-folder Description: I need to organize my inbox in my email program. However I can't create a sub-folder. I didn't seen an option to create a new folder when right clicking.",
+      "text2": "Title: Request for a new service Description: Need to place order for a new machine. Will need help with installation also.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000017",
+      "ticket2_id": "INC0000037"
+    },
+    {
+      "text1": "Title: Printer in my office is out of toner Description: Where do I find toner for the HP 950C I have?",
+      "text2": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000008",
+      "ticket2_id": "INC0000031"
+    },
+    {
+      "text1": "Title: Unable to post content on a Wiki page Description: I am not able to edit a wiki page.",
+      "text2": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0009001",
+      "ticket2_id": "INC0010051"
+    },
+    {
+      "text1": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0009003",
+      "ticket2_id": "INC0010048"
+    },
+    {
+      "text1": "Title: EMAIL is slow when an attachment is involved Description: Noticing today that any time I send an email with an attachment, it takes at least 20 seconds to send. This happens regardless of the attachment size.",
+      "text2": "Title: Performance problems with email Description: Taking a really long time to send emails. Last email took almost a minute for sending to complete and there wasn't even an attachment.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000013",
+      "ticket2_id": "INC0000058"
+    },
+    {
+      "text1": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000009",
+      "ticket2_id": "INC0010046"
+    },
+    {
+      "text1": "Title: Issue with a web page on wiki Description: The landing page for our internal wiki isn't loading. I've refreshed it multiple times and it keeps timing out.",
+      "text2": "Title: JavaScript error on hiring page of corporate website Description: Seeing JavaScript error message on hiring page on Explorer and Firefox.",
+      "label": 1,
+      "category1": "Inquiry / Help",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000024",
+      "ticket2_id": "INC0000040"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0000002"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0000003"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0000049"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0000003"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0000049"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000003",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "text2": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000003",
+      "ticket2_id": "INC0000049"
+    },
+    {
+      "text1": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000003",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "text2": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000039",
+      "ticket2_id": "INC0000049"
+    },
+    {
+      "text1": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000039",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 1,
+      "category1": "Network",
+      "category2": "Network",
+      "ticket1_id": "INC0000049",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "text2": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000046",
+      "ticket2_id": "INC0000054"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0009005"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0000038"
+    },
+    {
+      "text1": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000051",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0000027"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0000019"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0000046"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0000054"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0000034"
+    },
+    {
+      "text1": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000046",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0000034"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0000027"
+    },
+    {
+      "text1": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "text2": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000054",
+      "ticket2_id": "INC0009005"
+    },
+    {
+      "text1": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "text2": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000051",
+      "ticket2_id": "INC0009005"
+    },
+    {
+      "text1": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "text2": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000034",
+      "ticket2_id": "INC0000046"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0009005"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0000034"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0000027"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0009005"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0000046"
+    },
+    {
+      "text1": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "text2": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000046",
+      "ticket2_id": "INC0000051"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0000038"
+    },
+    {
+      "text1": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000034",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0000054"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0000054"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0000015"
+    },
+    {
+      "text1": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "text2": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0009004",
+      "ticket2_id": "INC0009005"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0000054"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0000046"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0000019"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0000051"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0000051"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0000038"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0000051"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0009005"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "text2": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000034",
+      "ticket2_id": "INC0000051"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0000046"
+    },
+    {
+      "text1": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000054",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000046",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0000034"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "label": 1,
+      "category1": "Software",
+      "category2": "Software",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0000051"
+    }
+  ],
+  "negative_pairs": [
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0009003"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: Need access to the common drive. Description: Need access to the common drive for sharing files which can be accessed by all members. Please provide access.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0007002"
+    },
+    {
+      "text1": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "text2": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0001990",
+      "ticket2_id": "INC0000027"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0010048"
+    },
+    {
+      "text1": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "text2": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0010051",
+      "ticket2_id": "INC0000012"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Network",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: The SAP HR application is not accessible Description: I've been trying to access the SAP HR application for the last few hours. Each time I go into the application, nothing loads.",
+      "text2": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000053",
+      "ticket2_id": "INC0000019"
+    },
+    {
+      "text1": "Title: The SAP HR application is not accessible Description: I've been trying to access the SAP HR application for the last few hours. Each time I go into the application, nothing loads.",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000053",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Network",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0009005",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "text2": "Title: New employee hire Description: We have a new hire starting on Monday. She will need to be set up with a desk, laptop, phone, email account, and systems access.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0009004",
+      "ticket2_id": "INC0000021"
+    },
+    {
+      "text1": "Title: ATF : Test1",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0008111",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0009003"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0000016"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: ATF:TEST2",
+      "text2": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0008001",
+      "ticket2_id": "INC0000034"
+    },
+    {
+      "text1": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Network",
+      "ticket1_id": "INC0000054",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Issue with networking Description: Experiencing connection issues. Unable to create connection to data source.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0000036"
+    },
+    {
+      "text1": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "text2": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0009004",
+      "ticket2_id": "INC0009003"
+    },
+    {
+      "text1": "Title: The SAP HR application is not accessible Description: I've been trying to access the SAP HR application for the last few hours. Each time I go into the application, nothing loads.",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000053",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "text2": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Network",
+      "ticket1_id": "INC0000054",
+      "ticket2_id": "INC0000003"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Merchant data displaying incorrectly Description: During the data upload process for a new merchant, the API endpoint consistently returns a 500 error, preventing sales agents from successfully onboarding the merchant.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0010049"
+    },
+    {
+      "text1": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "text2": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000054",
+      "ticket2_id": "INC0009003"
+    },
+    {
+      "text1": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "text2": "Title: Need new Blackberry set up Description: I'm replacing my old phone with a Blackberry and require assistance to get it set up. I'd like to get the files and contacts transferred to the new phone and need help getting the two factor authentication app set up on it.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000050",
+      "ticket2_id": "INC0000011"
+    },
+    {
+      "text1": "Title: Unable to connect to email Description: I am unable to connect to the email server. It appears to be down.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000060",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: The USB port on my PC stopped working",
+      "text2": "Title: Need access to the common drive. Description: Need access to the common drive for sharing files which can be accessed by all members. Please provide access.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000601",
+      "ticket2_id": "INC0007002"
+    },
+    {
+      "text1": "Title: EMAIL is slow when an attachment is involved Description: Noticing today that any time I send an email with an attachment, it takes at least 20 seconds to send. This happens regardless of the attachment size.",
+      "text2": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000013",
+      "ticket2_id": "INC0000002"
+    },
+    {
+      "text1": "Title: Need access to sales DB for the West Description: I have to analyze all US data in the SFA system, but am unable to get to see the data from the west coast.",
+      "text2": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "label": 0,
+      "category1": "Database",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000007",
+      "ticket2_id": "INC0000031"
+    },
+    {
+      "text1": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "text2": "Title: Unable to connect to email Description: I am unable to connect to the email server. It appears to be down.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000054",
+      "ticket2_id": "INC0000060"
+    },
+    {
+      "text1": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "text2": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000009",
+      "ticket2_id": "INC0000002"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: Need Oracle 10GR2 installed Description: Currently running 10GR1 and need to upgrade to 10GR2.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Database",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0000010"
+    },
+    {
+      "text1": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "text2": "Title: Missing my home directory Description: Logged in and didn't see my home directory. Logged out and back in again and it's still not appearing. I'm completely blocked until this is resolved.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0009002",
+      "ticket2_id": "INC0000014"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0000031"
+    },
+    {
+      "text1": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Network",
+      "ticket1_id": "INC0009002",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "text2": "Title: JavaScript error on hiring page of corporate website Description: Seeing JavaScript error message on hiring page on Explorer and Firefox.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0010052",
+      "ticket2_id": "INC0000040"
+    },
+    {
+      "text1": "Title: Issue with email Description: Can't connect to email from my laptop.",
+      "text2": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000047",
+      "ticket2_id": "INC0000038"
+    },
+    {
+      "text1": "Title: Merchant unable to submit e-signed agreement Description: A Sales Agent's access to configure service fees for a merchant is restricted erroneously, preventing them from finalizing the onboarding process. Merchant onboarding delayed.",
+      "text2": "Title: Need access to sales DB for the West Description: I have to analyze all US data in the SFA system, but am unable to get to see the data from the west coast.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Database",
+      "ticket1_id": "INC0010053",
+      "ticket2_id": "INC0000007"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: Merchant data displaying incorrectly Description: During the data upload process for a new merchant, the API endpoint consistently returns a 500 error, preventing sales agents from successfully onboarding the merchant.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0010049"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000009"
+    },
+    {
+      "text1": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "text2": "Title: File Server is 80% full - Needs upgrade Description: 2tb file server has less than 400gb free.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000051",
+      "ticket2_id": "INC0000033"
+    },
+    {
+      "text1": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000031",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: How do I create a sub-folder Description: I need to organize my inbox in my email program. However I can't create a sub-folder. I didn't seen an option to create a new folder when right clicking.",
+      "text2": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000017",
+      "ticket2_id": "INC0000027"
+    },
+    {
+      "text1": "Title: Need access to sales DB for the West Description: I have to analyze all US data in the SFA system, but am unable to get to see the data from the west coast.",
+      "text2": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "label": 0,
+      "category1": "Database",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000007",
+      "ticket2_id": "INC0001990"
+    },
+    {
+      "text1": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000009",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: Issue with a web page on wiki Description: The landing page for our internal wiki isn't loading. I've refreshed it multiple times and it keeps timing out.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0000024"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: Request for a new service Description: Need to place order for a new machine. Will need help with installation also.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0000037"
+    },
+    {
+      "text1": "Title: Need access to sales DB for the West Description: I have to analyze all US data in the SFA system, but am unable to get to see the data from the west coast.",
+      "text2": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "label": 0,
+      "category1": "Database",
+      "category2": "Software",
+      "ticket1_id": "INC0000007",
+      "ticket2_id": "INC0000006"
+    },
+    {
+      "text1": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000009",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: Forgot email password Description: User forgot their email password.",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000004",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000052",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: Printer in my office is out of toner Description: Where do I find toner for the HP 950C I have?",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000008",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: The USB port on my PC stopped working",
+      "text2": "Title: I can't get my weather report Description: WeatherBug icon has disappeared from my desktop. Unable to get my weather report.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000601",
+      "ticket2_id": "INC0000029"
+    },
+    {
+      "text1": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "text2": "Title: Issue with networking Description: Experiencing connection issues. Unable to create connection to data source.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000039",
+      "ticket2_id": "INC0000036"
+    },
+    {
+      "text1": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "text2": "Title: Forgot email password Description: User forgot their email password.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000049",
+      "ticket2_id": "INC0000004"
+    },
+    {
+      "text1": "Title: ATF:TEST2",
+      "text2": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0008001",
+      "ticket2_id": "INC0000026"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Network",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0000002"
+    },
+    {
+      "text1": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "text2": "Title: Need Oracle 10GR2 installed Description: Currently running 10GR1 and need to upgrade to 10GR2.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Database",
+      "ticket1_id": "INC0000034",
+      "ticket2_id": "INC0000010"
+    },
+    {
+      "text1": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "text2": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0009003",
+      "ticket2_id": "INC0000049"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: Request for a new service Description: Need to place order for a new machine. Will need help with installation also.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0000037"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: File Server is 80% full - Needs upgrade Description: 2tb file server has less than 400gb free.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0000033"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0000016"
+    },
+    {
+      "text1": "Title: The USB port on my PC stopped working",
+      "text2": "Title: The SAP HR application is not accessible Description: I've been trying to access the SAP HR application for the last few hours. Each time I go into the application, nothing loads.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000601",
+      "ticket2_id": "INC0000053"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Software",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0000027"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: Unable to connect to email Description: I am unable to connect to the email server. It appears to be down.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0000060"
+    },
+    {
+      "text1": "Title: My disk is still having issues. Can't delete a file Description: Hard drive is still making grinding and clicking noises and now I can't delete a file. I've tried to delete it 3 times.",
+      "text2": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000028",
+      "ticket2_id": "INC0000027"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Network",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Network",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "text2": "Title: Forgot email password Description: User forgot their email password.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000052",
+      "ticket2_id": "INC0000004"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0009003"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Software",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0000012"
+    },
+    {
+      "text1": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "text2": "Title: Merchant unable to submit e-signed agreement Description: A Sales Agent's access to configure service fees for a merchant is restricted erroneously, preventing them from finalizing the onboarding process. Merchant onboarding delayed.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000050",
+      "ticket2_id": "INC0010053"
+    },
+    {
+      "text1": "Title: Equipment selection not saved for new location Description: During the onboarding process for an additional location, the Sales Agent received an error message stating 'Location already exists' even though it's a new location being added. This issue caused confusion and delays in completing the merchant setup.",
+      "text2": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0010054",
+      "ticket2_id": "INC0000006"
+    },
+    {
+      "text1": "Title: Need access to sales DB for the West Description: I have to analyze all US data in the SFA system, but am unable to get to see the data from the west coast.",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 0,
+      "category1": "Database",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000007",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: Assessment :  ATF Assessor",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0008112"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0000031"
+    },
+    {
+      "text1": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Network",
+      "ticket1_id": "INC0000051",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0000009"
+    },
+    {
+      "text1": "Title: File Server is 80% full - Needs upgrade Description: 2tb file server has less than 400gb free.",
+      "text2": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000033",
+      "ticket2_id": "INC0000001"
+    },
+    {
+      "text1": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "text2": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Software",
+      "ticket1_id": "INC0009002",
+      "ticket2_id": "INC0000034"
+    },
+    {
+      "text1": "Title: File Server is 80% full - Needs upgrade Description: 2tb file server has less than 400gb free.",
+      "text2": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000033",
+      "ticket2_id": "INC0000002"
+    },
+    {
+      "text1": "Title: Forgot email password Description: User forgot their email password.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000004",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Network",
+      "ticket1_id": "INC0000012",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "text2": "Title: Issue with a web page on wiki Description: The landing page for our internal wiki isn't loading. I've refreshed it multiple times and it keeps timing out.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000025",
+      "ticket2_id": "INC0000024"
+    },
+    {
+      "text1": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "text2": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0010046",
+      "ticket2_id": "INC0000002"
+    },
+    {
+      "text1": "Title: Forgot email password Description: User forgot their email password.",
+      "text2": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000004",
+      "ticket2_id": "INC0000038"
+    },
+    {
+      "text1": "Title: My desk phone does not work Description: Unable to dial out or receive calls. Phone is plugged in but there's no dial tone.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000041",
+      "ticket2_id": "INC0010046"
+    },
+    {
+      "text1": "Title: Issue with email Description: Can't connect to email from my laptop.",
+      "text2": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000047",
+      "ticket2_id": "INC0009004"
+    },
+    {
+      "text1": "Title: File Server is 80% full - Needs upgrade Description: 2tb file server has less than 400gb free.",
+      "text2": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000033",
+      "ticket2_id": "INC0000049"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: JavaScript error on hiring page of corporate website Description: Seeing JavaScript error message on hiring page on Explorer and Firefox.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0000040"
+    },
+    {
+      "text1": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "text2": "Title: Request for a new service Description: Need to place order for a new machine. Will need help with installation also.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000030",
+      "ticket2_id": "INC0000037"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0000025"
+    },
+    {
+      "text1": "Title: Need access to the common drive. Description: Need access to the common drive for sharing files which can be accessed by all members. Please provide access.",
+      "text2": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0007002",
+      "ticket2_id": "INC0000034"
+    },
+    {
+      "text1": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "text2": "Title: Assessment :  ATF Assessor",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000027",
+      "ticket2_id": "INC0008112"
+    },
+    {
+      "text1": "Title: Need Oracle 10GR2 installed Description: Currently running 10GR1 and need to upgrade to 10GR2.",
+      "text2": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "label": 0,
+      "category1": "Database",
+      "category2": "Network",
+      "ticket1_id": "INC0000010",
+      "ticket2_id": "INC0000002"
+    },
+    {
+      "text1": "Title: Need access to the common drive. Description: Need access to the common drive for sharing files which can be accessed by all members. Please provide access.",
+      "text2": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0007002",
+      "ticket2_id": "INC0000003"
+    },
+    {
+      "text1": "Title: Forgot email password Description: User forgot their email password.",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000004",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: Need access to the common drive. Description: Need access to the common drive for sharing files which can be accessed by all members. Please provide access.",
+      "text2": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0007002",
+      "ticket2_id": "INC0000046"
+    },
+    {
+      "text1": "Title: my PDF docs are all locked from editing Description: Unable to edit any PDFs in Acrobat. All my PDFs are read only now. How do I unlock them?",
+      "text2": "Title: Missing my home directory Description: Logged in and didn't see my home directory. Logged out and back in again and it's still not appearing. I'm completely blocked until this is resolved.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000038",
+      "ticket2_id": "INC0000014"
+    },
+    {
+      "text1": "Title: Touchscreen malfunction on Merchant's device for e-signing Description: Merchants facing frequent network timeout errors while submitting data, leading to delays in onboarding process.",
+      "text2": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0010050",
+      "ticket2_id": "INC0000039"
+    },
+    {
+      "text1": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "text2": "Title: Need new Blackberry set up Description: I'm replacing my old phone with a Blackberry and require assistance to get it set up. I'd like to get the files and contacts transferred to the new phone and need help getting the two factor authentication app set up on it.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0009004",
+      "ticket2_id": "INC0000011"
+    },
+    {
+      "text1": "Title: The USB port on my PC stopped working",
+      "text2": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Network",
+      "ticket1_id": "INC0000601",
+      "ticket2_id": "INC0000001"
+    },
+    {
+      "text1": "Title: Need new Blackberry set up Description: I'm replacing my old phone with a Blackberry and require assistance to get it set up. I'd like to get the files and contacts transferred to the new phone and need help getting the two factor authentication app set up on it.",
+      "text2": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000011",
+      "ticket2_id": "INC0000012"
+    },
+    {
+      "text1": "Title: Need Oracle 10GR2 installed Description: Currently running 10GR1 and need to upgrade to 10GR2.",
+      "text2": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "label": 0,
+      "category1": "Database",
+      "category2": "Software",
+      "ticket1_id": "INC0000010",
+      "ticket2_id": "INC0000054"
+    },
+    {
+      "text1": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000009",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "text2": "Title: Issue with a web page on wiki Description: The landing page for our internal wiki isn't loading. I've refreshed it multiple times and it keeps timing out.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000039",
+      "ticket2_id": "INC0000024"
+    },
+    {
+      "text1": "Title: My disk is still having issues. Can't delete a file Description: Hard drive is still making grinding and clicking noises and now I can't delete a file. I've tried to delete it 3 times.",
+      "text2": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000028",
+      "ticket2_id": "INC0000005"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: I can't get my weather report Description: WeatherBug icon has disappeared from my desktop. Unable to get my weather report.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0000029"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: Unable to post content on a Wiki page Description: I am not able to edit a wiki page.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0009001"
+    },
+    {
+      "text1": "Title: Request for a new service Description: Need to place order for a new machine. Will need help with installation also.",
+      "text2": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000037",
+      "ticket2_id": "INC0000005"
+    },
+    {
+      "text1": "Title: Unable to post content on a Wiki page Description: I am not able to edit a wiki page.",
+      "text2": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0009001",
+      "ticket2_id": "INC0000046"
+    },
+    {
+      "text1": "Title: Merchant data displaying incorrectly Description: During the data upload process for a new merchant, the API endpoint consistently returns a 500 error, preventing sales agents from successfully onboarding the merchant.",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0010049",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: Defect tracking tool is down. Description: While launching the defect tracking base URL, it is redirecting to an error page.",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Network",
+      "ticket1_id": "INC0009004",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000003",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Merchant unable to submit e-signed agreement Description: A Sales Agent's access to configure service fees for a merchant is restricted erroneously, preventing them from finalizing the onboarding process. Merchant onboarding delayed.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0010053",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "text2": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000031",
+      "ticket2_id": "INC0000046"
+    },
+    {
+      "text1": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "text2": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000016",
+      "ticket2_id": "INC0000031"
+    },
+    {
+      "text1": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "text2": "Title: I can't get my weather report Description: WeatherBug icon has disappeared from my desktop. Unable to get my weather report.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000026",
+      "ticket2_id": "INC0000029"
+    },
+    {
+      "text1": "Title: Cannot sign into the company portal app Description: Having an issue with users trying to access the company portal app",
+      "text2": "Title: Rain is leaking on main DNS Server Description: Seeing puddles of water on the floor of the server room. We've put buckets out to collect the water until this is fixed.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0009003",
+      "ticket2_id": "INC0000016"
+    },
+    {
+      "text1": "Title: The USB port on my PC stopped working",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Network",
+      "ticket1_id": "INC0000601",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: ATF : Test1",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0008111",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "text2": "Title: Need access to the common drive. Description: Need access to the common drive for sharing files which can be accessed by all members. Please provide access.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000050",
+      "ticket2_id": "INC0007002"
+    },
+    {
+      "text1": "Title: ATF : Test1",
+      "text2": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0008111",
+      "ticket2_id": "INC0000006"
+    },
+    {
+      "text1": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "text2": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000049",
+      "ticket2_id": "INC0000005"
+    },
+    {
+      "text1": "Title: Trouble getting to Oregon mail server Description: Unable to access Oregon mail server. Is it down?",
+      "text2": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Software",
+      "ticket1_id": "INC0000039",
+      "ticket2_id": "INC0000012"
+    },
+    {
+      "text1": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "text2": "Title: Equipment selection not saved for new location Description: During the onboarding process for an additional location, the Sales Agent received an error message stating 'Location already exists' even though it's a new location being added. This issue caused confusion and delays in completing the merchant setup.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000052",
+      "ticket2_id": "INC0010054"
+    },
+    {
+      "text1": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "text2": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0001990",
+      "ticket2_id": "INC0000001"
+    },
+    {
+      "text1": "Title: Missing my home directory Description: Logged in and didn't see my home directory. Logged out and back in again and it's still not appearing. I'm completely blocked until this is resolved.",
+      "text2": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000014",
+      "ticket2_id": "INC0000052"
+    },
+    {
+      "text1": "Title: SAP Materials Management is slow or there is an outage Description: Nothing loads in the application. Is there an outage?",
+      "text2": "Title: Unable to access the personal details section in payroll portal Description: Unable to access the personal details section in payroll portal",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000054",
+      "ticket2_id": "INC0001990"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: Lost connection to the wireless network Description: Can't connect to wifi. Keep getting \"unable to join network\" message.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0000030"
+    },
+    {
+      "text1": "Title: The USB port on my PC stopped working",
+      "text2": "Title: How do I create a sub-folder Description: I need to organize my inbox in my email program. However I can't create a sub-folder. I didn't seen an option to create a new folder when right clicking.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000601",
+      "ticket2_id": "INC0000017"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: I can't launch my VPN client since the last software update Description: There was a software update two days ago and now my VPN doesn't work. Nothing loads when I click on the VPN client icon on my desktop.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000015",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: ATF:TEST2",
+      "text2": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0008001",
+      "ticket2_id": "INC0000025"
+    },
+    {
+      "text1": "Title: Touchscreen malfunction on Merchant's device for e-signing Description: Merchants facing frequent network timeout errors while submitting data, leading to delays in onboarding process.",
+      "text2": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0010050",
+      "ticket2_id": "INC0000026"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: Equipment selection not saved for new location Description: During the onboarding process for an additional location, the Sales Agent received an error message stating 'Location already exists' even though it's a new location being added. This issue caused confusion and delays in completing the merchant setup.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0010054"
+    },
+    {
+      "text1": "Title: EMAIL is slow when an attachment is involved Description: Noticing today that any time I send an email with an attachment, it takes at least 20 seconds to send. This happens regardless of the attachment size.",
+      "text2": "Title: Need to add more memory to laptop Description: I have a project involving video editing to complete. I've installed the editing software and the memory in my laptop is insufficient to run it effectively.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000013",
+      "ticket2_id": "INC0000025"
+    },
+    {
+      "text1": "Title: Performance problems with wifi Description: Wifi connection seems slow. Webpages are taking a very long time to load.",
+      "text2": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000057",
+      "ticket2_id": "INC0000003"
+    },
+    {
+      "text1": "Title: Unable to access the shared folder. Description: Unable to access the shared folder. Please provide access.",
+      "text2": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0009009",
+      "ticket2_id": "INC0000001"
+    },
+    {
+      "text1": "Title: Can't access SFA software Description: Unable to login to SFA even though login credentials are correct.",
+      "text2": "Title: ATF : Test1",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000046",
+      "ticket2_id": "INC0008111"
+    },
+    {
+      "text1": "Title: File Server is 80% full - Needs upgrade Description: 2tb file server has less than 400gb free.",
+      "text2": "Title: Seem to have an issue with my hard drive... Description: Hard drive has been making a loud grinding noise for the last two days.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000033",
+      "ticket2_id": "INC0000026"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: Equipment selection not saved for new location Description: During the onboarding process for an additional location, the Sales Agent received an error message stating 'Location already exists' even though it's a new location being added. This issue caused confusion and delays in completing the merchant setup.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0010054"
+    },
+    {
+      "text1": "Title: Performance problems with email Description: Taking a really long time to send emails. Last email took almost a minute for sending to complete and there wasn't even an attachment.",
+      "text2": "Title: Manager can't access SAP Controlling application Description: Was able to access SAP Controlling application last week but doesn't seem to be working as of today. Is there an outage?",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0000058",
+      "ticket2_id": "INC0000051"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: SAP Financial Accounting application appears to be down Description: Main menu doesn't load when I open the SAP Financial Accounting application.",
+      "text2": "Title: My computer is not detecting the headphone device Description: My computer is not detecting the headphone device. It could be an issue with the USB port.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000052",
+      "ticket2_id": "INC0009002"
+    },
+    {
+      "text1": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "text2": "Title: Customer didn't receive eFax Description: I tried sending a fax to a customer through the eFax online portal and also via email. My customer did not receive the fax in both instances. I don't know if this is an issue on our side with transmission or on my customer's side.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0010051",
+      "ticket2_id": "INC0000012"
+    },
+    {
+      "text1": "Title: Does not look like a backup occurred last night Description: Last automated backup occurred two nights ago. Did we change automated backup schedule?",
+      "text2": "Title: Network storage unavailable Description: Receiving error message with \"network path not found.\"",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Network",
+      "ticket1_id": "INC0000034",
+      "ticket2_id": "INC0000049"
+    },
+    {
+      "text1": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "text2": "Title: Issue with networking Description: Experiencing connection issues. Unable to create connection to data source.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0007001",
+      "ticket2_id": "INC0000036"
+    },
+    {
+      "text1": "Title: Hangs when trying to print VISIO document Description: When I try to print VISIO, my whole computer just freezes and stops working.",
+      "text2": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000006",
+      "ticket2_id": "INC0010046"
+    },
+    {
+      "text1": "Title: CPU load high for over 10 minutes Description: Watcher daemon detected that the CPU was 100% busy for more than 10 minutes",
+      "text2": "Title: Unable to access the shared folder. Description: Unable to access the shared folder. Please provide access.",
+      "label": 0,
+      "category1": "Hardware",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000005",
+      "ticket2_id": "INC0009009"
+    },
+    {
+      "text1": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "text2": "Title: Reset my password Description: I can't remember my password and need to log in. Can someone reset my password asap? I am blocked on several urgent items until I can log in again.",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000001",
+      "ticket2_id": "INC0000009"
+    },
+    {
+      "text1": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "text2": "Title: The USB port on my PC stopped working",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0010051",
+      "ticket2_id": "INC0000601"
+    },
+    {
+      "text1": "Title: Need access to the common drive. Description: Need access to the common drive for sharing files which can be accessed by all members. Please provide access.",
+      "text2": "Title: Email server is down. Description: Unable to send or receive emails.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Software",
+      "ticket1_id": "INC0007002",
+      "ticket2_id": "INC0009005"
+    },
+    {
+      "text1": "Title: Unable to access team file share Description: I can access my personal folder but can't access my team's folder on our file share.",
+      "text2": "Title: Employee payroll application server is down. Description: Employee payroll application server is down.Not able to login with valid credentials.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000059",
+      "ticket2_id": "INC0007001"
+    },
+    {
+      "text1": "Title: EMAIL Server Down Again Description: Multiple employees have reported that they are unable to send/receive email.",
+      "text2": "Title: Equipment Configuration Freeze on Legacy Browser Description: An issue arose where fees were calculated inaccurately for a specific equipment bundle, leading to potential financial discrepancies; Sales Agent and Merchant affected.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000032",
+      "ticket2_id": "INC0010052"
+    },
+    {
+      "text1": "Title: Can't launch 64-bit Windows 7 virtual machine Description: I downloaded and installed 64-bit Windows 7 virtual machine and I can't get it to launch. I'm not sure if I need 64-bit or 32-bit.",
+      "text2": "Title: Error in Equipment Configuration Description: Sales Agent encountered an error when trying to onboard an additional location for merchant ID 12345. The system displayed a 'Duplicate Location' error message.",
+      "label": 0,
+      "category1": "Software",
+      "category2": "Inquiry / Help",
+      "ticket1_id": "INC0000019",
+      "ticket2_id": "INC0010051"
+    },
+    {
+      "text1": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "text2": "Title: Wireless access is down in my area Description: I just moved from floor 2 to floor 3 and my laptop cannot connect to any wireless network.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000031",
+      "ticket2_id": "INC0000003"
+    },
+    {
+      "text1": "Title: Unable to access the shared folder. Description: Unable to access the shared folder. Please provide access.",
+      "text2": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0009009",
+      "ticket2_id": "INC0000002"
+    },
+    {
+      "text1": "Title: Need help with Remedy. Can we configure UI? Description: Need to adjust layout of UI, add additional fields, and remove a few buttons. We are missing some critical fields that need to get added immediately.",
+      "text2": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0000031",
+      "ticket2_id": "INC0000001"
+    },
+    {
+      "text1": "Title: Missing my home directory Description: Logged in and didn't see my home directory. Logged out and back in again and it's still not appearing. I'm completely blocked until this is resolved.",
+      "text2": "Title: Can't access Exchange server - is it down? Description: Can't connect to Exchange. Login credentials and network connection are working though.",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Hardware",
+      "ticket1_id": "INC0000014",
+      "ticket2_id": "INC0000050"
+    },
+    {
+      "text1": "Title: Access Rights Restriction Description: Merchant reported being unable to e-sign the Merchant Agreement due to an access permission error in the UI, halting the onboarding process.",
+      "text2": "Title: Can't read email Description: User can't access email on mail.company.com.\n\t\t",
+      "label": 0,
+      "category1": "Inquiry / Help",
+      "category2": "Network",
+      "ticket1_id": "INC0010048",
+      "ticket2_id": "INC0000001"
+    },
+    {
+      "text1": "Title: Network file shares access issue Description: User can't get to any of his files on the file server.",
+      "text2": "Title: Please remove the latest hotfix from my PC Description: The hotfix was installed on my PC and now some of my applications have stopped working. Can I roll back to the previous version?",
+      "label": 0,
+      "category1": "Network",
+      "category2": "Software",
+      "ticket1_id": "INC0000002",
+      "ticket2_id": "INC0000027"
+    }
+  ],
+  "stats": {
+    "num_positive": 161,
+    "num_negative": 161,
+    "total_pairs": 322,
+    "balance_ratio": 1.0
+  }
+}

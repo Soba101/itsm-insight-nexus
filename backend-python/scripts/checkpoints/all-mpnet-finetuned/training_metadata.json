@@ -1,0 +1,12 @@
+{
+  "base_model": "sentence-transformers/all-mpnet-base-v2",
+  "training_date": "2025-11-13T03:06:00.173739",
+  "epochs": 50,
+  "batch_size": 32,
+  "learning_rate": 2e-05,
+  "num_train_examples": 289,
+  "num_eval_examples": 33,
+  "num_positive_pairs": 161,
+  "num_negative_pairs": 161,
+  "device": "cpu"
+}

@@ -1,0 +1,64 @@
+{
+  "timestamp": "2025-11-13T03:28:28.992111",
+  "config": {
+    "finetuned_model": "models/all-mpnet-finetuned",
+    "lm_studio_url": "http://localhost:1234/v1",
+    "qwen3_model": "text-embedding-qwen3-embedding-8b",
+    "gemma_model": "text-embedding-embeddinggemma-300m-qat",
+    "incidents_file": "../../../data/servicenow_incidents_full.json",
+    "num_test_samples": 100,
+    "top_k": 5
+  },
+  "num_test_samples": 76,
+  "speed_results": {
+    "MPNet (Fine-tuned)": {
+      "total_time": 0.8522219657897949,
+      "per_text": 0.011213446918286775,
+      "dimension": 768
+    },
+    "Qwen3 (LM Studio)": {
+      "total_time": 24.4521062374115,
+      "per_text": 0.32173823996594075,
+      "dimension": 4096
+    },
+    "Gemma (LM Studio)": {
+      "total_time": 1.8117449283599854,
+      "per_text": 0.023838749057368228,
+      "dimension": 768
+    }
+  },
+  "accuracy_results": {
+    "MPNet (Fine-tuned)": {
+      "accuracy": 0.7236842105263157
+    },
+    "Qwen3 (LM Studio)": {
+      "accuracy": 0.4315789473684211
+    },
+    "Gemma (LM Studio)": {
+      "accuracy": 0.42894736842105263
+    }
+  },
+  "quality_results": {
+    "MPNet (Fine-tuned)": {
+      "intra_category_sim": 0.3865675926208496,
+      "inter_category_sim": 0.23652246594429016,
+      "separation": 0.15004512667655945,
+      "intra_std": 0.1961035579442978,
+      "inter_std": 0.20320196449756622
+    },
+    "Qwen3 (LM Studio)": {
+      "intra_category_sim": 0.4563249647657199,
+      "inter_category_sim": 0.44481460428995084,
+      "separation": 0.011510360475769033,
+      "intra_std": 0.11641797234322954,
+      "inter_std": 0.10269469489059456
+    },
+    "Gemma (LM Studio)": {
+      "intra_category_sim": 0.416824138812772,
+      "inter_category_sim": 0.4138038676598975,
+      "separation": 0.0030202711528745096,
+      "intra_std": 0.10209956409811288,
+      "inter_std": 0.08899289942240678
+    }
+  }
+}
